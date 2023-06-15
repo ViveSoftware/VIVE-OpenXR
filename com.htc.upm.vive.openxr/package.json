@@ -1,0 +1,49 @@
+{
+    "name": "com.htc.upm.vive.openxr",
+    "displayName": "VIVE OpenXR Plugin - Windows",
+    "version": "1.0.12",
+    "unity": "2020.3",
+    "description": "VIVE OpenXR Plugin - Windows provides (1) Vive Facial Tracking (2) Vive Cosmos Controller (3) Scene Understanding (4) Hand Tracking (5) Vive Focus3 Controller support for Unity OpenXR (6) Hand Interaction (7) Palm pose.",
+    "keywords": [
+      "htc",
+      "facial",
+      "openxr",
+      "xr",
+      "reality",
+      "input",
+      "SceneUnderstanding",
+      "pass through",
+      "hand",
+      "tracking"
+    ],
+    "dependencies": {
+        "com.unity.xr.management": "3.2.16",
+        "com.unity.xr.legacyinputhelpers": "2.1.2",
+        "com.unity.inputsystem": "1.1.0-preview.1",
+        "com.unity.xr.openxr": "1.4.2"
+    },
+    "samples": [
+      {
+        "displayName": "SceneUnderstanding Example",
+        "description": "Shows OpenXR scene understanding snapshot mesh.",
+        "path": "OpenXRSceneUnderstanding/Samples~/"
+      },
+      {
+        "displayName" : "FacialTracking Example",
+        "description" : "Basic Sample showing how to create application with actual facial expressions on 3D avatars based on OpenXR facial tracking extension.",
+        "path": "OpenXRFacialTracking/Samples~/"
+      },
+      {
+        "displayName" : "HandTracking Example",
+        "description" : "Basic Sample showing how to create application for locating hand joints based on OpenXR hand tracking extension and retrieve hand interaction input from unity OpenXR Plugin.",
+        "path": "OpenXRHandTracking/Samples~/"
+      }
+    ],
+    "author": {
+      "name": "HTC Corporation",
+      "email": "vivesoftware@htc.com",
+      "url": "https://www.htc.com"
+    },
+    "homepage": "https://developer.vive.com/resources/openxr/",
+    "documentationUrl": "https://developer.vive.com/resources/openxr/openxr-pcvr/documentation/"
+  }

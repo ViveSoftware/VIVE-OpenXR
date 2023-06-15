@@ -1,0 +1,197 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shieh_Shader_mat
+  m_Shader: {fileID: 4800000, guid: e581164ca006851408ab64a0280abd71, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Albedo:
+        m_Texture: {fileID: 2800000, guid: ad403e56572b6a54186e29d055ca35a3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 5f6a88171526ba44b8edd0316d32be0e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailSkin_Metalic:
+        m_Texture: {fileID: 2800000, guid: 508aaba794b76264994ff90752435697, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailSkin_Normal:
+        m_Texture: {fileID: 2800000, guid: 7a4aa691425a0e84996a3a3f3d3ef326, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: ad403e56572b6a54186e29d055ca35a3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 2800000, guid: 4de633b93a5c4fd4ba6a9263663ff7e1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Metalic:
+        m_Texture: {fileID: 2800000, guid: 9c2bcc6b9ea5025408d01f4065252dbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicTex:
+        m_Texture: {fileID: 2800000, guid: 9c2bcc6b9ea5025408d01f4065252dbc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal:
+        m_Texture: {fileID: 2800000, guid: 5f6a88171526ba44b8edd0316d32be0e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionTex:
+        m_Texture: {fileID: 2800000, guid: 79a57944faad1ef4db6a45d577955641, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SQZ_M:
+        m_Texture: {fileID: 2800000, guid: 0bde64e6f5a7c7645b626bacac977600, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Wide_M:
+        m_Texture: {fileID: 2800000, guid: 76493984454b03f47a3137acfc5ee3a6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Wrinkle:
+        m_Texture: {fileID: 2800000, guid: bf18efd814a59c645a89649c222ce5ec, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMap_Default:
+        m_Texture: {fileID: 2800000, guid: e86ced7d9ef006641b3cf8855baf388b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMap_Sad:
+        m_Texture: {fileID: 2800000, guid: e86ced7d9ef006641b3cf8855baf388b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMap_Smile:
+        m_Texture: {fileID: 2800000, guid: b3054ff6e9f73b243b3cda952fa02424, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMask_Sad:
+        m_Texture: {fileID: 2800000, guid: b651b3205353cbe4eafef19f8cd4eee6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMask_Smile:
+        m_Texture: {fileID: 2800000, guid: 9f79442cfa74a03479bcc9683e287520, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMask_Squeeze:
+        m_Texture: {fileID: 2800000, guid: 0bde64e6f5a7c7645b626bacac977600, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WrinkleMask_Wide_Up:
+        m_Texture: {fileID: 2800000, guid: 76493984454b03f47a3137acfc5ee3a6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Wrinkle_Sad:
+        m_Texture: {fileID: 2800000, guid: e86ced7d9ef006641b3cf8855baf388b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Wrinkle_Smile:
+        m_Texture: {fileID: 2800000, guid: b3054ff6e9f73b243b3cda952fa02424, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _lip_Sad_M:
+        m_Texture: {fileID: 2800000, guid: b651b3205353cbe4eafef19f8cd4eee6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _lip_Smile_M:
+        m_Texture: {fileID: 2800000, guid: 9f79442cfa74a03479bcc9683e287520, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _AO_power: 1
+    - _Bump: 1
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DetailSkin_MetalicAlpha: 0.3
+    - _DetailSkin_Rotate: 8
+    - _DetailSkin_alpha: 0.45
+    - _DstBlend: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 1
+    - _GlossyReflections: 1
+    - _MetalicPower: 0
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _SSS_Depth: 6.47
+    - _SSS_Power: 1
+    - _Smoothness: 0.7
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _TransAmbient: 0.994
+    - _TransDirect: 1
+    - _TransNormalDistortion: 0
+    - _TransScattering: 1
+    - _TransShadow: 1
+    - _Translucency: 1
+    - _Translucency_Power: 0.5
+    - _UVSec: 0
+    - _WrinkleMapIndex: 0
+    - _WrinkleScale_Sad_Left: 0
+    - _WrinkleScale_Sad_Right: 0
+    - _WrinkleScale_Smile_Left: 1
+    - _WrinkleScale_Smile_Right: 0
+    - _WrinkleScale_Squeeze_Left: 0
+    - _WrinkleScale_Squeeze_Right: 0
+    - _WrinkleScale_Wide_Up_Left: 0
+    - _WrinkleScale_Wide_Up_Right: 0
+    - _ZWrite: 1
+    - __dirty: 0
+    - _wrinkle_AllScale: 50
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DetailSkin_Tiling: {r: 30, g: 30, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

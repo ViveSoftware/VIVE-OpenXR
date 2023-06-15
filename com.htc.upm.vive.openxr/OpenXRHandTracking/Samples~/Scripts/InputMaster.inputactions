@@ -1,0 +1,34 @@
+{
+    "name": "InputMaster",
+    "maps": [
+        {
+            "name": "Keyboard",
+            "id": "94ee31f8-c9ac-4138-b5b9-ad5ecec1870d",
+            "actions": [
+                {
+                    "name": "SpacePress",
+                    "type": "Button",
+                    "id": "2a246a3d-969f-4d95-8e12-9e0000e5b19c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d6ea233e-905c-4913-a644-8a84098fea9f",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpacePress",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
