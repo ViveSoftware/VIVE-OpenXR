@@ -8,7 +8,7 @@ Demonstrate configuring, calculating and generating mesh of surrounding environm
 1. **Edit** > **Project Settings** > **XR Plug-in Management** > Select **OpenXR** , click Exclamation mark next to it > choose **Fix All**.
 2. **Edit** > **Project Settings** > **XR Plug-in Management** > **OpenXR** > Add Interaction profiles for your device.
 3. **Edit** > **Project Settings** > **XR Plug-in Management** > **OpenXR** > Select **Scene UnderStanding**  and **Meshing Subsystem** under **VIVE OpenXR** Feature Groups.
-4. In the Unity Project window, select the sample scene file in **Assets** > **Samples** > **VIVE OpenXR Plugin - Windows** > **1.0.12** > **SceneUnderstanding Example** > **Meshing Subsystem Feature** > **MeshingFeature.unity** then click Play.
+4. In the Unity Project window, select the sample scene file in **Assets** > **Samples** > **VIVE OpenXR Plugin - Windows** > **1.0.13** > **SceneUnderstanding Example** > **Meshing Subsystem Feature** > **MeshingFeature.unity** then click Play.
 
 ## How to use VIVE OpenXR SceneUnderstanding Unity Feature
 For the available OpenXR SceneUnderstanding functions, please refer to **SceneUnderstanding.cs**.

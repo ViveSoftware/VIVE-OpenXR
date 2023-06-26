@@ -9,7 +9,7 @@ To help software developers create an application with actual facial expressions
 1. **Edit** > **Project Settings** > **XR Plug-in Management** > Select **OpenXR** , click Exclamation mark next to it then choose **Fix All**.
 2. **Edit** > **Project Settings** > **XR Plug-in Management** > **OpenXR** > Add Interaction profiles for your device.
 3. **Edit** > **Project Settings** > **XR Plug-in Management** > **OpenXR** > Select **Facial Tracking** under **VIVE OpenXR** Feature Groups.
-4. In the Unity Project window, select the sample scene file in **Assets** > **Samples** > **VIVE OpenXR Plugin - Windows** > **1.0.12** > **FacialTracking Example** > **Scenes** > **FaceSample.unity** then click Play.
+4. In the Unity Project window, select the sample scene file in **Assets** > **Samples** > **VIVE OpenXR Plugin - Windows** > **1.0.13** > **FacialTracking Example** > **Scenes** > **FaceSample.unity** then click Play.
 
 ## How to use VIVE OpenXR Facial Tracking Unity Feature
 1. Import VIVE OpenXR Plugin - Windows

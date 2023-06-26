@@ -9,15 +9,18 @@ using UnityEngine.InputSystem.XR;
 using UnityEditor;
 #endif
 
+#if USE_INPUT_SYSTEM_POSE_CONTROL
+using PoseControl = UnityEngine.InputSystem.XR.PoseControl;
+#else
 using PoseControl = UnityEngine.XR.OpenXR.Input.PoseControl;
-   
-   
+#endif
+
 namespace UnityEngine.XR.OpenXR.Features
 { 
     /// <summary>
     /// This <see cref="OpenXRInteractionFeature"/> enables the use of HTC Vive Controllers interaction profiles in OpenXR.
     /// </summary>
-#if UNITY_EDITOR  
+#if UNITY_EDITOR
     [UnityEditor.XR.OpenXR.Features.OpenXRFeature(UiName = "HTC Vive Cosmos Controller Support",
         BuildTargetGroups = new[] { BuildTargetGroup.Standalone, BuildTargetGroup.WSA },
         Company = "HTC",

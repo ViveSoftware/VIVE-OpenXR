@@ -3,6 +3,11 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine;
 
+#if USE_INPUT_SYSTEM_POSE_CONTROL
+using Pose = UnityEngine.InputSystem.XR.PoseState;
+#else
+using Pose = UnityEngine.XR.OpenXR.Input.Pose;
+#endif
 
 public class LineRender : MonoBehaviour
 {
@@ -22,7 +27,7 @@ public class LineRender : MonoBehaviour
             && actionReferencePose.action.enabled && actionReferencePose.action.controls.Count > 0)
         {
             //GazeRayRenderer.SetActive(true);
-            UnityEngine.XR.OpenXR.Input.Pose poseval = actionReferencePose.action.ReadValue<UnityEngine.XR.OpenXR.Input.Pose>();
+            Pose poseval = actionReferencePose.action.ReadValue<Pose>();
             Quaternion gazeRotation = poseval.rotation;
             Quaternion orientation = new Quaternion(
                 1 * (gazeRotation.x),

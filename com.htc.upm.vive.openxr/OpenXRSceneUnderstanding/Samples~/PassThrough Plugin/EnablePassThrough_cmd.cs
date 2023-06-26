@@ -13,7 +13,7 @@ public class EnablePassThrough_cmd : MonoBehaviour
     // Start is called before the first frame update
     private void Awake() {
         #if UNITY_EDITOR
-        path = System.IO.Path.Combine(Directory.GetCurrentDirectory() + "\\Assets\\Samples\\VIVE OpenXR Plugin - Windows\\1.0.12\\SceneUnderstanding Example\\PassThrough Plugin\\OfflineTool.exe");
+        path = System.IO.Path.Combine(Directory.GetCurrentDirectory() + "\\Assets\\Samples\\VIVE OpenXR Plugin - Windows\\1.0.13\\SceneUnderstanding Example\\PassThrough Plugin\\OfflineTool.exe");
         #elif UNITY_STANDALONE
         path = System.IO.Path.Combine(Directory.GetCurrentDirectory() + "/OfflineTool.exe");
         #endif

@@ -9,7 +9,7 @@ To help software developers create an application for locating hand joints with 
 1. **Edit** > **Project Settings** > **XR Plug-in Management** > Select **OpenXR** , click Exclamation mark next to it then choose **Fix All**.
 2. **Edit** > **Project Settings** > **XR Plug-in Management** > **OpenXR** > Add Interaction profiles for your device.
 3. **Edit** > **Project Settings** > **XR Plug-in Management** > **OpenXR** > Select **Hand Tracking** under **VIVE OpenXR** Feature Groups.
-4. In the Unity Project window, select the sample scene file in **Assets** > **Samples** > **VIVE OpenXR Plugin - Windows** > **1.0.12** > **HandTracking Example** > **Scenes** > **HandTrackingScene.unity** then click Play.
+4. In the Unity Project window, select the sample scene file in **Assets** > **Samples** > **VIVE OpenXR Plugin - Windows** > **1.0.13** > **HandTracking Example** > **Scenes** > **HandTrackingScene.unity** then click Play.
 
 ## Use VIVE OpenXR Hand Tracking Unity Feature to draw skeleton hand.
 1. Import VIVE OpenXR Plugin - Windows

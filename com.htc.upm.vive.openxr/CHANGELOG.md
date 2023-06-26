@@ -1,4 +1,4 @@
-# **VIVE OpenXR Plugin - Windows** For Unity -  v1.0.12
+# **VIVE OpenXR Plugin - Windows** For Unity -  v1.0.13
 Copyright HTC Corporation. All Rights Reserved.
 
 **VIVE OpenXR Plugin - Windows**: This plugin provides support for openxr based on the following specifications.
@@ -10,6 +10,11 @@ Copyright HTC Corporation. All Rights Reserved.
  - [Hand Interaction](https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#XR_HTC_hand_interaction)
  - [Palm pose](https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#XR_EXT_palm_pose)
 ---
+## Changes for v1.0.13 - 2023/06/26
+ - Fix problem that "OpenXR.Input.PoseControl" and "OpenXR.Input.Pose" are deprecated after OpenXR Plugin 1.6.0. 
+   1. When **USE_INPUT_SYSTEM_POSE_CONTROL** is defined, switch to use InputSystem.XR.PoseControl; otherwise, use OpenXR.Input.PoseControl for backward compatibility.
+   2. When **USE_INPUT_SYSTEM_POSE_CONTROL** is defined, switch to use InputSystem.XR.PoseState; otherwise, use OpenXR.Input.Pose for backward compatibility.
+
 ## Changes for v1.0.12 - 2023/06/02
  - Remove Eye gaze sample.It is recommended to use the Controller sample provided by the Unity OpenXR Plugin to test eye gaze.
 

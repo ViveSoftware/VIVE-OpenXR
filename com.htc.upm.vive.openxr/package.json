@@ -1,7 +1,7 @@
 {
     "name": "com.htc.upm.vive.openxr",
     "displayName": "VIVE OpenXR Plugin - Windows",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "unity": "2020.3",
     "description": "VIVE OpenXR Plugin - Windows provides (1) Vive Facial Tracking (2) Vive Cosmos Controller (3) Scene Understanding (4) Hand Tracking (5) Vive Focus3 Controller support for Unity OpenXR (6) Hand Interaction (7) Palm pose.",
     "keywords": [
