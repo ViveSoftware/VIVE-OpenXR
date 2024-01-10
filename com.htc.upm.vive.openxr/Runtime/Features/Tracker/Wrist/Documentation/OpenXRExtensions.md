@@ -3,6 +3,9 @@
     XR_HTC_vive_wrist_tracker_interaction
 ## Revision
     1
+## Overview
+    This extension provides an XrPath for getting device input from a VIVE wrist tracker to enable its interactions. VIVE wrist tracker is a tracked device mainly worn on user¡¦s wrist for pose tracking. Besides this use case, user also can tie it to a physical object to track its object pose, e.g. tie on a gun.
+
 ## VIVE Wrist Tracker input
 ### Interaction profile path:
 - /interaction_profiles/htc/vive_wrist_tracker

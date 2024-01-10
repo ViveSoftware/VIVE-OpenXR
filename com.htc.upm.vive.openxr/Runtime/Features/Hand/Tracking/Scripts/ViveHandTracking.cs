@@ -1,12 +1,4 @@
-// "VIVE SDK 
-// © 2020 HTC Corporation. All Rights Reserved.
-//
-// Unless otherwise required by copyright law and practice,
-// upon the execution of HTC SDK license agreement,
-// HTC grants you access to and use of the VIVE SDK(s).
-// You shall fully comply with all of HTC’s SDK license agreement terms and
-// conditions signed by you and all SDK and API requirements,
-// specifications, and documentation provided by HTC to You."
+// Copyright HTC Corporation All Rights Reserved.
 
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
@@ -275,8 +267,11 @@ namespace VIVE.OpenXR.Hand
                 hasRightHandTracker = false;
             }
 
-            m_XrSession = 0;
-            m_XrSessionCreated = false;
+            if (m_XrSession == xrSession)
+            {
+                m_XrSession = 0;
+                m_XrSessionCreated = false;
+            }
         }
         #endregion
 

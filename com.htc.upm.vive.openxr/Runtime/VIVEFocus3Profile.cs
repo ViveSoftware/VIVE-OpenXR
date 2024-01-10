@@ -1,6 +1,10 @@
 // Copyright HTC Corporation All Rights Reserved.
 
+using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Runtime.InteropServices;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Layouts;
@@ -40,6 +44,19 @@ namespace VIVE.OpenXR
 #endif
 	public class VIVEFocus3Profile : OpenXRInteractionFeature
 	{
+		const string LOG_TAG = "VIVE.OpenXR.VIVEFocus3Profile ";
+		StringBuilder m_sb = null;
+		StringBuilder sb {
+			get {
+				if (m_sb == null) { m_sb = new StringBuilder(); }
+				return m_sb;
+			}
+		}
+		void DEBUG(StringBuilder msg) { Debug.Log(msg); }
+		void ERROR(StringBuilder msg) { Debug.LogError(msg); }
+
+		private static VIVEFocus3Profile m_Instance = null;
+
 		public const string kOpenxrExtensionString = "XR_HTC_vive_focus3_controller_interaction";
 
 		/// <summary>
@@ -51,8 +68,19 @@ namespace VIVE.OpenXR
 		/// An Input System device based on the hand interaction profile in the <a href="https://www.khronos.org/registry/OpenXR/specs/1.0/html/xrspec.html#XR_HTC_vive_focus3_controller_interaction">Interaction Profile</a>.
 		/// </summary>
 		[Preserve, InputControlLayout(displayName = "VIVE Focus 3 Controller (OpenXR)", commonUsages = new[] { "LeftHand", "RightHand" })]
-		public class VIVEFocus3Controller : XRControllerWithRumble
+		public class VIVEFocus3Controller : XRControllerWithRumble, IInputUpdateCallbackReceiver
 		{
+			const string LOG_TAG = "VIVE.OpenXR.VIVEFocus3Profile.VIVEFocus3Controller ";
+			StringBuilder m_sb = null;
+			StringBuilder sb {
+				get {
+					if (m_sb == null) { m_sb = new StringBuilder(); }
+					return m_sb;
+				}
+			}
+			void DEBUG(StringBuilder msg) { Debug.Log(msg); }
+			void ERROR(StringBuilder msg) { Debug.LogError(msg); }
+
 			/// <summary>
 			/// A [Vector2Control](xref:UnityEngine.InputSystem.Controls.Vector2Control) that represents the <see cref="VIVEFocus3Profile.thumbstick"/> OpenXR binding.
 			/// </summary>
@@ -185,6 +213,8 @@ namespace VIVE.OpenXR
 			[Preserve, InputControl(usage = "Haptic")]
 			public HapticControl haptic { get; private set; }
 
+			private bool UpdateInputDeviceInRuntime = false;
+
 			/// <summary>
 			/// Internal call used to assign controls to the the correct element.
 			/// </summary>
@@ -216,6 +246,91 @@ namespace VIVE.OpenXR
 				pointerPosition = GetChildControl<Vector3Control>("pointerPosition");
 				pointerRotation = GetChildControl<QuaternionControl>("pointerRotation");
 				haptic = GetChildControl<HapticControl>("haptic");
+
+				sb.Clear().Append(LOG_TAG)
+					.Append("FinishSetup() device interfaceName: ").Append(description.interfaceName)
+					.Append(", deviceClass: ").Append(description.deviceClass)
+					.Append(", product: ").Append(description.product)
+					.Append(", serial: ").Append(description.serial)
+					.Append(", capabilities: ").Append(description.capabilities);
+				DEBUG(sb);
+			}
+
+			private bool bRoleUpdatedLeft = false, bRoleUpdatedRight = false;
+			public void OnUpdate()
+			{
+				if (!UpdateInputDeviceInRuntime) { return; }
+				if (m_Instance == null) { return; }
+
+				string func = "OnUpdate() ";
+				if (leftHand.isTracked.ReadValue() > 0 && !bRoleUpdatedLeft)
+				{
+					sb.Clear().Append(LOG_TAG).Append(func)
+						.Append("product: ").Append(description.product)
+						.Append(" with user path: ").Append(UserPaths.leftHand).Append(" is_tracked."); DEBUG(sb);
+
+					XrPath path = StringToPath(UserPaths.leftHand);
+
+					if (m_Instance.GetInputSourceName(path, XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_USER_PATH_BIT, out string role) != XrResult.XR_SUCCESS)
+					{
+						sb.Clear().Append(LOG_TAG).Append(func)
+							.Append("GetInputSourceName XR_INPUT_SOURCE_LOCALIZED_NAME_USER_PATH_BIT failed."); ERROR(sb);
+					}
+					else
+					{
+						sb.Clear().Append(LOG_TAG).Append(func)
+							.Append("product: ").Append(description.product)
+							.Append(" with user path: ").Append(UserPaths.leftHand).Append(" has role: ").Append(role); DEBUG(sb);
+					}
+
+					if (m_Instance.GetInputSourceName(path, XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_SERIAL_NUMBER_BIT_HTC, out string sn) != XrResult.XR_SUCCESS)
+					{
+						sb.Clear().Append(LOG_TAG).Append(func)
+							.Append("GetInputSourceName XR_INPUT_SOURCE_LOCALIZED_NAME_SERIAL_NUMBER_BIT_HTC failed."); ERROR(sb);
+					}
+					else
+					{
+						sb.Clear().Append(LOG_TAG).Append(func)
+							.Append("product: ").Append(description.product)
+							.Append(" with user path: ").Append(UserPaths.leftHand).Append(" has serial number: ").Append(role); DEBUG(sb);
+					}
+
+					bRoleUpdatedLeft = true;
+				}
+				if (rightHand.isTracked.ReadValue() > 0 && !bRoleUpdatedRight)
+				{
+					sb.Clear().Append(LOG_TAG).Append(func)
+						.Append("product: ").Append(description.product)
+						.Append(" with user path: ").Append(UserPaths.rightHand).Append(" is_tracked."); DEBUG(sb);
+
+					XrPath path = StringToPath(UserPaths.rightHand);
+
+					if (m_Instance.GetInputSourceName(path, XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_USER_PATH_BIT, out string role) != XrResult.XR_SUCCESS)
+					{
+						sb.Clear().Append(LOG_TAG).Append(func)
+							.Append("GetInputSourceName XR_INPUT_SOURCE_LOCALIZED_NAME_USER_PATH_BIT failed."); ERROR(sb);
+					}
+					else
+					{
+						sb.Clear().Append(LOG_TAG).Append(func)
+							.Append("product: ").Append(description.product)
+							.Append(" with user path: ").Append(UserPaths.rightHand).Append(" has role: ").Append(role); DEBUG(sb);
+					}
+
+					if (m_Instance.GetInputSourceName(path, XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_SERIAL_NUMBER_BIT_HTC, out string sn) != XrResult.XR_SUCCESS)
+					{
+						sb.Clear().Append(LOG_TAG).Append(func)
+							.Append("GetInputSourceName XR_INPUT_SOURCE_LOCALIZED_NAME_SERIAL_NUMBER_BIT_HTC failed."); ERROR(sb);
+					}
+					else
+					{
+						sb.Clear().Append(LOG_TAG).Append(func)
+							.Append("product: ").Append(description.product)
+							.Append(" with user path: ").Append(UserPaths.leftHand).Append(" has serial number: ").Append(role); DEBUG(sb);
+					}
+
+					bRoleUpdatedRight = true;
+				}
 			}
 		}
 
@@ -682,5 +797,210 @@ namespace VIVE.OpenXR
 
 			AddActionMap(actionMap);
 		}
+
+		#region OpenXR function delegates
+		/// xrGetInstanceProcAddr
+		OpenXRHelper.xrGetInstanceProcAddrDelegate XrGetInstanceProcAddr;
+		/// xrEnumeratePathsForInteractionProfileHTC
+		VivePathEnumerationHelper.xrEnumeratePathsForInteractionProfileHTCDelegate xrEnumeratePathsForInteractionProfileHTC = null;
+		/// xrEnumerateDisplayRefreshRatesFB
+		OpenXRHelper.xrGetInputSourceLocalizedNameDelegate xrGetInputSourceLocalizedName = null;
+		private bool GetXrFunctionDelegates(XrInstance xrInstance)
+		{
+			/// xrGetInstanceProcAddr
+			if (xrGetInstanceProcAddr != null && xrGetInstanceProcAddr != IntPtr.Zero)
+			{
+				sb.Clear().Append(LOG_TAG).Append("Get function pointer of xrGetInstanceProcAddr."); DEBUG(sb);
+				XrGetInstanceProcAddr = Marshal.GetDelegateForFunctionPointer(
+					xrGetInstanceProcAddr,
+					typeof(OpenXRHelper.xrGetInstanceProcAddrDelegate)) as OpenXRHelper.xrGetInstanceProcAddrDelegate;
+			}
+			else
+			{
+				sb.Clear().Append(LOG_TAG).Append("No function pointer of xrGetInstanceProcAddr"); ERROR(sb);
+				return false;
+			}
+
+			IntPtr funcPtr = IntPtr.Zero;
+
+			/// xrEnumeratePathsForInteractionProfileHTC
+			if (XrGetInstanceProcAddr(xrInstance, "xrEnumeratePathsForInteractionProfileHTC", out funcPtr) == XrResult.XR_SUCCESS)
+			{
+				if (funcPtr != IntPtr.Zero)
+				{
+					sb.Clear().Append(LOG_TAG).Append("Get function pointer of xrEnumeratePathsForInteractionProfileHTC."); DEBUG(sb);
+					xrEnumeratePathsForInteractionProfileHTC = Marshal.GetDelegateForFunctionPointer(
+						funcPtr,
+						typeof(VivePathEnumerationHelper.xrEnumeratePathsForInteractionProfileHTCDelegate)) as VivePathEnumerationHelper.xrEnumeratePathsForInteractionProfileHTCDelegate;
+				}
+				else
+				{
+					sb.Clear().Append(LOG_TAG).Append("No function pointer of xrEnumeratePathsForInteractionProfileHTC.");
+					ERROR(sb);
+				}
+			}
+			else
+			{
+				sb.Clear().Append(LOG_TAG).Append("No function pointer of xrEnumeratePathsForInteractionProfileHTC");
+				ERROR(sb);
+			}
+
+			/// xrGetInputSourceLocalizedName
+			if (XrGetInstanceProcAddr(xrInstance, "xrGetInputSourceLocalizedName", out funcPtr) == XrResult.XR_SUCCESS)
+			{
+				if (funcPtr != IntPtr.Zero)
+				{
+					sb.Clear().Append(LOG_TAG).Append("Get function pointer of xrGetInputSourceLocalizedName."); DEBUG(sb);
+					xrGetInputSourceLocalizedName = Marshal.GetDelegateForFunctionPointer(
+						funcPtr,
+						typeof(OpenXRHelper.xrGetInputSourceLocalizedNameDelegate)) as OpenXRHelper.xrGetInputSourceLocalizedNameDelegate;
+				}
+				else
+				{
+					sb.Clear().Append(LOG_TAG).Append("No function pointer of xrGetInputSourceLocalizedName.");
+					ERROR(sb);
+				}
+			}
+			else
+			{
+				sb.Clear().Append(LOG_TAG).Append("No function pointer of xrGetInputSourceLocalizedName");
+				ERROR(sb);
+			}
+
+			return true;
+		}
+		#endregion
+
+		private XrResult GetInputSourceName(XrPath path, XrInputSourceLocalizedNameFlags sourceType, out string sourceName)
+		{
+			string func = "GetInputSourceName() ";
+
+			sourceName = "";
+			if (!m_XrSessionCreated || xrGetInputSourceLocalizedName == null) { return XrResult.XR_ERROR_VALIDATION_FAILURE; }
+
+			string userPath = PathToString(path);
+			sb.Clear().Append(LOG_TAG).Append(func)
+				.Append("userPath: ").Append(userPath).Append(", flag: ").Append((UInt64)sourceType); DEBUG(sb);
+
+			XrInputSourceLocalizedNameGetInfo nameInfo = new XrInputSourceLocalizedNameGetInfo(
+				XrStructureType.XR_TYPE_INPUT_SOURCE_LOCALIZED_NAME_GET_INFO,
+				IntPtr.Zero, path, (XrInputSourceLocalizedNameFlags)sourceType);
+			UInt32 nameSizeIn = 0;
+			UInt32 nameSizeOut = 0;
+			char[] buffer = new char[0];
+
+			XrResult result = xrGetInputSourceLocalizedName(m_XrSession, ref nameInfo, nameSizeIn, ref nameSizeOut, buffer);
+			if (result == XrResult.XR_SUCCESS)
+			{
+				if (nameSizeOut < 1)
+				{
+					sb.Clear().Append(LOG_TAG).Append(func)
+						.Append("xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
+						.Append(", flag: ").Append((UInt64)sourceType)
+						.Append("bufferCountOutput size is invalid!");
+					ERROR(sb);
+					return XrResult.XR_ERROR_VALIDATION_FAILURE;
+				}
+
+				nameSizeIn = nameSizeOut;
+				buffer = new char[nameSizeIn];
+
+				result = xrGetInputSourceLocalizedName(m_XrSession, ref nameInfo, nameSizeIn, ref nameSizeOut, buffer);
+				if (result == XrResult.XR_SUCCESS)
+				{
+					sourceName = new string(buffer).TrimEnd('\0');
+					sb.Clear().Append(LOG_TAG).Append(func)
+						.Append("xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
+						.Append(", flag: ").Append((UInt64)sourceType)
+						.Append(", bufferCapacityInput: ").Append(nameSizeIn)
+						.Append(", bufferCountOutput: ").Append(nameSizeOut)
+						.Append(", sourceName: ").Append(sourceName);
+					DEBUG(sb);
+				}
+				else
+				{
+					sb.Clear().Append(LOG_TAG).Append(func)
+						.Append("2.xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
+						.Append(", flag: ").Append((UInt64)sourceType)
+						.Append(", bufferCapacityInput: ").Append(nameSizeIn)
+						.Append(", bufferCountOutput: ").Append(nameSizeOut)
+						.Append(" result: ").Append(result);
+					ERROR(sb);
+				}
+			}
+			else
+			{
+				sb.Clear().Append(LOG_TAG).Append(func)
+					.Append("1.xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
+					.Append(", flag: ").Append((UInt64)sourceType)
+					.Append(", bufferCapacityInput: ").Append(nameSizeIn)
+					.Append(", bufferCountOutput: ").Append(nameSizeOut)
+					.Append(" result: ").Append(result);
+				ERROR(sb);
+			}
+
+			return result;
+		}
+
+		#region OpenXR Life Cycle
+#pragma warning disable
+		private bool m_XrInstanceCreated = false;
+#pragma warning restore
+		private XrInstance m_XrInstance = 0;
+		/// <summary>
+		/// Called when <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrCreateInstance">xrCreateInstance</see> is done.
+		/// </summary>
+		/// <param name="xrInstance">The created instance.</param>
+		/// <returns>True for valid <see cref="XrInstance">XrInstance</see></returns>
+		protected override bool OnInstanceCreate(ulong xrInstance)
+		{
+			m_XrInstanceCreated = true;
+			m_XrInstance = xrInstance;
+			m_Instance = this;
+			sb.Clear().Append(LOG_TAG).Append("OnInstanceCreate() ").Append(m_XrInstance); DEBUG(sb);
+
+			GetXrFunctionDelegates(m_XrInstance);
+			return true;
+		}
+		/// <summary>
+		/// Called when <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrDestroyInstance">xrDestroyInstance</see> is done.
+		/// </summary>
+		/// <param name="xrInstance">The instance to destroy.</param>
+		protected override void OnInstanceDestroy(ulong xrInstance)
+		{
+			if (m_XrInstance == xrInstance)
+			{
+				m_XrInstanceCreated = false;
+				m_XrInstance = 0;
+			}
+			sb.Clear().Append(LOG_TAG).Append("OnInstanceDestroy() ").Append(xrInstance); DEBUG(sb);
+		}
+
+		private bool m_XrSessionCreated = false;
+		private XrSession m_XrSession = 0;
+		/// <summary>
+		/// Called when <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrCreateSession">xrCreateSession</see> is done.
+		/// </summary>
+		/// <param name="xrSession">The created session ID.</param>
+		protected override void OnSessionCreate(ulong xrSession)
+		{
+			m_XrSession = xrSession;
+			m_XrSessionCreated = true;
+			sb.Clear().Append(LOG_TAG).Append("OnSessionCreate() ").Append(m_XrSession); DEBUG(sb);
+		}
+		/// <summary>
+		/// Called when <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrDestroySession">xrDestroySession</see> is done.
+		/// </summary>
+		/// <param name="xrSession">The session ID to destroy.</param>
+		protected override void OnSessionDestroy(ulong xrSession)
+		{
+			sb.Clear().Append(LOG_TAG).Append("OnSessionDestroy() ").Append(xrSession); DEBUG(sb);
+			if (m_XrSession == xrSession)
+			{
+				m_XrSession = 0;
+				m_XrSessionCreated = false;
+			}
+		}
+		#endregion
 	}
 }

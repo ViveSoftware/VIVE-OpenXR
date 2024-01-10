@@ -1,12 +1,4 @@
-// "VIVE SDK 
-// © 2020 HTC Corporation. All Rights Reserved.
-//
-// Unless otherwise required by copyright law and practice,
-// upon the execution of HTC SDK license agreement,
-// HTC grants you access to and use of the VIVE SDK(s).
-// You shall fully comply with all of HTC’s SDK license agreement terms and
-// conditions signed by you and all SDK and API requirements,
-// specifications, and documentation provided by HTC to You."
+// Copyright HTC Corporation All Rights Reserved.
 
 using UnityEngine.Scripting;
 using UnityEngine.XR.OpenXR.Features;
@@ -19,6 +11,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using UnityEngine.XR;
 using UnityEngine.XR.OpenXR.Input;
+using System.Text;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -50,9 +43,16 @@ namespace VIVE.OpenXR.Tracker
 #endif
     public class ViveWristTracker : OpenXRInteractionFeature
     {
-        const string LOG_TAG = "VIVE.OpenXR.Tracker.ViveWristTracker";
-        void DEBUG(string msg) { Debug.Log(LOG_TAG + " " + msg); }
-        void WARNING(string msg) { Debug.LogWarning(LOG_TAG + " " + msg); }
+        const string LOG_TAG = "VIVE.OpenXR.Tracker.ViveWristTracker ";
+        StringBuilder m_sb = null;
+        StringBuilder sb {
+            get {
+                if (m_sb == null) { m_sb = new StringBuilder(); }
+                return m_sb;
+            }
+        }
+        void DEBUG(StringBuilder msg) { Debug.Log(msg); }
+        void WARNING(StringBuilder msg) { Debug.LogWarning(msg); }
 
         /// <summary>
         /// OpenXR specification <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#XR_HTC_vive_wrist_tracker_interaction">12.72. XR_HTC_vive_wrist_tracker_interaction</see>.
@@ -97,11 +97,18 @@ namespace VIVE.OpenXR.Tracker
         /// </summary>
         public const string entityPose = "/input/entity_htc/pose";
 
-        [Preserve, InputControlLayout(displayName = "Vive Wrist Tracker (OpenXR)", commonUsages = new[] { "LeftHand", "RightHand" }, isGenericTypeOfDevice = true)]
+        [Preserve, InputControlLayout(displayName = "VIVE Wrist Tracker (OpenXR)", commonUsages = new[] { "LeftHand", "RightHand" }, isGenericTypeOfDevice = true)]
         public class WristTrackerDevice : OpenXRDevice
         {
-            const string LOG_TAG = "VIVE.OpenXR.Tracker.ViveWristTracker.WristTrackerDevice";
-            void DEBUG(string msg) { Debug.Log(LOG_TAG + " " + msg); }
+            const string LOG_TAG = "VIVE.OpenXR.Tracker.ViveWristTracker.WristTrackerDevice ";
+            StringBuilder m_sb = null;
+            StringBuilder sb {
+                get {
+                    if (m_sb == null) { m_sb = new StringBuilder(); }
+                    return m_sb;
+                }
+            }
+            void DEBUG(StringBuilder msg) { Debug.Log(msg); }
 
             /// <summary>
             /// A <see href="https://docs.unity3d.com/Packages/com.unity.inputsystem@1.0/api/UnityEngine.InputSystem.Controls.ButtonControl.html">ButtonControl</see> that represents the <see cref="buttonA"/> <see cref="buttonX"/> OpenXR bindings, depending on handedness.
@@ -150,14 +157,6 @@ namespace VIVE.OpenXR.Tracker
             /// </summary>
             protected override void FinishSetup()
             {
-                /*for (int i = 0; i < InputSystem.devices.Count; i++)
-                {
-                    var description = InputSystem.devices[i].description;
-                    DEBUG("FinishSetup() device[" + i + "], interfaceName: " + description.interfaceName
-                        + ", deviceClass: " + description.deviceClass
-                        + ", product: " + description.product);
-                }*/
-
                 base.FinishSetup();
 
                 primaryButton = GetChildControl<ButtonControl>("primaryButton");
@@ -167,6 +166,13 @@ namespace VIVE.OpenXR.Tracker
                 trackingState = GetChildControl<IntegerControl>("trackingState");
                 devicePosition = GetChildControl<Vector3Control>("devicePosition");
                 deviceRotation = GetChildControl<QuaternionControl>("deviceRotation");
+
+                sb.Clear().Append(LOG_TAG)
+                    .Append(" FinishSetup() device interfaceName: ").Append(description.interfaceName)
+                    .Append(", deviceClass: ").Append(description.deviceClass)
+                    .Append(", product: ").Append(description.product)
+                    .Append(", serial: ").Append(description.serial);
+                DEBUG(sb);
             }
         }
 
@@ -181,16 +187,9 @@ namespace VIVE.OpenXR.Tracker
         /// <returns>True for valid <see cref="XrInstance">XrInstance</see></returns>
         protected override bool OnInstanceCreate(ulong xrInstance)
         {
-            // Requires the eye tracking extension
-            /*if (!OpenXRRuntime.IsExtensionEnabled(kOpenxrExtensionString))
-            {
-                WARNING("OnInstanceCreate() " + kOpenxrExtensionString + " is NOT enabled.");
-                return false;
-            }*/
-
             m_XrInstanceCreated = true;
             m_XrInstance = xrInstance;
-            DEBUG("OnInstanceCreate() " + m_XrInstance);
+            sb.Clear().Append(LOG_TAG).Append(" OnInstanceCreate() " + m_XrInstance); DEBUG(sb);
 
             return base.OnInstanceCreate(xrInstance);
         }

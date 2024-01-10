@@ -11,6 +11,8 @@ using UnityEditor.XR.OpenXR.Features;
 using UnityEngine;
 using UnityEngine.XR.OpenXR;
 using UnityEngine.XR.OpenXR.Features;
+using UnityEngine.XR.OpenXR.Features.Interactions;
+using VIVE.OpenXR.FacialTracking;
 using VIVE.OpenXR.Hand;
 using VIVE.OpenXR.Tracker;
 
@@ -249,54 +251,75 @@ namespace VIVE.OpenXR.Editor
 
 			internal void AddOpenXRFeatures()
 			{
-				bool enableViveWristTracker = false;
-				bool enableViveHandTracking = false;
+				bool enableHandtracking = false;
+				bool enableTracker = false;
+				bool enableEyetracking = false;
+				bool enableLipexpression = false;
+
 				var settings = OpenXRSettings.GetSettingsForBuildTargetGroup(BuildTargetGroup.Android);
 				if (null == settings)
 					return;
 
 				foreach (var feature in settings.GetFeatures<OpenXRInteractionFeature>())
 				{
-					if (feature is ViveWristTracker)
+					if ((feature is ViveWristTracker || feature is ViveXRTracker) && feature.enabled)
 					{
-						enableViveWristTracker = feature.enabled;
-						break;
+						enableHandtracking = true;
+						enableTracker = true;
+					}
+					if (feature is EyeGazeInteraction && feature.enabled)
+					{
+						enableEyetracking = true;
+					}
+					if (feature is ViveHandInteraction && feature.enabled)
+					{
+						enableHandtracking = true;
 					}
 				}
 
 				foreach (var feature in settings.GetFeatures<OpenXRFeature>())
 				{
-					if (feature is ViveHandTracking)
+					if (feature is ViveHandTracking && feature.enabled)
 					{
-						enableViveHandTracking = feature.enabled;
-						break; ;
+						enableHandtracking = true;
+					}
+					if (feature is ViveFacialTracking && feature.enabled)
+					{
+						enableEyetracking = true;
+						enableLipexpression = true;
 					}
 				}
 
-				//Debug.Log("enableViveWristTracker " + enableViveWristTracker);
-				if (enableViveWristTracker)
+				if (enableHandtracking)
 				{
-					{
-						var newUsesFeature = CreateElement("uses-feature");
-						newUsesFeature.Attributes.Append(CreateAndroidAttribute("name", "wave.feature.handtracking"));
-						newUsesFeature.Attributes.Append(CreateAndroidAttribute("required", "true"));
-						ManifestElement.AppendChild(newUsesFeature);
-					}
-					{
-						var newUsesFeature = CreateElement("uses-feature");
-						newUsesFeature.Attributes.Append(CreateAndroidAttribute("name", "wave.feature.tracker"));
-						newUsesFeature.Attributes.Append(CreateAndroidAttribute("required", "true"));
-						ManifestElement.AppendChild(newUsesFeature);
-					}
+					var newUsesFeature = CreateElement("uses-feature");
+					newUsesFeature.Attributes.Append(CreateAndroidAttribute("name", "wave.feature.handtracking"));
+					newUsesFeature.Attributes.Append(CreateAndroidAttribute("required", "true"));
+					ManifestElement.AppendChild(newUsesFeature);
 				}
-				else if (enableViveHandTracking)
+
+				if (enableTracker)
 				{
-					{
-						var newUsesFeature = CreateElement("uses-feature");
-						newUsesFeature.Attributes.Append(CreateAndroidAttribute("name", "wave.feature.handtracking"));
-						newUsesFeature.Attributes.Append(CreateAndroidAttribute("required", "true"));
-						ManifestElement.AppendChild(newUsesFeature);
-					}
+					var newUsesFeature = CreateElement("uses-feature");
+					newUsesFeature.Attributes.Append(CreateAndroidAttribute("name", "wave.feature.tracker"));
+					newUsesFeature.Attributes.Append(CreateAndroidAttribute("required", "true"));
+					ManifestElement.AppendChild(newUsesFeature);
+				}
+
+				if (enableEyetracking)
+				{
+					var newUsesFeature = CreateElement("uses-feature");
+					newUsesFeature.Attributes.Append(CreateAndroidAttribute("name", "wave.feature.eyetracking"));
+					newUsesFeature.Attributes.Append(CreateAndroidAttribute("required", "true"));
+					ManifestElement.AppendChild(newUsesFeature);
+				}
+
+				if (enableLipexpression)
+				{
+					var newUsesFeature = CreateElement("uses-feature");
+					newUsesFeature.Attributes.Append(CreateAndroidAttribute("name", "wave.feature.lipexpression"));
+					newUsesFeature.Attributes.Append(CreateAndroidAttribute("required", "true"));
+					ManifestElement.AppendChild(newUsesFeature);
 				}
 
 				if (CheckIfSimultaneousInteractionEnabled.IsEnabled)

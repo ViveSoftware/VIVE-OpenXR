@@ -34,7 +34,24 @@ namespace VIVE.OpenXR.CompositionLayer.Samples.Passthrough
 
         private void Update()
         {
-            if (passthroughMesh != null && passthroughMeshTransform != null)
+			if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.B)) //Set Passthrough as Overlay
+			{
+				SetPassthroughToOverlay();
+			}
+			if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.A)) //Set Passthrough as Underlay
+			{
+				SetPassthroughToUnderlay();
+			}
+			if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.X)) //Switch to world lock
+			{
+				SetWorldLock();
+			}
+			if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.Y)) //Switch to head lock
+			{
+				SetHeadLock();
+			}
+
+			if (passthroughMesh != null && passthroughMeshTransform != null)
             {
                 if (activePassthroughID == 0)
                 {
@@ -44,23 +61,6 @@ namespace VIVE.OpenXR.CompositionLayer.Samples.Passthrough
                 {
                     SetPassthroughMesh();
                 }
-            }
-
-            if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.B)) //Set Passthrough as Overlay
-            {
-                SetPassthroughToOverlay();
-            }
-            if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.A)) //Set Passthrough as Underlay
-            {
-                SetPassthroughToUnderlay();
-            }
-            if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.X)) //Switch to world lock
-            {
-                SetWorldLock();
-            }
-            if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.Y)) //Switch to head lock
-            {
-                SetHeadLock();
             }
         }
 

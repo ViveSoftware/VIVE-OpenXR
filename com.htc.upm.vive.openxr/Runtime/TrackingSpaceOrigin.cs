@@ -1,5 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+// Copyright HTC Corporation All Rights Reserved.
+
 using UnityEngine;
 
 namespace VIVE.OpenXR

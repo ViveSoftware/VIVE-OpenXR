@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using UnityEngine.XR.OpenXR;
 
 namespace VIVE.OpenXR.Samples.OpenXRInput
 {
@@ -159,9 +160,12 @@ namespace VIVE.OpenXR.Samples.OpenXRInput
 
         private float GetRefreshRate()
 		{
-            if (XR_FB_display_refresh_rate.GetDisplayRefreshRate(out float rate) == XrResult.XR_SUCCESS) { return rate; }
+			if (!OpenXRRuntime.IsExtensionEnabled("XR_FB_display_refresh_rate"))
+				return 0.0f;
 
-            return 0;
+			if (XR_FB_display_refresh_rate.GetDisplayRefreshRate(out float rate) == XrResult.XR_SUCCESS) { return rate; }
+
+            return 0.0f;
 		}
     }
 }

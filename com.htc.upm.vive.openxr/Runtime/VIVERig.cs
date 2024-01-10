@@ -1,27 +1,27 @@
-// "VIVE SDK 
-// © 2020 HTC Corporation. All Rights Reserved.
-//
-// Unless otherwise required by copyright law and practice,
-// upon the execution of HTC SDK license agreement,
-// HTC grants you access to and use of the VIVE SDK(s).
-// You shall fully comply with all of HTC’s SDK license agreement terms and
-// conditions signed by you and all SDK and API requirements,
-// specifications, and documentation provided by HTC to You."
+// Copyright HTC Corporation All Rights Reserved.
 
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using System.Text;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 namespace VIVE.OpenXR
 {
 	[DisallowMultipleComponent]
 	public sealed class VIVERig : MonoBehaviour
 	{
-		const string LOG_TAG = "VIVE.OpenXR.VIVERig";
-		void DEBUG(string msg)
-		{
-            Debug.Log(LOG_TAG + " " + msg);
+		const string LOG_TAG = "VIVE.OpenXR.VIVERig ";
+		StringBuilder m_sb = null;
+		StringBuilder sb {
+			get {
+				if (m_sb == null) { m_sb = new StringBuilder(); }
+				return m_sb;
+			}
 		}
+		void DEBUG(StringBuilder msg) { Debug.Log(msg); }
 
 		[SerializeField]
 		private GameObject m_CameraOffset = null;
@@ -42,32 +42,45 @@ namespace VIVE.OpenXR
 		private float m_CameraYOffset = 1;
 		public float CameraYOffset { get { return m_CameraYOffset; } set { m_CameraYOffset = value; } }
 
-        static List<XRInputSubsystem> s_InputSubsystems = new List<XRInputSubsystem>();
-        private void OnEnable()
-        {
-            SubsystemManager.GetInstances(s_InputSubsystems);
-            for (int i = 0; i < s_InputSubsystems.Count; i++)
-            {
-                s_InputSubsystems[i].trackingOriginUpdated += TrackingOriginUpdated;
-            }
-        }
-        private void OnDisable()
-        {
-            SubsystemManager.GetInstances(s_InputSubsystems);
-            for (int i = 0; i < s_InputSubsystems.Count; i++)
-            {
-                s_InputSubsystems[i].trackingOriginUpdated -= TrackingOriginUpdated;
-            }
-        }
+#if ENABLE_INPUT_SYSTEM
+		[SerializeField]
+		private InputActionAsset m_ActionAsset;
+		public InputActionAsset actionAsset { get => m_ActionAsset; set => m_ActionAsset = value; }
+#endif
 
-        float m_LastRecenteredTime = 0.0f;
-        private void TrackingOriginUpdated(XRInputSubsystem obj)
-        {
-            m_LastRecenteredTime = Time.time;
-            DEBUG("TrackingOriginUpdated() m_LastRecenteredTime: " + m_LastRecenteredTime);
-        }
+		static List<XRInputSubsystem> s_InputSubsystems = new List<XRInputSubsystem>();
+		private void OnEnable()
+		{
+			SubsystemManager.GetInstances(s_InputSubsystems);
+			for (int i = 0; i < s_InputSubsystems.Count; i++)
+			{
+				s_InputSubsystems[i].trackingOriginUpdated += TrackingOriginUpdated;
+			}
 
-        XRInputSubsystem m_InputSystem = null;
+#if ENABLE_INPUT_SYSTEM
+			if (m_ActionAsset != null)
+			{
+				m_ActionAsset.Enable();
+			}
+#endif
+		}
+		private void OnDisable()
+		{
+			SubsystemManager.GetInstances(s_InputSubsystems);
+			for (int i = 0; i < s_InputSubsystems.Count; i++)
+			{
+				s_InputSubsystems[i].trackingOriginUpdated -= TrackingOriginUpdated;
+			}
+		}
+
+		float m_LastRecenteredTime = 0.0f;
+		private void TrackingOriginUpdated(XRInputSubsystem obj)
+		{
+			m_LastRecenteredTime = Time.time;
+			sb.Clear().Append(LOG_TAG).Append("TrackingOriginUpdated() m_LastRecenteredTime: ").Append(m_LastRecenteredTime); DEBUG(sb);
+		}
+
+		XRInputSubsystem m_InputSystem = null;
 		void UpdateInputSystem()
 		{
 			SubsystemManager.GetInstances(s_InputSubsystems);
@@ -84,12 +97,12 @@ namespace VIVE.OpenXR
 				m_InputSystem.TrySetTrackingOriginMode(m_TrackingOrigin);
 
 				TrackingOriginModeFlags mode = m_InputSystem.GetTrackingOriginMode();
-				DEBUG("Awake() Tracking mode is set to " + mode);
-            }
-            else
-            {
-                DEBUG("Awake() no XRInputSubsystem.");
-            }
+				sb.Clear().Append(LOG_TAG).Append("Awake() Tracking mode is set to ").Append(mode); DEBUG(sb);
+			}
+			else
+			{
+				sb.Clear().Append(LOG_TAG).Append("Awake() no XRInputSubsystem."); DEBUG(sb);
+			}
 			m_TrackingOriginEx = m_TrackingOrigin;
 		}
 
@@ -104,7 +117,7 @@ namespace VIVE.OpenXR
 					m_InputSystem.TrySetTrackingOriginMode(m_TrackingOrigin);
 
 					mode = m_InputSystem.GetTrackingOriginMode();
-					DEBUG("Update() Tracking mode is set to " + mode);
+					sb.Clear().Append(LOG_TAG).Append("Update() Tracking mode is set to " + mode);
 					m_TrackingOriginEx = m_TrackingOrigin;
 				}
 			}

@@ -1,3 +1,5 @@
+// Copyright HTC Corporation All Rights Reserved.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

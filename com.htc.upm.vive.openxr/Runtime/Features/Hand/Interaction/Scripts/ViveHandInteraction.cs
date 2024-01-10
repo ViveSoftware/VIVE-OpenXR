@@ -92,8 +92,7 @@ namespace VIVE.OpenXR.Hand
         /// </summary>
         public const string devicePose = "/input/grip/pose";
 
-
-        [Preserve, InputControlLayout(displayName = "Vive Hand Interaction (OpenXR)", commonUsages = new[] { "LeftHand", "RightHand" }, isGenericTypeOfDevice = true)]
+        [Preserve, InputControlLayout(displayName = "VIVE Hand Interaction (OpenXR)", commonUsages = new[] { "LeftHand", "RightHand" }, isGenericTypeOfDevice = true)]
         public class HandInteractionDevice : OpenXRDevice
         {
             const string LOG_TAG = "VIVE.OpenXR.Hand.ViveHandInteraction.HandInteractionDevice";

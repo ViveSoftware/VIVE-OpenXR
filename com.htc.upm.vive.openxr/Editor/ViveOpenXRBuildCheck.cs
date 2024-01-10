@@ -101,7 +101,7 @@ namespace VIVE.OpenXR.Editor
 
 			return true;
 		}
-		static void OnUpdate()
+		static void CheckScriptingDefineSymbols()
 		{
 			// Adds the script symbol if Vive OpenXR Plugin - Android is imported and assigned in XR Plugin-in Management.
 			if (ViveOpenXRAndroidAssigned)
@@ -121,6 +121,10 @@ namespace VIVE.OpenXR.Editor
 					RemoveScriptingDefineSymbols(m_ScriptDefineSettingOpenXRAndroid);
 				}
 			}
+		}
+		static void OnUpdate()
+		{
+			//CheckScriptingDefineSymbols();
 		}
 		static CheckIfVIVEEnabled()
 		{

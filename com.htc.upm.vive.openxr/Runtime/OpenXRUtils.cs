@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR;
@@ -1069,6 +1070,134 @@ namespace VIVE.OpenXR
 
     }
     /// <summary>
+    /// Action sets are application-defined collections of actions. They are attached to a given XrSession with a xrAttachSessionActionSets call. They are enabled or disabled by the application via xrSyncActions depending on the current application context. For example, a game may have one set of actions that apply to controlling a character and another set for navigating a menu system. When these actions are grouped into two XrActionSet handles they can be selectively enabled and disabled using a single function call.
+    /// </summary>
+    public struct XrActionSet : IEquatable<UInt64>
+    {
+        private readonly UInt64 value;
+
+        public XrActionSet(UInt64 u)
+        {
+            value = u;
+        }
+
+        public static implicit operator UInt64(XrActionSet equatable)
+        {
+            return equatable.value;
+        }
+        public static implicit operator XrActionSet(UInt64 u)
+        {
+            return new XrActionSet(u);
+        }
+
+        public bool Equals(XrActionSet other)
+        {
+            return value == other.value;
+        }
+        public bool Equals(UInt64 other)
+        {
+            return value == other;
+        }
+        public override bool Equals(object obj)
+        {
+            return obj is XrActionSet && Equals((XrActionSet)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return value.ToString();
+        }
+
+        public static bool operator ==(XrActionSet a, XrActionSet b) { return a.Equals(b); }
+        public static bool operator !=(XrActionSet a, XrActionSet b) { return !a.Equals(b); }
+        public static bool operator >=(XrActionSet a, XrActionSet b) { return a.value >= b.value; }
+        public static bool operator <=(XrActionSet a, XrActionSet b) { return a.value <= b.value; }
+        public static bool operator >(XrActionSet a, XrActionSet b) { return a.value > b.value; }
+        public static bool operator <(XrActionSet a, XrActionSet b) { return a.value < b.value; }
+        public static XrActionSet operator +(XrActionSet a, XrActionSet b) { return a.value + b.value; }
+        public static XrActionSet operator -(XrActionSet a, XrActionSet b) { return a.value - b.value; }
+        public static XrActionSet operator *(XrActionSet a, XrActionSet b) { return a.value * b.value; }
+        public static XrActionSet operator /(XrActionSet a, XrActionSet b)
+        {
+            if (b.value == 0)
+            {
+                throw new DivideByZeroException();
+            }
+            return a.value / b.value;
+        }
+
+    }
+    /// <summary>
+    /// Action handles are used to refer to individual actions when retrieving action data, creating action spaces, or sending haptic events.
+    /// </summary>
+    public struct XrAction : IEquatable<UInt64>
+    {
+        private readonly UInt64 value;
+
+        public XrAction(UInt64 u)
+        {
+            value = u;
+        }
+
+        public static implicit operator UInt64(XrAction equatable)
+        {
+            return equatable.value;
+        }
+        public static implicit operator XrAction(UInt64 u)
+        {
+            return new XrAction(u);
+        }
+
+        public bool Equals(XrAction other)
+        {
+            return value == other.value;
+        }
+        public bool Equals(UInt64 other)
+        {
+            return value == other;
+        }
+        public override bool Equals(object obj)
+        {
+            return obj is XrAction && Equals((XrAction)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return value.ToString();
+        }
+
+        public static bool operator ==(XrAction a, XrAction b) { return a.Equals(b); }
+        public static bool operator !=(XrAction a, XrAction b) { return !a.Equals(b); }
+        public static bool operator >=(XrAction a, XrAction b) { return a.value >= b.value; }
+        public static bool operator <=(XrAction a, XrAction b) { return a.value <= b.value; }
+        public static bool operator >(XrAction a, XrAction b) { return a.value > b.value; }
+        public static bool operator <(XrAction a, XrAction b) { return a.value < b.value; }
+        public static XrAction operator +(XrAction a, XrAction b) { return a.value + b.value; }
+        public static XrAction operator -(XrAction a, XrAction b) { return a.value - b.value; }
+        public static XrAction operator *(XrAction a, XrAction b) { return a.value * b.value; }
+        public static XrAction operator /(XrAction a, XrAction b)
+        {
+            if (b.value == 0)
+            {
+                throw new DivideByZeroException();
+            }
+            return a.value / b.value;
+        }
+
+    }
+
+
+    /// <summary>
     /// Flag bits for <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#XrSpaceLocationFlags">XrSpaceLocationFlags</see>.
     /// </summary>
     [Flags]
@@ -1091,6 +1220,35 @@ namespace VIVE.OpenXR
         /// </summary>
         XR_SPACE_LOCATION_POSITION_TRACKED_BIT = 0x00000008,
     }
+
+    public enum XrInputSourceLocalizedNameFlags : UInt64
+	{
+        /// <summary>
+        /// XrInputSourceLocalizedNameFlags bitmask 0x00000001 indicates that the runtime must include the user path portion of the string in the result, if available. E.g. Left Hand.
+        /// </summary>
+        XR_INPUT_SOURCE_LOCALIZED_NAME_USER_PATH_BIT = 0x00000001,
+        /// <summary>
+        /// XrInputSourceLocalizedNameFlags bitmask 0x00000002 indicates that the runtime must include the interaction profile portion of the string in the result, if available. E.g. Vive Controller.
+        /// </summary>
+        XR_INPUT_SOURCE_LOCALIZED_NAME_INTERACTION_PROFILE_BIT = 0x00000002,
+        /// <summary>
+        /// XrInputSourceLocalizedNameFlags bitmask 0x00000004 indicates that the runtime must include the input component portion of the string in the result, if available. E.g. Trigger.
+        /// </summary>
+        XR_INPUT_SOURCE_LOCALIZED_NAME_COMPONENT_BIT = 0x00000004,
+
+        XR_INPUT_SOURCE_LOCALIZED_NAME_SERIAL_NUMBER_BIT_HTC = 0x1000000000000000,
+    }
+
+    public enum XrActionType : UInt64
+    {
+        XR_ACTION_TYPE_BOOLEAN_INPUT = 1,
+        XR_ACTION_TYPE_FLOAT_INPUT = 2,
+        XR_ACTION_TYPE_VECTOR2F_INPUT = 3,
+        XR_ACTION_TYPE_POSE_INPUT = 4,
+        XR_ACTION_TYPE_VIBRATION_OUTPUT = 100,
+        XR_ACTION_TYPE_MAX_ENUM = 0x7FFFFFFF
+    }
+
     /// <summary>
     /// An XrSystemId is an opaque atom used by the runtime to identify a system. The value <see cref="OpenXRHelper.XR_NULL_SYSTEM_ID">XR_NULL_SYSTEM_ID</see> is considered an invalid system.
     /// </summary>
@@ -1722,8 +1880,60 @@ namespace VIVE.OpenXR
 		public UInt32 mipCount;
 	}
 
+    public struct XrInputSourceLocalizedNameGetInfo
+    {
+        public XrStructureType type;
+        public IntPtr next;
+        public XrPath sourcePath;
+        public XrInputSourceLocalizedNameFlags whichComponents;
+
+        public XrInputSourceLocalizedNameGetInfo(XrStructureType in_type, IntPtr in_next, XrPath in_path, XrInputSourceLocalizedNameFlags in_flags)
+		{
+            type = in_type;
+            next = in_next;
+            sourcePath = in_path;
+            whichComponents = in_flags;
+		}
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    public struct XrExtensionProperties
+    {
+        public XrStructureType type;
+        public IntPtr next;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public string extensionName;
+        public UInt32 extensionVersion;
+    }
+
+    public struct XrActionCreateInfo
+    {
+        public XrStructureType type;
+        public IntPtr next;
+        public char[] actionName;
+        public XrActionType actionType;
+        public UInt32 countSubactionPaths;
+        public XrPath[] subactionPaths;
+        public char[] localizedActionName;
+    };
+
+    public struct XrActionStateGetInfo
+    {
+        public XrStructureType type;
+        public IntPtr next;
+        public XrAction action;
+        public XrPath subactionPath;
+    }
+
+    public struct XrActionStatePose
+    {
+        public XrStructureType type;
+        public IntPtr next;
+        public XrBool32 isActive;
+    };
+
     public static class OpenXRHelper
-	{
+    {
         /// <summary>
         /// Validates if the <see href="https://docs.unity3d.com/Packages/com.unity.inputsystem@0.1/api/UnityEngine.Experimental.Input.InputActionReference.html">InputActionReference</see> is valid.
         /// </summary>
@@ -1735,26 +1945,30 @@ namespace VIVE.OpenXR
             msg = "Normal";
 
             if (actionReference == null)
-			{
+            {
                 msg = "Null reference.";
                 return false;
-			} else if (actionReference.action == null)
-			{
+            }
+            else if (actionReference.action == null)
+            {
                 msg = "Null reference action.";
                 return false;
-			} else if (!actionReference.action.enabled)
-			{
+            }
+            else if (!actionReference.action.enabled)
+            {
                 msg = "Reference action disabled.";
                 return false;
-			} else if (actionReference.action.activeControl == null)
-			{
+            }
+            else if (actionReference.action.activeControl == null)
+            {
                 msg = "No active control of the reference action.";
                 return false;
-			} else if (actionReference.action.controls.Count <= 0)
-			{
+            }
+            else if (actionReference.action.controls.Count <= 0)
+            {
                 msg = "Action control count is " + actionReference.action.controls.Count;
                 return false;
-			}
+            }
 
             return true;
         }
@@ -1817,7 +2031,7 @@ namespace VIVE.OpenXR
             XrVector3f vec;
             vec.x = unityVec.x;
             vec.y = unityVec.y;
-            vec.z = convertFromUntiyToOpenXR? -unityVec.z: unityVec.z;
+            vec.z = convertFromUntiyToOpenXR ? -unityVec.z : unityVec.z;
             return vec;
         }
         public static XrVector3f ToOpenXRVector(this XrVector3f unityVec, bool convertFromUntiyToOpenXR = true)
@@ -1856,25 +2070,25 @@ namespace VIVE.OpenXR
         [Obsolete("Please use XrSpaceLocationFlags.XR_SPACE_LOCATION_POSITION_TRACKED_BIT instead.")]
         public static XrSpaceLocationFlags XR_SPACE_LOCATION_POSITION_TRACKED_BIT = XrSpaceLocationFlags.XR_SPACE_LOCATION_POSITION_TRACKED_BIT;
 
-		// Flag bits for XrSwapchainCreateFlags
-		public static XrSwapchainCreateFlags XR_SWAPCHAIN_CREATE_PROTECTED_CONTENT_BIT = 0x00000001;
-		public static XrSwapchainCreateFlags XR_SWAPCHAIN_CREATE_STATIC_IMAGE_BIT = 0x00000002;
+        // Flag bits for XrSwapchainCreateFlags
+        public static XrSwapchainCreateFlags XR_SWAPCHAIN_CREATE_PROTECTED_CONTENT_BIT = 0x00000001;
+        public static XrSwapchainCreateFlags XR_SWAPCHAIN_CREATE_STATIC_IMAGE_BIT = 0x00000002;
 
-		// Flag bits for XrSwapchainUsageFlags
-		public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT = 0x00000001;
-		public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT = 0x00000002;
-		public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_UNORDERED_ACCESS_BIT = 0x00000004;
-		public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_TRANSFER_SRC_BIT = 0x00000008;
-		public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT = 0x00000010;
-		public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_SAMPLED_BIT = 0x00000020;
-		public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_MUTABLE_FORMAT_BIT = 0x00000040;
-		public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_INPUT_ATTACHMENT_BIT_MND = 0x00000080;
-		public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_INPUT_ATTACHMENT_BIT_KHR = 0x00000080;
+        // Flag bits for XrSwapchainUsageFlags
+        public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT = 0x00000001;
+        public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT = 0x00000002;
+        public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_UNORDERED_ACCESS_BIT = 0x00000004;
+        public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_TRANSFER_SRC_BIT = 0x00000008;
+        public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_TRANSFER_DST_BIT = 0x00000010;
+        public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_SAMPLED_BIT = 0x00000020;
+        public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_MUTABLE_FORMAT_BIT = 0x00000040;
+        public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_INPUT_ATTACHMENT_BIT_MND = 0x00000080;
+        public static XrSwapchainUsageFlags XR_SWAPCHAIN_USAGE_INPUT_ATTACHMENT_BIT_KHR = 0x00000080;
 
-		/// <summary>
-		/// XrSystemId value 0 indicates an invalid system.
-		/// </summary>
-		public static ulong XR_NULL_SYSTEM_ID = 0;
+        /// <summary>
+        /// XrSystemId value 0 indicates an invalid system.
+        /// </summary>
+        public static ulong XR_NULL_SYSTEM_ID = 0;
 
         // XrDuration definitions
         /// <summary>
@@ -1913,9 +2127,9 @@ namespace VIVE.OpenXR
         /// <param name="session">A pointer to a handle in which the created <see cref="XrSession">XrSession</see> is returned.</param>
         /// <returns>XR_SUCCESS for success.</returns>
         public delegate XrResult xrCreateSessionDelegate(
-			XrInstance instance,
-			in XrSessionCreateInfo createInfo,
-			XrSession session);
+            XrInstance instance,
+            in XrSessionCreateInfo createInfo,
+            XrSession session);
 
         /// <summary>
         /// The function delegate declaration of <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrGetInstanceProcAddr">xrGetInstanceProcAddr</see>.
@@ -1975,34 +2189,131 @@ namespace VIVE.OpenXR
         public delegate XrResult xrDestroySpaceDelegate(
             XrSpace space);
 
-		/// <summary>
-		/// The function delegate declaration of <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrCreateSwapchainAndroidSurfaceKHR">xrCreateSwapchainAndroidSurfaceKHR</see>.
-		/// </summary>
-		/// <param name="session">A handle to an XrSession previously created with <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrCreateSession">xrCreateSession</see>.</param>
-		/// <param name="info">info is a pointer to an XrSwapchainCreateInfo structure.</param>
-		/// <param name="swapchain">swapchain is a pointer to a handle in which the created XrSwapchain is returned.</param>
-		/// <param name="surface">surface is a pointer to a jobject where the created Android Surface is returned.</param>
-		/// <returns></returns>
-		public delegate XrResult xrCreateSwapchainAndroidSurfaceKHRDelegate(
-			XrSession session,
-			in XrSwapchainCreateInfo info,
-			out XrSwapchain swapchain,
-			out IntPtr surface);
+        /// <summary>
+        /// The function delegate declaration of <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrCreateSwapchainAndroidSurfaceKHR">xrCreateSwapchainAndroidSurfaceKHR</see>.
+        /// </summary>
+        /// <param name="session">A handle to an XrSession previously created with <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrCreateSession">xrCreateSession</see>.</param>
+        /// <param name="info">info is a pointer to an XrSwapchainCreateInfo structure.</param>
+        /// <param name="swapchain">swapchain is a pointer to a handle in which the created XrSwapchain is returned.</param>
+        /// <param name="surface">surface is a pointer to a jobject where the created Android Surface is returned.</param>
+        /// <returns></returns>
+        public delegate XrResult xrCreateSwapchainAndroidSurfaceKHRDelegate(
+            XrSession session,
+            in XrSwapchainCreateInfo info,
+            out XrSwapchain swapchain,
+            out IntPtr surface);
 
-		public delegate XrResult xrRequestDisplayRefreshRateFBDelegate(
-			XrSession session,
-			float displayRefreshRate);
+        public delegate XrResult xrRequestDisplayRefreshRateFBDelegate(
+            XrSession session,
+            float displayRefreshRate);
 
-		public delegate XrResult xrGetDisplayRefreshRateFBDelegate(
-			XrSession session,
-			out float displayRefreshRate);
+        public delegate XrResult xrGetDisplayRefreshRateFBDelegate(
+            XrSession session,
+            out float displayRefreshRate);
 
-		public delegate XrResult xrEnumerateDisplayRefreshRatesFBDelegate(
-			XrSession session,
-			UInt32 displayRefreshRateCapacityInput,
-			out UInt32 displayRefreshRateCountOutput,
-			out float displayRefreshRates);
-	}
+        public delegate XrResult xrEnumerateDisplayRefreshRatesFBDelegate(
+            XrSession session,
+            UInt32 displayRefreshRateCapacityInput,
+            out UInt32 displayRefreshRateCountOutput,
+            out float displayRefreshRates);
+
+        public delegate XrResult xrGetInputSourceLocalizedNameDelegate(
+            XrSession session,
+            ref XrInputSourceLocalizedNameGetInfo getInfo,
+            [In] UInt32 bufferCapacityInput,
+            ref UInt32 bufferCountOutput,
+            [In, Out] char[] buffer);
+
+        public delegate XrResult xrEnumerateInstanceExtensionPropertiesDelegate(
+            [In] char[] layerName,
+            UInt32 propertyCapacityInput,
+            ref UInt32 propertyCountOutput,
+            [In, Out] XrExtensionProperties[] properties);
+
+        #region API
+        const string LOG_TAG = "VIVE.OpenXR.OpenXRHelper ";
+        static StringBuilder m_sb = null;
+        static StringBuilder sb {
+            get {
+                if (m_sb == null) { m_sb = new StringBuilder(); }
+                return m_sb;
+            }
+        }
+        static void DEBUG(StringBuilder msg) { Debug.Log(msg); }
+        static void WARNING(StringBuilder msg) { Debug.LogWarning(msg); }
+        static void ERROR(StringBuilder msg) { Debug.LogError(msg); }
+
+        /// <summary>
+        /// Use <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrEnumerateInstanceExtensionProperties">xrEnumerateInstanceExtensionProperties</see> to check if an extension is supported by OpenXR Runtime.
+        /// </summary>
+        /// <param name="xrEnumerateInstanceExtensionProperties">Function pointer of <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrEnumerateInstanceExtensionProperties">xrEnumerateInstanceExtensionProperties</see>.</param>
+        /// <param name="extension">An OpenXR extension.</param>
+        /// <returns>XR_SUCCESS for supported.</returns>
+        public static XrResult IsExtensionSupported(xrEnumerateInstanceExtensionPropertiesDelegate xrEnumerateInstanceExtensionProperties, string extension)
+        {
+            XrResult result = XrResult.XR_ERROR_FEATURE_UNSUPPORTED;
+
+            if (xrEnumerateInstanceExtensionProperties == null)
+            {
+                sb.Clear().Append(LOG_TAG).Append("IsExtensionSupported() no xrEnumerateInstanceExtensionProperties function."); ERROR(sb);
+                return result;
+            }
+
+            UInt32 ext_count = 0;
+            result = xrEnumerateInstanceExtensionProperties(null, 0, ref ext_count, null);
+            if (result != XrResult.XR_SUCCESS || ext_count == 0)
+            {
+                sb.Clear().Append(LOG_TAG).Append("IsExtensionSupported() Failed to enumerate number of extension properties, result: ").Append(result); ERROR(sb);
+                return result;
+            }
+            sb.Clear().Append(LOG_TAG).Append("IsExtensionSupported() Runtime supports ").Append(ext_count).Append(" extensions"); DEBUG(sb);
+
+            XrExtensionProperties[] extensionProperties = new XrExtensionProperties[ext_count];
+            for (int i = 0; i < ext_count; i++)
+            {
+                extensionProperties[i].type = XrStructureType.XR_TYPE_EXTENSION_PROPERTIES;
+                extensionProperties[i].next = IntPtr.Zero;
+            }
+
+            sb.Clear().Append(LOG_TAG).Append("IsExtensionSupported() xrEnumerateInstanceExtensionProperties propertyCapacityInput: ").Append(ext_count).Append(", propertyCountOutput: ").Append(ext_count).Append(", extensionProperties size: ").Append(extensionProperties.Length); DEBUG(sb);
+            result = xrEnumerateInstanceExtensionProperties(null, ext_count, ref ext_count, extensionProperties);
+            if (result != XrResult.XR_SUCCESS)
+            {
+                sb.Clear().Append(LOG_TAG).Append("IsExtensionSupported() Failed to enumerate extension properties, result: ").Append(result); ERROR(sb);
+                return result;
+            }
+            sb.Clear().Append(LOG_TAG).Append("IsExtensionSupported() Enumerate ").Append(ext_count).Append(" extensions"); DEBUG(sb);
+
+            bool supported = false;
+            for (UInt32 i = 0; i < ext_count; i++)
+            {
+                sb.Clear().Append(LOG_TAG).Append("IsExtensionSupported() Extension[").Append(i).Append("] ").Append(extensionProperties[i].type)
+                    .Append(", name: ").Append(extensionProperties[i].extensionName)
+                    .Append(", version: ").Append(extensionProperties[i].extensionVersion);
+                DEBUG(sb);
+
+                if (extensionProperties[i].extensionName.Equals(extension))
+                {
+                    supported = true;
+                    break;
+                }
+            }
+            sb.Clear().Append(LOG_TAG).Append("IsExtensionSupported() ").Append(extension).Append(" is ").Append(supported ? "supported." : "not supported."); DEBUG(sb);
+
+            return supported ? XrResult.XR_SUCCESS : XrResult.XR_ERROR_FEATURE_UNSUPPORTED;
+        }
+        #endregion
+
+        public delegate XrResult xrCreateActionDelegate(
+            XrActionSet actionSet,
+            ref XrActionCreateInfo createInfo,
+            ref XrAction action);
+
+        public delegate XrRect2Di xrGetActionStatePoseDelegate(
+            XrSession session,
+            ref XrActionStateGetInfo getInfo,
+            ref XrActionStatePose state);
+    }
 
     public static class ClientInterface
     {

@@ -29,8 +29,8 @@ namespace VIVE.OpenXR.Samples.OpenXRInput
         }
 
         [SerializeField]
-        private int m_Index = 0;
-        public int Index { get { return m_Index; } set { m_Index = value; } }
+        private string m_TrackerName = "";
+        public string TrackerName { get { return m_TrackerName; } set { m_TrackerName = value; } }
 
         [SerializeField]
         private InputActionReference m_IsTracked = null;
@@ -58,7 +58,7 @@ namespace VIVE.OpenXR.Samples.OpenXRInput
         {
             if (m_Text == null) { return; }
 
-            m_Text.text = "Tracker" + m_Index;
+            m_Text.text = m_TrackerName;
 
             m_Text.text += " isTracked: ";
             {
