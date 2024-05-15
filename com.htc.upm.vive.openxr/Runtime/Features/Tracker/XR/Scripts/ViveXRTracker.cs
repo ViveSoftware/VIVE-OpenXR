@@ -20,6 +20,8 @@ using UnityEngine.XR.OpenXR.Input;
 using UnityEditor;
 using UnityEditor.XR.OpenXR.Features;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Globalization;
 #endif
 
 #if USE_INPUT_SYSTEM_POSE_CONTROL // Scripting Define Symbol added by using OpenXR Plugin 1.6.0.
@@ -34,7 +36,7 @@ namespace VIVE.OpenXR.Tracker
     /// This <see cref="OpenXRInteractionFeature"/> enables the use of tracker interaction profiles in OpenXR. It enables XR_HTC_vive_xr_tracker_interaction in the underyling runtime.
     /// </summary>
 #if UNITY_EDITOR
-    [OpenXRFeature(UiName = "VIVE XR Tracker",
+    [OpenXRFeature(UiName = "VIVE XR Tracker (Beta)",
         BuildTargetGroups = new[] { BuildTargetGroup.Android },
         Company = "HTC",
         Desc = "Support for enabling the vive xr tracker interaction profile. Will register the controller map for xr tracker if enabled.",
@@ -72,16 +74,25 @@ namespace VIVE.OpenXR.Tracker
 
         #region Tracker Product Name
         public const string kProductUltimateTracker = "VIVE Ultimate Tracker";
-        public const string kProductTrackingTag = "VIVE Tracking Tag";
         public const string kProductUltimateTracker0 = "VIVE Ultimate Tracker 0";
         public const string kProductUltimateTracker1 = "VIVE Ultimate Tracker 1";
         public const string kProductUltimateTracker2 = "VIVE Ultimate Tracker 2";
         public const string kProductUltimateTracker3 = "VIVE Ultimate Tracker 3";
         public const string kProductUltimateTracker4 = "VIVE Ultimate Tracker 4";
+        const string kProductTrackingTag = "VIVE Tracking Tag";
         private const string kProducts = "^(" + kProductUltimateTracker
             + ")|^(" + kProductUltimateTracker0 + ")|^(" + kProductUltimateTracker1 + ")|^(" + kProductUltimateTracker2 + ")|^(" + kProductUltimateTracker3 + ")|^(" + kProductUltimateTracker4
             + ")|^(" + kProductTrackingTag + ")";
         private readonly string[] s_UltimateTrackerProduct = { kProductUltimateTracker0, kProductUltimateTracker1, kProductUltimateTracker2, kProductUltimateTracker3, kProductUltimateTracker4 };
+        private bool IsUltimateTracker(string product)
+        {
+            for (int i = 0; i < s_UltimateTrackerProduct.Length; i++)
+            {
+                if (s_UltimateTrackerProduct[i].Equals(product))
+                    return true;
+            }
+            return false;
+        }
         #endregion
 
         #region Tracker Action Map Name
@@ -93,32 +104,11 @@ namespace VIVE.OpenXR.Tracker
         #endregion
 
         #region Tracker Usage
-        const string kTrackerUsage0 = "Tracker 0";
-        const string kTrackerUsage1 = "Tracker 1";
-        const string kTrackerUsage2 = "Tracker 2";
-        const string kTrackerUsage3 = "Tracker 3";
-        const string kTrackerUsage4 = "Tracker 4";
-
-        public const string kTrackerRoleUndefined = "Undefined";
-        public const string kTrackerRoleWaist = "Waist";
-        public const string kTrackerRoleChest = "Chest";
-        public const string kTrackerRoleLeftElbow = "Left Elbow";
-        public const string kTrackerRoleLeftWrist = "Left Wrist";
-        public const string kTrackerRoleLeftKnee = "Left Knee";
-        public const string kTrackerRoleLeftAnkle = "Left Ankle";
-        public const string kTrackerRoleLeftFoot = "Left Foot";
-
-        public const string kTrackerRoleRightElbow = "Right Elbow";
-        public const string kTrackerRoleRightWrist = "Right Wrist";
-        public const string kTrackerRoleRightKnee = "Right Knee";
-        public const string kTrackerRoleRightAnkle = "Right Ankle";
-        public const string kTrackerRoleRightFoot = "Right Foot";
-        private readonly List<string> s_TrackerRoleName = new List<string>()
-        {
-            kTrackerRoleWaist, kTrackerRoleChest,
-            kTrackerRoleLeftElbow, kTrackerRoleLeftWrist, kTrackerRoleLeftKnee, kTrackerRoleLeftAnkle, kTrackerRoleLeftFoot,
-            kTrackerRoleRightElbow, kTrackerRoleRightWrist, kTrackerRoleRightKnee, kTrackerRoleRightAnkle, kTrackerRoleRightFoot,
-        };
+        const string kUltimateTrackerUsage0 = "Ultimate Tracker 0";
+        const string kUltimateTrackerUsage1 = "Ultimate Tracker 1";
+        const string kUltimateTrackerUsage2 = "Ultimate Tracker 2";
+        const string kUltimateTrackerUsage3 = "Ultimate Tracker 3";
+        const string kUltimateTrackerUsage4 = "Ultimate Tracker 4";
         #endregion
 
         #region Tracker User Path
@@ -135,19 +125,13 @@ namespace VIVE.OpenXR.Tracker
         public const string kUltimateTrackerSN2 = "VIVE_Ultimate_Tracker_2";
         public const string kUltimateTrackerSN3 = "VIVE_Ultimate_Tracker_3";
         public const string kUltimateTrackerSN4 = "VIVE_Ultimate_Tracker_4";
-        public const string kTrackingTagSN0 = "VIVE_Tracking_Tag_0";
-        public const string kTrackingTagSN1 = "VIVE_Tracking_Tag_1";
-        public const string kTrackingTagSN2 = "VIVE_Tracking_Tag_2";
-        public const string kTrackingTagSN3 = "VIVE_Tracking_Tag_3";
-        public const string kTrackingTagSN4 = "VIVE_Tracking_Tag_4";
-        public const string k6DoFTrackerSN0 = "VIVE_6DoF_Tracker_a_0";
-        public const string k6DoFTrackerSN1 = "VIVE_6DoF_Tracker_a_1";
-        private readonly List<string> s_TrackerSerialNumber = new List<string>()
-        {
-            kUltimateTrackerSN0, kUltimateTrackerSN1, kUltimateTrackerSN2, kUltimateTrackerSN3, kUltimateTrackerSN4,
-            kTrackingTagSN0, kTrackingTagSN1, kTrackingTagSN2, kTrackingTagSN3, kTrackingTagSN4,
-            k6DoFTrackerSN0, k6DoFTrackerSN1
-        };
+        const string kTrackingTagSN0 = "VIVE_Tracking_Tag_0";
+        const string kTrackingTagSN1 = "VIVE_Tracking_Tag_1";
+        const string kTrackingTagSN2 = "VIVE_Tracking_Tag_2";
+        const string kTrackingTagSN3 = "VIVE_Tracking_Tag_3";
+        const string kTrackingTagSN4 = "VIVE_Tracking_Tag_4";
+        const string k6DoFTrackerSN0 = "VIVE_6DoF_Tracker_a_0";
+        const string k6DoFTrackerSN1 = "VIVE_6DoF_Tracker_a_1";
         #endregion
 
         #region Tracker Product Maps
@@ -160,11 +144,11 @@ namespace VIVE.OpenXR.Tracker
         };
         /// <summary> Mapping from product to tracker usage. </summary>
         private static Dictionary<string, string> m_UltimateTrackerUsageMap = new Dictionary<string, string>() {
-            { kProductUltimateTracker0, kTrackerUsage0 },
-            { kProductUltimateTracker1, kTrackerUsage1 },
-            { kProductUltimateTracker2, kTrackerUsage2 },
-            { kProductUltimateTracker3, kTrackerUsage3 },
-            { kProductUltimateTracker4, kTrackerUsage4 },
+            { kProductUltimateTracker0, kUltimateTrackerUsage0 },
+            { kProductUltimateTracker1, kUltimateTrackerUsage1 },
+            { kProductUltimateTracker2, kUltimateTrackerUsage2 },
+            { kProductUltimateTracker3, kUltimateTrackerUsage3 },
+            { kProductUltimateTracker4, kUltimateTrackerUsage4 },
         };
         /// <summary> Mapping from product to user path. </summary>
         private Dictionary<string, string> m_UltimateTrackerPathMap = new Dictionary<string, string>() {
@@ -185,13 +169,11 @@ namespace VIVE.OpenXR.Tracker
         #endregion
 
         [Preserve, InputControlLayout(displayName = "VIVE XR Tracker (OpenXR)", commonUsages = new[] {
-            kTrackerUsage0, kTrackerUsage1, kTrackerUsage2, kTrackerUsage3, kTrackerUsage4,
-            //kTrackerRoleWaist, kTrackerRoleChest,
-            //kTrackerRoleLeftElbow, kTrackerRoleLeftWrist, kTrackerRoleLeftKnee, kTrackerRoleLeftAnkle, kTrackerRoleLeftFoot,
-            //kTrackerRoleRightElbow, kTrackerRoleRightWrist, kTrackerRoleRightKnee, kTrackerRoleRightAnkle, kTrackerRoleRightFoot,
+            kUltimateTrackerUsage0, kUltimateTrackerUsage1, kUltimateTrackerUsage2, kUltimateTrackerUsage3, kUltimateTrackerUsage4,
         }, isGenericTypeOfDevice = true)]
-        public class XrTrackerDevice : OpenXRDevice, IInputUpdateCallbackReceiver
+        public class XrTrackerDevice : OpenXRDevice//, IInputUpdateCallbackReceiver
         {
+            #region Log
             const string LOG_TAG = "VIVE.OpenXR.Tracker.ViveXRTracker.XrTrackerDevice ";
             StringBuilder m_sb = null;
             StringBuilder sb {
@@ -201,8 +183,9 @@ namespace VIVE.OpenXR.Tracker
                 }
             }
             void DEBUG(StringBuilder msg) { Debug.Log(msg); }
-            void WARNING(StringBuilder msg) { Debug.LogWarning(msg); }
+            #endregion
 
+            #region Interactions
             /// <summary>
             /// A <see cref="PoseControl"/> that represents the <see cref="entityPose"/> OpenXR binding. The entity pose represents the location of the tracker.
             /// </summary>
@@ -232,10 +215,12 @@ namespace VIVE.OpenXR.Tracker
             /// </summary>
             [Preserve, InputControl(offset = 20, alias = "gripOrientation")]
             public QuaternionControl deviceRotation { get; private set; }
+            #endregion
 
+#if DEBUG_CODE
             // Unity action binding path: <ViveXRTracker>{Tracker 0}/isTracked
-            private bool UpdateInputDeviceInRuntime = true;
             private InputAction inputActionIsTracked = null;
+#endif
 
             /// <summary>
             /// Internal call used to assign controls to the the correct element.
@@ -244,50 +229,52 @@ namespace VIVE.OpenXR.Tracker
             {
                 base.FinishSetup();
 
-                if (!m_UltimateTrackerUsageMap.ContainsKey(description.product))
-                {
-                    sb.Clear().Append(LOG_TAG).Append("FinishSetup() Not support the product " + description.product); WARNING(sb);
-                    return;
-                }
-
                 devicePose = GetChildControl<PoseControl>("devicePose");
                 isTracked = GetChildControl<ButtonControl>("isTracked");
                 trackingState = GetChildControl<IntegerControl>("trackingState");
                 devicePosition = GetChildControl<Vector3Control>("devicePosition");
                 deviceRotation = GetChildControl<QuaternionControl>("deviceRotation");
 
-                /// After RegisterActionMapsWithRuntime finished, each XrTrackerDevice will have a product name (e.g. kProductUltimateTracker0)
-                /// We have to assign the XrTrackerDeivce to a commonUsage (e.g. kTrackerUsage0)
-                /// 
-                /// Since we already established the m_UltimateTrackerUsageMap (kProductUltimateTracker0, kTrackerUsage0),
-                /// we can simply call SetDeviceUsage(m_UltimateTrackerUsageMap[description.product])
-                /// to set assign the XrTrackerDevice with product name kProductUltimateTracker0 to the commonUsage kTrackerUsage0.
-                InputSystem.SetDeviceUsage(this, m_UltimateTrackerUsageMap[description.product]);
-
-                if (inputActionIsTracked == null)
-                {
-                    //string actionBindingIsTracked = "<XRController>{LeftHand}/isTracked";
-                    string actionBindingIsTracked = "<" + kLayoutName + ">{" + m_UltimateTrackerUsageMap[description.product] + "}/isTracked";
-                    sb.Clear().Append(LOG_TAG).Append("FinishSetup() ").Append(m_UltimateTrackerUsageMap[description.product]).Append(", acion binding of IsTracked: ").Append(actionBindingIsTracked);
-                    DEBUG(sb);
-
-                    inputActionIsTracked = new InputAction(
-                        type: InputActionType.Value,
-                        binding: actionBindingIsTracked);
-
-                    inputActionIsTracked.Enable();
-                }
-
                 sb.Clear().Append(LOG_TAG)
                     .Append("FinishSetup() device interfaceName: ").Append(description.interfaceName)
                     .Append(", deviceClass: ").Append(description.deviceClass)
                     .Append(", product: ").Append(description.product)
                     .Append(", serial: ").Append(description.serial)
-                    .Append(", usage: ").Append(m_UltimateTrackerUsageMap[description.product])
                     .Append(", current profile: ").Append(profile);
                 DEBUG(sb);
+
+                if (m_UltimateTrackerUsageMap.ContainsKey(description.product))
+                {
+                    /// After RegisterActionMapsWithRuntime finished, each XrTrackerDevice will have a product name (e.g. kProductUltimateTracker0)
+                    /// We have to assign the XrTrackerDeivce to a commonUsage (e.g. kUltimateTrackerUsage0)
+                    /// 
+                    /// Since we already established the m_UltimateTrackerUsageMap (kProductUltimateTracker0, kUltimateTrackerUsage0),
+                    /// we can simply call SetDeviceUsage(m_UltimateTrackerUsageMap[description.product])
+                    /// to set assign the XrTrackerDevice with product name kProductUltimateTracker0 to the commonUsage kUltimateTrackerUsage0.
+                    InputSystem.SetDeviceUsage(this, m_UltimateTrackerUsageMap[description.product]);
+                    sb.Clear().Append(LOG_TAG).Append("FinishSetup() usage: ").Append(m_UltimateTrackerUsageMap[description.product]); DEBUG(sb);
+#if DEBUG_CODE
+                    /// We cannot update the ActionMap outside the RegisterActionMapsWithRuntime method so ignore this code.
+                    if (inputActionIsTracked == null)
+                    {
+                        //string actionBindingIsTracked = "<XRController>{LeftHand}/isTracked";
+                        string actionBindingIsTracked = "<" + kLayoutName + ">{" + m_UltimateTrackerUsageMap[description.product] + "}/isTracked";
+                        sb.Clear().Append(LOG_TAG).Append("FinishSetup() ").Append(m_UltimateTrackerUsageMap[description.product]).Append(", action binding of IsTracked: ").Append(actionBindingIsTracked);
+                        DEBUG(sb);
+
+                        inputActionIsTracked = new InputAction(
+                            type: InputActionType.Value,
+                            binding: actionBindingIsTracked);
+
+                        inputActionIsTracked.Enable();
+                    }
+#endif
+                }
             }
 
+#if DEBUG_CODE
+            /// We cannot update the ActionMap outside the RegisterActionMapsWithRuntime method so ignore this code.
+            private bool UpdateInputDeviceInRuntime = true;
             private bool bRoleUpdated = false;
             public void OnUpdate()
             {
@@ -298,14 +285,14 @@ namespace VIVE.OpenXR.Tracker
                 /// Updates the Usage (tracker role) when IsTracked becomes true.
                 if (inputActionIsTracked.ReadValue<float>() > 0 && !bRoleUpdated)
                 {
-                    sb.Clear().Append(LOG_TAG)
-                        .Append("OnUpdate() Update the InputDevice with product: ").Append(description.product); DEBUG(sb);
+                    sb.Clear().Append(LOG_TAG).Append("OnUpdate() Update the InputDevice with product: ").Append(description.product); DEBUG(sb);
 
-                    //m_Instance.UpdateInputDevice(description.product, entityPose);
+                    if (m_UltimateTrackerUsageMap.ContainsKey(description.product)) { m_Instance.UpdateInputDeviceUltimateTracker(description.product); }
 
                     bRoleUpdated = true;
                 }
             }
+#endif
         }
 
         /// <summary>The interaction profile string used to reference the wrist tracker interaction input device.</summary>
@@ -370,7 +357,6 @@ namespace VIVE.OpenXR.Tracker
                 m_XrSessionCreated = false;
             }
         }
-        #endregion
 
         // "<" + kLayoutName + ">{" + m_UltimateTrackerUsageMap[description.product] + "}/isTracked"
         private const string kLayoutName = "ViveXRTracker";
@@ -396,12 +382,11 @@ namespace VIVE.OpenXR.Tracker
             sb.Clear().Append(LOG_TAG).Append("UnregisterDeviceLayout() ").Append(kLayoutName); DEBUG(sb);
             InputSystem.RemoveLayout(kLayoutName);
         }
+        #endregion
 
         #region OpenXR function delegates
         /// xrGetInstanceProcAddr
         OpenXRHelper.xrGetInstanceProcAddrDelegate XrGetInstanceProcAddr;
-        /// xrEnumeratePathsForInteractionProfileHTC
-        VivePathEnumerationHelper.xrEnumeratePathsForInteractionProfileHTCDelegate xrEnumeratePathsForInteractionProfileHTC = null;
         /// xrGetInputSourceLocalizedName
         static OpenXRHelper.xrGetInputSourceLocalizedNameDelegate xrGetInputSourceLocalizedName = null;
         /// xrEnumerateInstanceExtensionProperties
@@ -446,28 +431,6 @@ namespace VIVE.OpenXR.Tracker
                 ERROR(sb);
             }
 
-            /// xrEnumeratePathsForInteractionProfileHTC
-            if (XrGetInstanceProcAddr(xrInstance, "xrEnumeratePathsForInteractionProfileHTC", out funcPtr) == XrResult.XR_SUCCESS)
-            {
-                if (funcPtr != IntPtr.Zero)
-                {
-                    sb.Clear().Append(LOG_TAG).Append("Get function pointer of xrEnumeratePathsForInteractionProfileHTC."); DEBUG(sb);
-                    xrEnumeratePathsForInteractionProfileHTC = Marshal.GetDelegateForFunctionPointer(
-                        funcPtr,
-                        typeof(VivePathEnumerationHelper.xrEnumeratePathsForInteractionProfileHTCDelegate)) as VivePathEnumerationHelper.xrEnumeratePathsForInteractionProfileHTCDelegate;
-                }
-                else
-                {
-                    sb.Clear().Append(LOG_TAG).Append("No function pointer of xrEnumeratePathsForInteractionProfileHTC.");
-                    ERROR(sb);
-                }
-            }
-            else
-            {
-                sb.Clear().Append(LOG_TAG).Append("No function pointer of xrEnumeratePathsForInteractionProfileHTC");
-                ERROR(sb);
-            }
-
             /// xrGetInputSourceLocalizedName
             if (XrGetInstanceProcAddr(xrInstance, "xrGetInputSourceLocalizedName", out funcPtr) == XrResult.XR_SUCCESS)
             {
@@ -492,287 +455,7 @@ namespace VIVE.OpenXR.Tracker
 
             return true;
         }
-        #endregion
-
-        /*private List<T> CreateList<T>(UInt32 count, T initialValue)
-        {
-            List<T> list = new List<T>();
-            for (int i = 0; i < count; i++)
-                list.Add(initialValue);
-
-            return list;
-        }
-        XrPathsForInteractionProfileEnumerateInfoHTC enumerateInfo;
-        private bool EnumeratePath()
-        {
-            if (!m_XrInstanceCreated) { return false; }
-
-            string func = "EnumeratePath() ";
-
-            if (xrEnumeratePathsForInteractionProfileHTC == null)
-            {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("No function pointer of xrEnumeratePathsForInteractionProfileHTC"); WARNING(sb);
-                return false;
-            }
-
-            // 1. Get user path count of /interaction_profiles/htc/vive_xr_tracker profile.
-            UInt32 trackerCount = 0;
-            enumerateInfo.type = XrStructureType.XR_TYPE_UNKNOWN;
-            enumerateInfo.next = IntPtr.Zero;
-            enumerateInfo.interactionProfile = StringToPath(profile); // /interaction_profiles/htc/vive_xr_tracker
-            enumerateInfo.userPath = OpenXRHelper.XR_NULL_PATH;
-
-            XrResult result = xrEnumeratePathsForInteractionProfileHTC(m_XrInstance, ref enumerateInfo, 0, ref trackerCount, null);
-            if (result != XrResult.XR_SUCCESS)
-            {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("Retrieves trackerCount failed."); ERROR(sb);
-                return false;
-            }
-            sb.Clear().Append(LOG_TAG).Append(func)
-                .Append("Get profile ").Append(profile).Append(" user path count: ").Append(trackerCount); DEBUG(sb);
-
-            if (trackerCount > 0)
-            {
-                // 2. Get user paths of /interaction_profiles/htc/vive_xr_tracker profile.
-                List<XrPath> trackerList = CreateList<XrPath>(trackerCount, OpenXRHelper.XR_NULL_PATH);
-                XrPath[] trackers = trackerList.ToArray();
-                result = xrEnumeratePathsForInteractionProfileHTC(
-                    m_XrInstance,
-                    ref enumerateInfo,
-                    pathCapacityInput: (UInt32)(trackers.Length & 0x7FFFFFFF),
-                    pathCountOutput: ref trackerCount,
-                    paths: trackers);
-                if (result != XrResult.XR_SUCCESS)
-                {
-                    sb.Clear().Append(LOG_TAG).Append(func)
-                        .Append("Retrieves trackers failed."); ERROR(sb);
-                    return false;
-                }
-
-                UpdateMapsUltimateTracker(trackers, (Int32)(trackerCount & 0x7FFFFFFF));
-            }
-
-            return true;
-        }*/
-
-        #region Usage Map of Ultimate Tracker
-        /*private void UpdateMapsUltimateTracker(XrPath[] paths, int pathLength)
-        {
-            for (int i = 0; i < pathLength && i < s_UltimateTrackerProduct.Length; i++)
-            {
-                UpdateMapsUltimateTracker(paths[i], s_UltimateTrackerProduct[i]);
-            }
-        }
-        private void UpdateMapsUltimateTracker(string[] paths, string[] products)
-        {
-            for (int i = 0; i < paths.Length; i++)
-            {
-                XrPath path = StringToPath(paths[i]);
-                UpdateMapsUltimateTracker(path, products[i]);
-            }
-        }*/
-        private bool UpdateMapsUltimateTracker(XrPath path, string product)
-        {
-            string func = "UpdateMapsUltimateTracker() ";
-            string s_path = PathToString(path);
-
-            // -------------------- Tracker Role --------------------
-            sb.Clear().Append(LOG_TAG).Append(func)
-                .Append("path: ").Append(s_path)
-                .Append(", product: ").Append(product).Append(" GetInputSourceName(TrackerRole)"); DEBUG(sb);
-
-            if (GetInputSourceName(path, InputSourceType.TrackerRole, out string role) != XrResult.XR_SUCCESS)
-            {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("GetInputSourceName of TrackerRole failed."); ERROR(sb);
-                return false;
-            }
-            sb.Clear().Append(LOG_TAG).Append(func)
-                .Append(s_path).Append(" has role: ").Append(role); DEBUG(sb);
-            if (!s_TrackerRoleName.Contains(role))
-            {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("role ").Append(role).Append(" is NOT definied."); ERROR(sb);
-                return false;
-            }
-
-            /// For sample:
-            /// A user path (e.g. "/user/tracker_htc/index0") has the "sourceName" kTrackerRoleLeftWrist ("Left Wrist") which means
-            /// the corresponding product (e.g. kProductUltimateTracker0 = "VIVE Ultimate Tracker 0") has the "sourceName" kTrackerRoleLeftWrist.
-            /// So we have to set the usage of the product name kProductUltimateTracker0 to kTrackerRoleLeftWrist.
-            if (!m_UltimateTrackerUsageMap.ContainsKey(product))
-                m_UltimateTrackerUsageMap.Add(product, role);
-            else
-                m_UltimateTrackerUsageMap[product] = role;
-
-            sb.Clear().Append(LOG_TAG).Append(func)
-                .Append("Sets product ").Append(product).Append(" with usage ").Append(role); DEBUG(sb);
-
-            // -------------------- Tracker Serial Number --------------------
-            sb.Clear().Append(LOG_TAG).Append(func)
-                .Append("path: ").Append(s_path)
-                .Append(", product: ").Append(product).Append(" GetInputSourceName(SerialNumber)"); DEBUG(sb);
-
-            if (GetInputSourceName(path, InputSourceType.SerialNumber, out string sn) != XrResult.XR_SUCCESS)
-            {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("GetInputSourceName of SerialNumber failed."); ERROR(sb);
-                return false;
-            }
-            sb.Clear().Append(LOG_TAG).Append(func).Append(s_path).Append(" has serial number: ").Append(sn); DEBUG(sb);
-            if (!s_TrackerSerialNumber.Contains(sn))
-            {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("serial number ").Append(sn).Append(" is NOT definied."); ERROR(sb);
-                return false;
-            }
-
-            /// For sample:
-            /// A user path (e.g. "/user/tracker_htc/index0") has the "sourceName" kUltimateTrackerSN0 ("VIVE_Ultimate_Tracker_0") which means
-            /// the corresponding product (e.g. kProductUltimateTracker0 = "VIVE Ultimate Tracker 0") has the "sourceName" kUltimateTrackerSN0.
-            /// So we have to set the serial of the product name kProductUltimateTracker0 to kUltimateTrackerSN0.
-            if (!m_UltimateTrackerSerialMap.ContainsKey(product))
-                m_UltimateTrackerSerialMap.Add(product, sn);
-            else
-                m_UltimateTrackerSerialMap[product] = sn;
-
-            sb.Clear().Append(LOG_TAG).Append(func)
-                .Append("Sets product ").Append(product).Append(" with serial number ").Append(sn); DEBUG(sb);
-
-            return true;
-        }
-        #endregion
-
-        public enum InputSourceType : UInt64
-        {
-            SerialNumber = XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_SERIAL_NUMBER_BIT_HTC,
-            TrackerRole = XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_USER_PATH_BIT,
-        }
-        public static XrResult GetInputSourceName(XrPath path, InputSourceType sourceType, out string sourceName)
-        {
-            string func = "GetInputSourceName() ";
-
-            sourceName = "";
-            if (!m_XrSessionCreated || xrGetInputSourceLocalizedName == null) { return XrResult.XR_ERROR_VALIDATION_FAILURE; }
-
-            string userPath = PathToString(path);
-            sb.Clear().Append(LOG_TAG).Append(func)
-                .Append("userPath: ").Append(userPath).Append(", flag: ").Append((UInt64)sourceType); DEBUG(sb);
-
-            XrInputSourceLocalizedNameGetInfo nameInfo = new XrInputSourceLocalizedNameGetInfo(
-                XrStructureType.XR_TYPE_INPUT_SOURCE_LOCALIZED_NAME_GET_INFO,
-                IntPtr.Zero, path, (XrInputSourceLocalizedNameFlags)sourceType);
-            UInt32 nameSizeIn = 0;
-            UInt32 nameSizeOut = 0;
-            char[] buffer = new char[0];
-
-            sb.Clear().Append(LOG_TAG).Append(func)
-                .Append("1.xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
-                .Append(", flag: ").Append((UInt64)sourceType)
-                .Append(", bufferCapacityInput: ").Append(nameSizeIn)
-                .Append(", bufferCountOutput: ").Append(nameSizeOut);
-            DEBUG(sb);
-            XrResult result = xrGetInputSourceLocalizedName(m_XrSession, ref nameInfo, nameSizeIn, ref nameSizeOut, buffer);
-            if (result == XrResult.XR_SUCCESS)
-            {
-                if (nameSizeOut < 1)
-                {
-                    sb.Clear().Append(LOG_TAG).Append(func)
-                        .Append("xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
-                        .Append(", flag: ").Append((UInt64)sourceType)
-                        .Append("bufferCountOutput size is invalid!");
-                    ERROR(sb);
-                    return XrResult.XR_ERROR_VALIDATION_FAILURE;
-                }
-
-                nameSizeIn = nameSizeOut;
-                buffer = new char[nameSizeIn];
-
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("2.xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
-                    .Append(", bufferCapacityInput: ").Append(nameSizeIn)
-                    .Append(", bufferCountOutput: ").Append(nameSizeOut);
-                DEBUG(sb);
-                result = xrGetInputSourceLocalizedName(m_XrSession, ref nameInfo, nameSizeIn, ref nameSizeOut, buffer);
-                if (result == XrResult.XR_SUCCESS)
-                {
-                    sourceName = new string(buffer).TrimEnd('\0');
-
-                    sb.Clear().Append(LOG_TAG).Append(func)
-                        .Append("2.xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
-                        .Append(", flag: ").Append((UInt64)sourceType)
-                        .Append(", bufferCapacityInput: ").Append(nameSizeIn)
-                        .Append(", bufferCountOutput: ").Append(nameSizeOut)
-                        .Append(", sourceName: ").Append(sourceName);
-                    DEBUG(sb);
-                }
-                else
-                {
-                    sb.Clear().Append(LOG_TAG).Append(func)
-                        .Append("2.xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
-                        .Append(", flag: ").Append((UInt64)sourceType)
-                        .Append(", bufferCapacityInput: ").Append(nameSizeIn)
-                        .Append(", bufferCountOutput: ").Append(nameSizeOut)
-                        .Append(" result: ").Append(result);
-                    ERROR(sb);
-                }
-            }
-            else
-            {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("1.xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
-                    .Append(", flag: ").Append((UInt64)sourceType)
-                    .Append(", bufferCapacityInput: ").Append(nameSizeIn)
-                    .Append(", bufferCountOutput: ").Append(nameSizeOut)
-                    .Append(" result: ").Append(result);
-                ERROR(sb);
-            }
-
-            return result;
-        }
-        /*private void UpdateInputDevice(string product, string actionPath)
-        {
-            string func = "UpdateInputDevice() ";
-
-            sb.Clear().Append(LOG_TAG).Append(func)
-                .Append("product: ").Append(product)
-                .Append(", usage: ").Append(m_UltimateTrackerUsageMap[product])
-                .Append(" with user path: ").Append(m_UltimateTrackerPathMap[product]);
-            DEBUG(sb);
-
-            XrPath path = StringToPath(m_UltimateTrackerPathMap[product]);
-            if (UpdateMapsUltimateTracker(path, product))
-            {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("Maps of ").Append(product)
-                    .Append(" with user path ").Append(path).Append(" are updated.");
-                DEBUG(sb);
-
-                bool foundProduct = false;
-                for (int i = 0; i < InputSystem.devices.Count; i++)
-                {
-                    if (InputSystem.devices[i] is XrTrackerDevice &&
-                        InputSystem.devices[i].description.product.Equals(product))
-                    {
-                        sb.Clear().Append(LOG_TAG).Append(func)
-                            .Append("Removes the XrTrackerDevice product ").Append(product);
-                        DEBUG(sb);
-
-                        InputSystem.RemoveDevice(InputSystem.devices[i]);
-                        foundProduct = true;
-                        break;
-                    }
-                }
-                if (foundProduct)
-                {
-                    sb.Clear().Append(LOG_TAG).Append(func)
-                        .Append("Adds a XrTrackerDevice product ").Append(product);
-                    RegisterActionMap(product);
-                }
-            }
-        }*/
+#endregion
 
         // Available Bindings
         /// <summary>
@@ -780,28 +463,28 @@ namespace VIVE.OpenXR.Tracker
         /// </summary>
         public const string entityPose = "/input/entity_htc/pose";
 
-        private void RegisterActionMap(string product)
+        private void RegisterActionMap(string in_name, string product, string in_sn, string in_path)
         {
-            sb.Clear().Append(LOG_TAG).Append("RegisterActionMapsWithRuntime() Added ActionMapConfig of ").Append(m_UltimateTrackerPathMap[product])
+            sb.Clear().Append(LOG_TAG).Append("RegisterActionMap() Added ActionMapConfig of ").Append(in_path)
                 .Append(", localizedName = ").Append(product)
-                .Append(" { name = ").Append(m_UltimateTrackerActionMap[product])
+                .Append(" { name = ").Append(in_name)
                 .Append(", desiredInteractionProfile = ").Append(profile)
-                .Append(", serialNumber = ").Append(m_UltimateTrackerSerialMap[product]);
+                .Append(", serialNumber = ").Append(in_sn);
             DEBUG(sb);
 
             ActionMapConfig actionMap = new ActionMapConfig()
             {
-                name = m_UltimateTrackerActionMap[product],
+                name = in_name,
                 localizedName = product,
                 desiredInteractionProfile = profile,
                 manufacturer = "HTC",
-                serialNumber = m_UltimateTrackerSerialMap[product],
+                serialNumber = in_sn,
                 deviceInfos = new List<DeviceConfig>()
                 {
                     new DeviceConfig()
                     {
                         characteristics = InputDeviceCharacteristics.TrackedDevice,
-                        userPath = m_UltimateTrackerPathMap[product]
+                        userPath = in_path
                     }
                 },
                 actions = new List<ActionConfig>()
@@ -837,14 +520,311 @@ namespace VIVE.OpenXR.Tracker
         {
             if (OpenXRHelper.IsExtensionSupported(xrEnumerateInstanceExtensionProperties, kOpenxrExtensionString) != XrResult.XR_SUCCESS)
             {
-                sb.Clear().Append(LOG_TAG).Append("RegisterActionMapsWithRuntime() ").Append(kOpenxrExtensionString).Append(" is NOT supported."); DEBUG(sb);
+                sb.Clear().Append(LOG_TAG).Append("RegisterActionMapsWithRuntime() ").Append(kOpenxrExtensionString).Append(" is NOT supported."); ERROR(sb);
                 return;
+            }
+
+            /// Updates m_UltimateTrackerPathMap.
+            if (!EnumeratePath())
+            {
+                sb.Clear().Append(LOG_TAG).Append("RegisterActionMapsWithRuntime() EnumeratePath failed.");
+                ERROR(sb);
             }
 
             for (int userIndex = 0; userIndex < s_UltimateTrackerProduct.Length; userIndex++)
             {
-                RegisterActionMap(s_UltimateTrackerProduct[userIndex]);
+                string product = s_UltimateTrackerProduct[userIndex];
+                RegisterActionMap(
+                    product: product,
+                    in_name: m_UltimateTrackerActionMap[product],
+                    in_sn: m_UltimateTrackerSerialMap[product],
+                    in_path: m_UltimateTrackerPathMap[product]
+                );
             }
         }
+
+        XrPathsForInteractionProfileEnumerateInfoHTC enumerateInfo;
+        private bool EnumeratePath()
+        {
+            if (!m_XrInstanceCreated) { return false; }
+
+            string func = "EnumeratePath() ";
+
+            // 1. Get user path count of /interaction_profiles/htc/vive_xr_tracker profile.
+            UInt32 trackerCount = 0;
+            enumerateInfo.type = XrStructureType.XR_TYPE_UNKNOWN;
+            enumerateInfo.next = IntPtr.Zero;
+            enumerateInfo.interactionProfile = StringToPath(profile); // /interaction_profiles/htc/vive_xr_tracker
+            enumerateInfo.userPath = OpenXRHelper.XR_NULL_PATH;
+
+            XrResult result = XR_HTC_path_enumeration.xrEnumeratePathsForInteractionProfileHTC(ref enumerateInfo, 0, ref trackerCount, null);
+            sb.Clear().Append(LOG_TAG).Append(func).Append("xrEnumeratePathsForInteractionProfileHTC result: ").Append(result)
+                .Append(", profile: ").Append(profile)
+                .Append(", trackerCount: ").Append(trackerCount);
+            DEBUG(sb);
+            if (result != XrResult.XR_SUCCESS) { return false; }
+
+            if (trackerCount > 0)
+            {
+                // 2. Get user paths of /interaction_profiles/htc/vive_xr_tracker profile.
+                XrPath[] trackerPaths = new XrPath[trackerCount];
+                for (int i = 0; i < trackerPaths.Length; i++) { trackerPaths[i] = OpenXRHelper.XR_NULL_PATH; }
+
+                result = XR_HTC_path_enumeration.xrEnumeratePathsForInteractionProfileHTC(
+                    ref enumerateInfo,
+                    pathCapacityInput: (UInt32)(trackerPaths.Length & 0x7FFFFFFF),
+                    pathCountOutput: ref trackerCount,
+                    paths: trackerPaths);
+                if (result != XrResult.XR_SUCCESS)
+                {
+                    sb.Clear().Append(LOG_TAG).Append(func).Append("xrEnumeratePathsForInteractionProfileHTC result: ").Append(result); ERROR(sb);
+                    return false;
+                }
+
+                int ultimate_tracker_index = 0;
+                for (int i = 0; i < trackerCount; i++)
+                {
+                    string userPath = PathToString(trackerPaths[i]);
+                    sb.Clear().Append(LOG_TAG).Append(func).Append("xrEnumeratePathsForInteractionProfileHTC[").Append(i).Append("] ").Append(userPath); DEBUG(sb);
+
+                    if (userPath.Contains("ultimate", StringComparison.OrdinalIgnoreCase) && ultimate_tracker_index < s_UltimateTrackerProduct.Length)
+                    {
+                        string product = s_UltimateTrackerProduct[ultimate_tracker_index];
+
+                        m_UltimateTrackerPathMap[product] = userPath;
+                        sb.Clear().Append(LOG_TAG).Append(func).Append("Updates ").Append(product).Append(" path to ").Append(m_UltimateTrackerPathMap[product]); DEBUG(sb);
+
+                        m_UltimateTrackerSerialMap[product] = ConvertUserPathToSerialNumber(userPath);
+                        sb.Clear().Append(LOG_TAG).Append(func).Append("Updates ").Append(product).Append(" serial number to ").Append(m_UltimateTrackerSerialMap[product]); DEBUG(sb);
+
+                        ultimate_tracker_index++;
+                    }
+                }
+            }
+
+            return true;
+        }
+        /// <summary>
+        /// For example, user path "/user/xr_tracker_htc/vive_ultimate_tracker_0" will become serial number "VIVE_Ultimate_Tracker_0".
+        /// </summary>
+        /// <param name="userPath">The user path from <see cref="EnumeratePath"> EnumeratePath </see>.</param>
+        /// <returns>Serial Number in string.</returns>
+        private string ConvertUserPathToSerialNumber(string userPath)
+        {
+            string result = "";
+
+            int lastSlashIndex = userPath.LastIndexOf('/');
+            if (lastSlashIndex >= 0)
+            {
+                string[] parts = userPath.Substring(lastSlashIndex + 1).Split('_');
+                parts[0] = parts[0].ToUpper();
+                for (int i = 1; i < parts.Length - 1; i++)
+                {
+                    parts[i] = char.ToUpper(parts[i][0]) + parts[i].Substring(1);
+                }
+                result = string.Join("_", parts);
+            }
+
+            return result;
+        }
+
+        [Obsolete("This enumeration is deprecated. Please use XrInputSourceLocalizedNameFlags instead.")]
+        public enum InputSourceType : UInt64
+        {
+            SerialNumber = XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_SERIAL_NUMBER_BIT_HTC,
+            TrackerRole = XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_USER_PATH_BIT,
+        }
+        [Obsolete("This function is deprecated. Please use OpenXRHelper.GetInputSourceName instead.")]
+        public static XrResult GetInputSourceName(XrPath path, InputSourceType sourceType, out string sourceName)
+        {
+            string func = "GetInputSourceName() ";
+
+            sourceName = "";
+            if (!m_XrSessionCreated || xrGetInputSourceLocalizedName == null) { return XrResult.XR_ERROR_VALIDATION_FAILURE; }
+
+            string userPath = PathToString(path);
+            sb.Clear().Append(LOG_TAG).Append(func)
+                .Append("userPath: ").Append(userPath).Append(", flag: ").Append((UInt64)sourceType); DEBUG(sb);
+
+            XrInputSourceLocalizedNameGetInfo nameInfo = new XrInputSourceLocalizedNameGetInfo(
+                XrStructureType.XR_TYPE_INPUT_SOURCE_LOCALIZED_NAME_GET_INFO,
+                IntPtr.Zero, path, (XrInputSourceLocalizedNameFlags)sourceType);
+
+            UInt32 nameSizeIn = 0;
+            UInt32 nameSizeOut = 0;
+            char[] buffer = new char[0];
+
+            XrResult result = xrGetInputSourceLocalizedName(m_XrSession, ref nameInfo, nameSizeIn, ref nameSizeOut, buffer);
+            sb.Clear().Append(LOG_TAG).Append(func)
+                .Append("1.xrGetInputSourceLocalizedName(").Append(userPath).Append(") result: ").Append(result)
+                .Append(", flag: ").Append((UInt64)nameInfo.whichComponents)
+                .Append(", bufferCapacityInput: ").Append(nameSizeIn)
+                .Append(", bufferCountOutput: ").Append(nameSizeOut);
+            DEBUG(sb);
+            if (result == XrResult.XR_SUCCESS)
+            {
+                if (nameSizeOut < 1)
+                {
+                    sb.Clear().Append(LOG_TAG).Append(func)
+                        .Append("xrGetInputSourceLocalizedName(").Append(userPath).Append(")")
+                        .Append(", flag: ").Append((UInt64)sourceType)
+                        .Append("bufferCountOutput size is invalid!");
+                    ERROR(sb);
+                    return XrResult.XR_ERROR_VALIDATION_FAILURE;
+                }
+
+                nameSizeIn = nameSizeOut;
+                buffer = new char[nameSizeIn];
+
+                result = xrGetInputSourceLocalizedName(m_XrSession, ref nameInfo, nameSizeIn, ref nameSizeOut, buffer);
+                sb.Clear().Append(LOG_TAG).Append(func)
+                    .Append("2.xrGetInputSourceLocalizedName(").Append(userPath).Append(") result: ").Append(result)
+                    .Append(", flag: ").Append((UInt64)nameInfo.whichComponents)
+                    .Append(", bufferCapacityInput: ").Append(nameSizeIn)
+                    .Append(", bufferCountOutput: ").Append(nameSizeOut);
+                DEBUG(sb);
+                if (result == XrResult.XR_SUCCESS)
+                {
+                    sourceName = new string(buffer).TrimEnd('\0');
+                }
+            }
+
+            return result;
+        }
+
+#if DEBUG_CODE
+        XrInputSourceLocalizedNameGetInfo nameInfo;
+        private bool updateSerialNumber = true, updateUsage = false;
+        private bool UpdateTrackerMaps(string product, XrPath path, ref Dictionary<string, string> serialMap, ref Dictionary<string, string> roleMap)
+        {
+            string func = "UpdateTrackerMaps() ";
+            string s_path = PathToString(path);
+            sb.Clear().Append(LOG_TAG).Append(func).Append("product: ").Append(product).Append(", path: ").Append(s_path); DEBUG(sb);
+
+            // -------------------- Tracker Serial Number --------------------
+            if (updateSerialNumber)
+            {
+                nameInfo.type = XrStructureType.XR_TYPE_INPUT_SOURCE_LOCALIZED_NAME_GET_INFO;
+                nameInfo.next = IntPtr.Zero;
+                nameInfo.sourcePath = path;
+                nameInfo.whichComponents = XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_SERIAL_NUMBER_BIT_HTC;
+
+                XrResult result = OpenXRHelper.GetInputSourceName(
+                    xrGetInputSourceLocalizedName,
+                    m_XrSession,
+                    ref nameInfo,
+                    out string sn);
+
+                sb.Clear().Append(LOG_TAG).Append(func).Append("GetInputSourceName(").Append(s_path).Append(")")
+                    .Append(", sourceType: ").Append(nameInfo.whichComponents)
+                    .Append(", serial number: ").Append(sn)
+                    .Append(", result: ").Append(result);
+                DEBUG(sb);
+
+                /// For sample:
+                /// A user path (e.g. "/user/tracker_htc/index0") has the "sourceName" kUltimateTrackerSN0 ("VIVE_Ultimate_Tracker_0") which means
+                /// the corresponding product (e.g. kProductUltimateTracker0 = "VIVE Ultimate Tracker 0") has the "sourceName" kUltimateTrackerSN0.
+                /// So we have to set the serial of the product name kProductUltimateTracker0 to kUltimateTrackerSN0.
+                if (result == XrResult.XR_SUCCESS)
+                {
+                    if (!serialMap.ContainsKey(product))
+                        serialMap.Add(product, sn);
+                    else
+                        serialMap[product] = sn;
+
+                    sb.Clear().Append(LOG_TAG).Append(func).Append("Sets product ").Append(product).Append(" with serial number ").Append(serialMap[product]); DEBUG(sb);
+                }
+            }
+            // -------------------- Tracker Role --------------------
+            if (updateUsage)
+            {
+                nameInfo.type = XrStructureType.XR_TYPE_INPUT_SOURCE_LOCALIZED_NAME_GET_INFO;
+                nameInfo.next = IntPtr.Zero;
+                nameInfo.sourcePath = path;
+                nameInfo.whichComponents = XrInputSourceLocalizedNameFlags.XR_INPUT_SOURCE_LOCALIZED_NAME_USER_PATH_BIT;
+
+                XrResult result = OpenXRHelper.GetInputSourceName(
+                    xrGetInputSourceLocalizedName,
+                    m_XrSession,
+                    ref nameInfo,
+                    out string role);
+
+                sb.Clear().Append(LOG_TAG).Append(func).Append("GetInputSourceName(").Append(s_path).Append(")")
+                    .Append(", sourceType: ").Append(nameInfo.whichComponents)
+                    .Append(", role: ").Append(role)
+                    .Append(", result: ").Append(result);
+                DEBUG(sb);
+
+                if (result == XrResult.XR_SUCCESS)
+                {
+                    /// For sample:
+                    /// A user path (e.g. "/user/tracker_htc/index0") has the "sourceName" kTrackerRoleLeftWrist ("Left Wrist") which means
+                    /// the corresponding product (e.g. kProductUltimateTracker0 = "VIVE Ultimate Tracker 0") has the "sourceName" kTrackerRoleLeftWrist.
+                    /// So we have to set the usage of the product name kProductUltimateTracker0 to kTrackerRoleLeftWrist.
+                    if (!roleMap.ContainsKey(product))
+                        roleMap.Add(product, role);
+                    else
+                        roleMap[product] = role;
+
+                    sb.Clear().Append(LOG_TAG).Append(func).Append("Sets product ").Append(product).Append(" with usage ").Append(roleMap[product]); DEBUG(sb);
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Due to "ActionMap must be added from within the RegisterActionMapsWithRuntime method", this function is unusable.
+        /// </summary>
+        /// <param name="product">A tracker's product name.</param>
+        private void UpdateInputDeviceUltimateTracker(string product)
+        {
+            if (!IsUltimateTracker(product)) { return; }
+            string func = "UpdateInputDeviceUltimateTracker() ";
+
+            sb.Clear().Append(LOG_TAG).Append(func)
+                .Append("product: ").Append(product)
+                .Append(", serial number: ").Append(m_UltimateTrackerSerialMap[product])
+                .Append(", user path: ").Append(m_UltimateTrackerPathMap[product])
+                .Append(", usage: ").Append(m_UltimateTrackerUsageMap[product]);
+            DEBUG(sb);
+
+            XrPath path = StringToPath(m_UltimateTrackerPathMap[product]);
+            /// Updates tracker serial number (m_UltimateTrackerSerialMap) and role (m_UltimateTrackerUsageMap)
+            if (UpdateTrackerMaps(product, path, ref m_UltimateTrackerSerialMap, ref m_UltimateTrackerUsageMap))
+            {
+                sb.Clear().Append(LOG_TAG).Append(func)
+                    .Append("Maps of ").Append(product)
+                    .Append(" with user path ").Append(m_UltimateTrackerPathMap[product]).Append(" are updated.");
+                DEBUG(sb);
+
+                bool foundProduct = false;
+                for (int i = 0; i < InputSystem.devices.Count; i++)
+                {
+                    if (InputSystem.devices[i] is XrTrackerDevice &&
+                        InputSystem.devices[i].description.product.Equals(product))
+                    {
+                        sb.Clear().Append(LOG_TAG).Append(func)
+                            .Append("Removes the XrTrackerDevice product ").Append(product);
+                        DEBUG(sb);
+
+                        InputSystem.RemoveDevice(InputSystem.devices[i]);
+                        foundProduct = true;
+                        break;
+                    }
+                }
+                if (foundProduct)
+                {
+                    sb.Clear().Append(LOG_TAG).Append(func).Append("Adds a XrTrackerDevice product ").Append(product); DEBUG(sb);
+                    RegisterActionMap(
+                        product: product,
+                        in_name: m_UltimateTrackerActionMap[product],
+                        in_sn: m_UltimateTrackerSerialMap[product],
+                        in_path: m_UltimateTrackerPathMap[product]
+                    );
+                }
+            }
+        }
+#endif
     }
 }

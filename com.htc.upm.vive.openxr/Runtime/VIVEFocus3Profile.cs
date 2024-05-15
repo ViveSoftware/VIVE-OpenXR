@@ -801,8 +801,6 @@ namespace VIVE.OpenXR
 		#region OpenXR function delegates
 		/// xrGetInstanceProcAddr
 		OpenXRHelper.xrGetInstanceProcAddrDelegate XrGetInstanceProcAddr;
-		/// xrEnumeratePathsForInteractionProfileHTC
-		VivePathEnumerationHelper.xrEnumeratePathsForInteractionProfileHTCDelegate xrEnumeratePathsForInteractionProfileHTC = null;
 		/// xrEnumerateDisplayRefreshRatesFB
 		OpenXRHelper.xrGetInputSourceLocalizedNameDelegate xrGetInputSourceLocalizedName = null;
 		private bool GetXrFunctionDelegates(XrInstance xrInstance)
@@ -822,28 +820,6 @@ namespace VIVE.OpenXR
 			}
 
 			IntPtr funcPtr = IntPtr.Zero;
-
-			/// xrEnumeratePathsForInteractionProfileHTC
-			if (XrGetInstanceProcAddr(xrInstance, "xrEnumeratePathsForInteractionProfileHTC", out funcPtr) == XrResult.XR_SUCCESS)
-			{
-				if (funcPtr != IntPtr.Zero)
-				{
-					sb.Clear().Append(LOG_TAG).Append("Get function pointer of xrEnumeratePathsForInteractionProfileHTC."); DEBUG(sb);
-					xrEnumeratePathsForInteractionProfileHTC = Marshal.GetDelegateForFunctionPointer(
-						funcPtr,
-						typeof(VivePathEnumerationHelper.xrEnumeratePathsForInteractionProfileHTCDelegate)) as VivePathEnumerationHelper.xrEnumeratePathsForInteractionProfileHTCDelegate;
-				}
-				else
-				{
-					sb.Clear().Append(LOG_TAG).Append("No function pointer of xrEnumeratePathsForInteractionProfileHTC.");
-					ERROR(sb);
-				}
-			}
-			else
-			{
-				sb.Clear().Append(LOG_TAG).Append("No function pointer of xrEnumeratePathsForInteractionProfileHTC");
-				ERROR(sb);
-			}
 
 			/// xrGetInputSourceLocalizedName
 			if (XrGetInstanceProcAddr(xrInstance, "xrGetInputSourceLocalizedName", out funcPtr) == XrResult.XR_SUCCESS)

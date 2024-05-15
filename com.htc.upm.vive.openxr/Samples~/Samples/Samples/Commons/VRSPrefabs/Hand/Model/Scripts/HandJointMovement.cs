@@ -15,8 +15,11 @@ namespace VIVE.OpenXR.Samples
 
         void Update()
         {
-            //transform.position = HandTracking.Get_HandJointLocations(Hand)[Joint].Position;
-            transform.rotation = HandTracking.GetHandJointLocations(Hand)[Joint].rotation;
+            if(HandTracking.GetHandJointLocations(Hand)[Joint].isValid)
+            {
+                //transform.position = HandTracking.Get_HandJointLocations(Hand)[Joint].Position;
+                transform.rotation = HandTracking.GetHandJointLocations(Hand)[Joint].rotation;
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ using System;
 using System.Linq;
 using UnityEngine.XR;
 using System.Collections.Generic;
-
+using AOT;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.XR.OpenXR.Features;
@@ -45,6 +45,51 @@ namespace VIVE.OpenXR.Hand
         #region OpenXR Life Cycle
         private bool m_XrInstanceCreated = false;
         private XrInstance m_XrInstance = 0;
+        private static IntPtr xrGetInstanceProcAddr_prev;
+        private static IntPtr WaitFrame_prev;
+        private static XrFrameWaitInfo m_frameWaitInfo;
+        private static XrFrameState m_frameState;
+        protected override IntPtr HookGetInstanceProcAddr(IntPtr func)
+        {
+            UnityEngine.Debug.Log("EXT: registering our own xrGetInstanceProcAddr");
+            xrGetInstanceProcAddr_prev = func;
+            return Marshal.GetFunctionPointerForDelegate(m_intercept_xrWaitFrame_xrGetInstanceProcAddr);
+        }
+        [MonoPInvokeCallback(typeof(OpenXRHelper.xrGetInstanceProcAddrDelegate))]
+        private static XrResult intercept_xrWaitFrame_xrGetInstanceProcAddr(XrInstance instance, string name, out IntPtr function)
+        {
+            if (xrGetInstanceProcAddr_prev == null || xrGetInstanceProcAddr_prev == IntPtr.Zero)
+            {
+                UnityEngine.Debug.LogError("xrGetInstanceProcAddr_prev is null");
+                function = IntPtr.Zero;
+                return XrResult.XR_ERROR_VALIDATION_FAILURE;
+            }
+
+            // Get delegate of old xrGetInstanceProcAddr.
+            var xrGetProc = Marshal.GetDelegateForFunctionPointer<OpenXRHelper.xrGetInstanceProcAddrDelegate>(xrGetInstanceProcAddr_prev);
+            XrResult result = xrGetProc(instance, name, out function);
+            if (name == "xrWaitFrame")
+            {
+                WaitFrame_prev = function;
+                m_intercept_xrWaitFrame = intercepted_xrWaitFrame;
+                function = Marshal.GetFunctionPointerForDelegate(m_intercept_xrWaitFrame); ;
+                UnityEngine.Debug.Log("Getting xrWaitFrame func");
+            }
+
+            return result;
+
+        }
+        [MonoPInvokeCallback(typeof(OpenXRHelper.xrWaitFrameDelegate))]
+        private static int intercepted_xrWaitFrame(ulong session, ref XrFrameWaitInfo frameWaitInfo, ref XrFrameState frameState)
+        {
+            // Get delegate of prev xrWaitFrame.
+            var xrWaitFrame = Marshal.GetDelegateForFunctionPointer<OpenXRHelper.xrWaitFrameDelegate>(WaitFrame_prev);
+            int res = xrWaitFrame(session, ref frameWaitInfo, ref frameState);
+            m_frameWaitInfo = frameWaitInfo;
+            m_frameState = frameState;
+            return res;
+        }
+
         /// <summary>
         /// Called when <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrCreateInstance">xrCreateInstance</see> is done.
         /// </summary>
@@ -276,6 +321,9 @@ namespace VIVE.OpenXR.Hand
         #endregion
 
         #region OpenXR function delegates
+        private static readonly OpenXRHelper.xrGetInstanceProcAddrDelegate m_intercept_xrWaitFrame_xrGetInstanceProcAddr
+            = new OpenXRHelper.xrGetInstanceProcAddrDelegate(intercept_xrWaitFrame_xrGetInstanceProcAddr);
+        private static OpenXRHelper.xrWaitFrameDelegate m_intercept_xrWaitFrame;
         /// xrGetInstanceProcAddr
         OpenXRHelper.xrGetInstanceProcAddrDelegate XrGetInstanceProcAddr;
 
@@ -747,7 +795,7 @@ namespace VIVE.OpenXR.Hand
                 in_type: XrStructureType.XR_TYPE_HAND_JOINTS_LOCATE_INFO_EXT,
                 in_next: IntPtr.Zero,
                 in_baseSpace: baseSpace,
-                in_time: 1);//
+                in_time: m_frameState.predictedDisplayTime);
 
             /// Configures XrHandJointLocationsEXT
             locations.type = XrStructureType.XR_TYPE_HAND_JOINT_LOCATIONS_EXT;

@@ -9,7 +9,9 @@ using UnityEngine;
 
 namespace VIVE.OpenXR.Toolkits.BodyTracking
 {
+#if USE_UniVRM
 	[RequireComponent(typeof(UniHumanoid.Humanoid))]
+#endif
 	public class HumanoidTracking : MonoBehaviour
 	{
 		#region Log
@@ -134,12 +136,15 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		public ExtrinsicInfo_t RightToes => m_RightToes;
 		#endregion
 
+#if USE_UniVRM
 		private UniHumanoid.Humanoid m_Humanoid = null;
+#endif
 		private Body m_Body = null, m_InitialBody = null;
 		private TransformData m_InitialTransform;
 		/// <summary> Humanoid should have at least 20 joints in function. </summary>
 		private bool AssignHumanoidToBody(ref Body body)
 		{
+#if USE_UniVRM
 			m_Humanoid = GetComponent<UniHumanoid.Humanoid>();
 			if (m_Humanoid == null)
 			{
@@ -405,8 +410,10 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 					.Append(", height: ").Append(body.height);
 				DEBUG(sb);
 			}
-
 			return true;
+#else
+			return false;
+#endif
 		}
 
 		private TrackerExtrinsic m_CustomExts = new TrackerExtrinsic();

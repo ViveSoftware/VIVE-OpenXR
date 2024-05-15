@@ -22,7 +22,7 @@ using UnityEditor.XR.OpenXR.Features;
 namespace VIVE.OpenXR.DisplayRefreshRate
 {
 #if UNITY_EDITOR
-    [OpenXRFeature(UiName = "XR FB Display Refresh Rate",
+    [OpenXRFeature(UiName = "VIVE XR Display Refresh Rate",
         BuildTargetGroups = new[] { BuildTargetGroup.Android},
         Company = "HTC",
         Desc = "Support the display refresh rate.",

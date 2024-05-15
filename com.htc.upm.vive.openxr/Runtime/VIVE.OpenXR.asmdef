@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Unity.XR.OpenXR",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.XR.Hands"
     ],
     "includePlatforms": [
         "Android",
@@ -17,6 +18,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.xr.hands",
+            "expression": "",
+            "define": "UNITY_XR_HANDS"
+        }
+    ],
     "noEngineReferences": false
 }

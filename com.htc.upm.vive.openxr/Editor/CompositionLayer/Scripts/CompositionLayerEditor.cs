@@ -75,6 +75,11 @@ namespace VIVE.OpenXR.CompositionLayer.Editor
 		static GUIContent Label_ApplyColorScaleBias = new GUIContent("Apply Color Scale Bias", "Color scale and bias are applied to a layer color during composition, after its conversion to premultiplied alpha representation. LayerColor = LayerColor * colorScale + colorBias");
 		SerializedProperty Property_ApplyColorScaleBias;
 
+		static string PropertyName_SolidEffect = "solidEffect";
+		static GUIContent Label_SolidEffect = new GUIContent("Solid Effect", "Apply UnderLay Color Scale Bias in Runtime Level.");
+		SerializedProperty Property_SolidEffect;
+
+
 		static string PropertyName_ColorScale = "colorScale";
 		static GUIContent Label_ColorScale = new GUIContent("Color Scale", "Will be used for modulatting the color sourced from the images.");
 		SerializedProperty Property_ColorScale;
@@ -114,6 +119,7 @@ namespace VIVE.OpenXR.CompositionLayer.Editor
 			if (Property_AngleOfArc == null) Property_AngleOfArc = serializedObject.FindProperty(PropertyName_AngleOfArc);
 			if (Property_IsDynamicLayer == null) Property_IsDynamicLayer = serializedObject.FindProperty(PropertyName_IsDynamicLayer);
 			if (Property_ApplyColorScaleBias == null) Property_ApplyColorScaleBias = serializedObject.FindProperty(PropertyName_ApplyColorScaleBias);
+			if (Property_SolidEffect == null) Property_SolidEffect = serializedObject.FindProperty(PropertyName_SolidEffect);
 			if (Property_ColorScale == null) Property_ColorScale = serializedObject.FindProperty(PropertyName_ColorScale);
 			if (Property_ColorBias == null) Property_ColorBias = serializedObject.FindProperty(PropertyName_ColorBias);
 			if (Property_IsProtectedSurface == null) Property_IsProtectedSurface = serializedObject.FindProperty(PropertyName_IsProtectedSurface);
@@ -441,6 +447,11 @@ namespace VIVE.OpenXR.CompositionLayer.Editor
 				}
 
 				EditorGUI.indentLevel++;
+				if (targetCompositionLayer.layerType == CompositionLayer.LayerType.Underlay)
+				{
+					EditorGUILayout.PropertyField(Property_SolidEffect, Label_SolidEffect);
+					serializedObject.ApplyModifiedProperties();
+				}
 				showColorScaleBiasParams = EditorGUILayout.Foldout(showColorScaleBiasParams, "Color Scale Bias Parameters");
 				if (showColorScaleBiasParams)
 				{

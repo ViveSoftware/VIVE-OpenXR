@@ -25779,7 +25779,7 @@ GameObject:
   - component: {fileID: 1599303147}
   - component: {fileID: 1599303149}
   m_Layer: 0
-  m_Name: ButtonCanvas
+  m_Name: QuitCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25803,8 +25803,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -0.522, y: -2.82}
-  m_SizeDelta: {x: 200, y: 100}
+  m_AnchoredPosition: {x: 0.52, y: -2.402}
+  m_SizeDelta: {x: 200, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1599303147
 MonoBehaviour:

@@ -160,7 +160,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				return m_sb;
 			}
 		}
-		void DEBUG(StringBuilder msg) { Debug.Log(LOG_TAG + " " + msg); }
+		void DEBUG(StringBuilder msg) { Debug.Log(msg); }
 
 		public float height = 0;
 
@@ -366,7 +366,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			BodyTrackingUtils.Update(ref joint.rotation, trans.rotation);
 			joint.velocity = velocity;
 			joint.angularVelocity = angularVelocity;
-			//sb.Clear().Append("Update() ").Append(joint.Log()); DEBUG(sb);
+			//sb.Clear().Append(LOG_TAG).Append("Update() ").Append(joint.Log()); DEBUG(sb);
 		}
 		public void Update(JointType jointType, Transform trans, Vector3 velocity, Vector3 angularVelocity)
 		{
@@ -410,7 +410,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			BodyTrackingUtils.Update(ref joint.rotation, trans.transform.rotation);
 			joint.poseState = (PoseState.ROTATION | PoseState.TRANSLATION);
 			joint.velocity = velocity;
-			//sb.Clear().Append("Update() ").Append(joint.Log()); DEBUG(sb);
+			//sb.Clear().Append(LOG_TAG).Append("Update() ").Append(joint.Log()); DEBUG(sb);
 		}
 		public void Update(JointType jointType, Transform trans, Vector3 velocity)
 		{
@@ -453,7 +453,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			joint.translation = trans.position;
 			BodyTrackingUtils.Update(ref joint.rotation, trans.rotation);
 			joint.poseState = (PoseState.ROTATION | PoseState.TRANSLATION);
-			//sb.Clear().Append("Update() ").Append(joint.Log()); DEBUG(sb);
+			//sb.Clear().Append(LOG_TAG).Append("Update() ").Append(joint.Log()); DEBUG(sb);
 		}
 		public void Update(JointType jointType, Transform trans)
 		{
@@ -757,7 +757,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				return m_sb;
 			}
 		}
-		void DEBUG(StringBuilder msg) { Debug.Log(LOG_TAG + " " + msg); }
+		void DEBUG(StringBuilder msg) { Debug.Log(msg); }
 
 		public bool isTracking;
 		public ExtrinsicVector4_t extrinsic;
@@ -793,7 +793,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		}
 		public void printLog(string prefix)
 		{
-			sb.Clear().Append(prefix)
+			sb.Clear().Append(LOG_TAG).Append(prefix)
 				.Append(", position(").Append(extrinsic.translation.x).Append(", ").Append(extrinsic.translation.y).Append(", ").Append(extrinsic.translation.z).Append(")")
 				.Append(", rotation(").Append(extrinsic.rotation.x).Append(", ").Append(extrinsic.rotation.y).Append(", ").Append(extrinsic.rotation.z).Append(", ").Append(extrinsic.rotation.w).Append(")");
 			DEBUG(sb);
@@ -810,7 +810,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				return m_sb;
 			}
 		}
-		static void DEBUG(StringBuilder msg) { Debug.Log(LOG_TAG + " " + msg); }
+		static void DEBUG(StringBuilder msg) { Debug.Log(msg); }
 
 		public bool isTracking;
 		public TrackedDeviceExtrinsic deviceExtrinsic;
@@ -835,7 +835,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			isTracking = extInfo.isTracking;
 			deviceExtrinsic.extrinsic.Update(extInfo.extrinsic.GetExtrinsic());
 
-			sb.Clear().Append(deviceExtrinsic.trackedDeviceRole.Name())
+			sb.Clear().Append(LOG_TAG).Append(deviceExtrinsic.trackedDeviceRole.Name())
 				.Append(", isTracking: ").Append(isTracking)
 				.Append(", position(")
 					.Append(deviceExtrinsic.extrinsic.translation.x).Append(", ")
@@ -866,10 +866,10 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				return m_sb;
 			}
 		}
-		void DEBUG(StringBuilder msg) { Debug.Log(LOG_TAG + " " + msg); }
+		void DEBUG(StringBuilder msg) { Debug.Log(msg); }
 		static int logFrame = 0;
 		bool printIntervalLog = false;
-		void ERROR(StringBuilder msg) { Debug.LogError(LOG_TAG + " " + msg); }
+		void ERROR(StringBuilder msg) { Debug.LogError(msg); }
 
 		public TrackedDeviceExtrinsicState_t hip = TrackedDeviceExtrinsicState_t.identity;
 		public TrackedDeviceExtrinsicState_t chest = TrackedDeviceExtrinsicState_t.identity;
@@ -917,7 +917,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// 7 roles use hip.
 			if (hip.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(hip.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(hip.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Wrist].Add(hip.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.FullBody_Wrist_Ankle].Add(hip.deviceExtrinsic);
@@ -931,12 +931,12 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			}
 			if (chest.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(chest.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(chest.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 			}
 			// 9 roles use head.
 			if (head.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(head.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(head.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.Arm_Wrist].Add(head.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Wrist].Add(head.deviceExtrinsic);
@@ -953,12 +953,12 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 			if (leftElbow.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftElbow.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftElbow.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 			}
 			// 4 roles use leftWrist.
 			if (leftWrist.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftWrist.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftWrist.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.Arm_Wrist].Add(leftWrist.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Wrist].Add(leftWrist.deviceExtrinsic);
@@ -968,7 +968,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// 5 roles use leftHand
 			if (leftHand.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftHand.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftHand.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.Arm_Handheld_Hand].Add(leftHand.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Handheld_Hand].Add(leftHand.deviceExtrinsic);
@@ -980,7 +980,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// 5 roles use leftHandheld
 			if (leftHandheld.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftHandheld.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftHandheld.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.Arm_Handheld_Hand].Add(leftHandheld.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Handheld_Hand].Add(leftHandheld.deviceExtrinsic);
@@ -992,12 +992,12 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 			if (rightElbow.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightElbow.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightElbow.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 			}
 			// 4 roles use rightWrist.
 			if (rightWrist.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightWrist.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightWrist.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.Arm_Wrist].Add(rightWrist.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Wrist].Add(rightWrist.deviceExtrinsic);
@@ -1007,7 +1007,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// 5 roles use rightHand
 			if (rightHand.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightHand.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightHand.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.Arm_Handheld_Hand].Add(rightHand.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Handheld_Hand].Add(rightHand.deviceExtrinsic);
@@ -1019,7 +1019,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// 5 roles use rightHandheld
 			if (rightHandheld.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightHandheld.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightHandheld.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.Arm_Handheld_Hand].Add(rightHandheld.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Handheld_Hand].Add(rightHandheld.deviceExtrinsic);
@@ -1032,14 +1032,14 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// Only 1 role uses leftKnee.
 			if (leftKnee.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftKnee.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftKnee.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Handheld_Hand_Knee_Ankle].Add(leftKnee.deviceExtrinsic);
 			}
 			// 3 roles use leftAnkle
 			if (leftAnkle.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftAnkle.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftAnkle.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.FullBody_Wrist_Ankle].Add(leftAnkle.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.FullBody_Handheld_Hand_Ankle].Add(leftAnkle.deviceExtrinsic);
@@ -1049,7 +1049,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// 2 roles use leftFoot
 			if (leftFoot.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftFoot.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(leftFoot.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.FullBody_Wrist_Foot].Add(leftFoot.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.FullBody_Handheld_Hand_Foot].Add(leftFoot.deviceExtrinsic);
@@ -1058,14 +1058,14 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// Only 1 role uses rightKnee.
 			if (rightKnee.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightKnee.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightKnee.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.UpperBody_Handheld_Hand_Knee_Ankle].Add(rightKnee.deviceExtrinsic);
 			}
 			// 3 roles use rightAnkle
 			if (rightAnkle.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightAnkle.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightAnkle.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.FullBody_Wrist_Ankle].Add(rightAnkle.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.FullBody_Handheld_Hand_Ankle].Add(rightAnkle.deviceExtrinsic);
@@ -1075,7 +1075,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// 2 roles use rightFoot
 			if (rightFoot.isTracking)
 			{
-				sb.Clear().Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightFoot.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdateTrackedDevicesArray() Uses extrinsic of ").Append(rightFoot.deviceExtrinsic.trackedDeviceRole.Name()); DEBUG(sb);
 
 				s_TrackedDeviceExtrinsics[DeviceExtRole.FullBody_Wrist_Foot].Add(rightFoot.deviceExtrinsic);
 				s_TrackedDeviceExtrinsics[DeviceExtRole.FullBody_Handheld_Hand_Foot].Add(rightFoot.deviceExtrinsic);
@@ -1155,7 +1155,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		public void Update([In] TrackerExtrinsic in_ext)
 		{
 			if (in_ext == null) { return; }
-			sb.Clear().Append("Update() TrackerExtrinsic of each device."); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("Update() TrackerExtrinsic of each device."); DEBUG(sb);
 
 			hip.Update(in_ext.hip); // 0
 			chest.Update(in_ext.chest);
@@ -1197,8 +1197,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 				if (printIntervalLog || getDeviceExtrinsicsFirstTime)
 				{
-					sb.Clear().Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.UpperBody_Handheld_Hand_Knee_Ankle.Name()); DEBUG(sb);
-					sb.Clear();
+					sb.Clear().Append(LOG_TAG).Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.UpperBody_Handheld_Hand_Knee_Ankle.Name()); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG);
 					for (int i = 0; i < bodyTrackedDeviceCount; i++)
 					{
 						sb.Append("GetDevicesExtrinsics() Add extrinsic[").Append(i).Append("] ")
@@ -1217,8 +1217,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 				if (printIntervalLog || getDeviceExtrinsicsFirstTime)
 				{
-					sb.Clear().Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.FullBody_Wrist_Ankle.Name()); DEBUG(sb);
-					sb.Clear();
+					sb.Clear().Append(LOG_TAG).Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.FullBody_Wrist_Ankle.Name()); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG);
 					for (int i = 0; i < bodyTrackedDeviceCount; i++)
 					{
 						sb.Append("GetDevicesExtrinsics() Add extrinsic[").Append(i).Append("] ")
@@ -1235,8 +1235,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 				if (printIntervalLog || getDeviceExtrinsicsFirstTime)
 				{
-					sb.Clear().Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.FullBody_Wrist_Foot.Name()); DEBUG(sb);
-					sb.Clear();
+					sb.Clear().Append(LOG_TAG).Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.FullBody_Wrist_Foot.Name()); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG);
 					for (int i = 0; i < bodyTrackedDeviceCount; i++)
 					{
 						sb.Append("GetDevicesExtrinsics() Add extrinsic[").Append(i).Append("] ")
@@ -1253,8 +1253,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 				if (printIntervalLog || getDeviceExtrinsicsFirstTime)
 				{
-					sb.Clear().Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.FullBody_Handheld_Hand_Ankle.Name()); DEBUG(sb);
-					sb.Clear();
+					sb.Clear().Append(LOG_TAG).Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.FullBody_Handheld_Hand_Ankle.Name()); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG);
 					for (int i = 0; i < bodyTrackedDeviceCount; i++)
 					{
 						sb.Append("GetDevicesExtrinsics() Add extrinsic[").Append(i).Append("] ")
@@ -1271,8 +1271,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 				if (printIntervalLog || getDeviceExtrinsicsFirstTime)
 				{
-					sb.Clear().Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.FullBody_Handheld_Hand_Foot.Name()); DEBUG(sb);
-					sb.Clear();
+					sb.Clear().Append(LOG_TAG).Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.FullBody_Handheld_Hand_Foot.Name()); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG);
 					for (int i = 0; i < bodyTrackedDeviceCount; i++)
 					{
 						sb.Append("GetDevicesExtrinsics() Add extrinsic[").Append(i).Append("] ")
@@ -1291,8 +1291,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 				if (printIntervalLog || getDeviceExtrinsicsFirstTime)
 				{
-					sb.Clear().Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.UpperBody_Wrist.Name()); DEBUG(sb);
-					sb.Clear();
+					sb.Clear().Append(LOG_TAG).Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.UpperBody_Wrist.Name()); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG);
 					for (int i = 0; i < bodyTrackedDeviceCount; i++)
 					{
 						sb.Append("GetDevicesExtrinsics() Add extrinsic[").Append(i).Append("] ")
@@ -1309,8 +1309,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 				if (printIntervalLog || getDeviceExtrinsicsFirstTime)
 				{
-					sb.Clear().Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.UpperBody_Handheld_Hand.Name()); DEBUG(sb);
-					sb.Clear();
+					sb.Clear().Append(LOG_TAG).Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.UpperBody_Handheld_Hand.Name()); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG);
 					for (int i = 0; i < bodyTrackedDeviceCount; i++)
 					{
 						sb.Append("GetDevicesExtrinsics() Add extrinsic[").Append(i).Append("] ")
@@ -1329,8 +1329,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 				if (printIntervalLog || getDeviceExtrinsicsFirstTime)
 				{
-					sb.Clear().Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.Arm_Wrist.Name()); DEBUG(sb);
-					sb.Clear();
+					sb.Clear().Append(LOG_TAG).Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.Arm_Wrist.Name()); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG);
 					for (int i = 0; i < bodyTrackedDeviceCount; i++)
 					{
 						sb.Append("GetDevicesExtrinsics() Add extrinsic[").Append(i).Append("] ")
@@ -1347,8 +1347,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 				if (printIntervalLog || getDeviceExtrinsicsFirstTime)
 				{
-					sb.Clear().Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.Arm_Handheld_Hand.Name()); DEBUG(sb);
-					sb.Clear();
+					sb.Clear().Append(LOG_TAG).Append("GetDevicesExtrinsics() of extrinsic role ").Append(DeviceExtRole.Arm_Handheld_Hand.Name()); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG);
 					for (int i = 0; i < bodyTrackedDeviceCount; i++)
 					{
 						sb.Append("GetDevicesExtrinsics() Add extrinsic[").Append(i).Append("] ")
@@ -1368,7 +1368,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		private DeviceExtRole m_IKRoles = DeviceExtRole.Unknown;
 		public DeviceExtRole GetIKRoles(BodyPoseRole calibRole)
 		{
-			if (printIntervalLog || getDeviceExtrinsicsFirstTime) { sb.Clear().Append("GetIKRoles()"); DEBUG(sb); }
+			if (printIntervalLog || getDeviceExtrinsicsFirstTime) { sb.Clear().Append(LOG_TAG).Append("GetIKRoles()"); DEBUG(sb); }
 
 			if (ikFrame == Time.frameCount) { return m_IKRoles; }
 			else { m_IKRoles = DeviceExtRole.Unknown; ikFrame = Time.frameCount; }
@@ -1452,7 +1452,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 	}
 	public class BodyPose
 	{
-		const string LOG_TAG = "VIVE.OpenXR.Toolkits.BodyTracking.BodyPose";
+		const string LOG_TAG = "VIVE.OpenXR.Toolkits.BodyTracking.BodyPose ";
 		StringBuilder m_sb = null;
 		StringBuilder sb {
 			get {
@@ -1460,10 +1460,11 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				return m_sb;
 			}
 		}
-		void DEBUG(StringBuilder msg) { Debug.Log(LOG_TAG + " " + msg); }
+		void DEBUG(StringBuilder msg) { Debug.Log(LOG_TAG + msg); }
 		static int logFrame = 0;
 		bool printIntervalLog = false;
-		void ERROR(StringBuilder msg) { Debug.LogError(LOG_TAG + " " + msg); }
+		void WARNING(StringBuilder msg) { Debug.LogWarning(msg); }
+		void ERROR(StringBuilder msg) { Debug.LogError(LOG_TAG + msg); }
 
 		public TrackedDevicePose hip = TrackedDevicePose.identity;
 		public TrackedDevicePose chest = TrackedDevicePose.identity;
@@ -1609,16 +1610,25 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			ResetPose();
 
 			m_HipPose = Hip;
+			if (m_HipPose == null) { sb.Clear().Append(LOG_TAG).Append("Reset() m_HipPose is null."); WARNING(sb); }
 			m_LeftWristPose = LeftWrist;
+			if (m_LeftWristPose == null) { sb.Clear().Append(LOG_TAG).Append("Reset() m_LeftWristPose is null."); WARNING(sb); }
 			m_RightWristPose = RightWrist;
+			if (m_RightWristPose == null) { sb.Clear().Append(LOG_TAG).Append("Reset() m_RightWristPose is null."); WARNING(sb); }
 
 			m_LeftKneePose = LeftKnee;
+			if (m_LeftKneePose == null) { sb.Clear().Append(LOG_TAG).Append("Reset() m_LeftKneePose is null."); WARNING(sb); }
 			m_LeftAnklePose = LeftAnkle;
+			if (m_LeftAnklePose == null) { sb.Clear().Append(LOG_TAG).Append("Reset() m_LeftAnklePose is null."); WARNING(sb); }
 			m_LeftFootPose = LeftFoot;
+			if (m_LeftFootPose == null) { sb.Clear().Append(LOG_TAG).Append("Reset() m_LeftFootPose is null."); WARNING(sb); }
 
 			m_RightKneePose = RightKnee;
+			if (m_RightKneePose == null) { sb.Clear().Append(LOG_TAG).Append("Reset() m_RightKneePose is null."); WARNING(sb); }
 			m_RightAnklePose = RightAnkle;
+			if (m_RightAnklePose == null) { sb.Clear().Append(LOG_TAG).Append("Reset() m_RightAnklePose is null."); WARNING(sb); }
 			m_RightFootPose = RightFoot;
+			if (m_RightFootPose == null) { sb.Clear().Append(LOG_TAG).Append("Reset() m_RightFootPose is null."); WARNING(sb); }
 		}
 
 		#region Update Tracking Infos and Standard Pose in content.
@@ -1635,7 +1645,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 			if (trackingInfos.initRoles == null || trackingInfos.initRoles.Length <= 0)
 			{
-				sb.Clear().Append("UpdatePose() No pose to update."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("UpdatePose() No pose to update."); ERROR(sb);
 				return BodyTrackingResult.ERROR_IK_NOT_UPDATED;
 			}
 			ResetPose();
@@ -1649,7 +1659,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(hip.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(hip.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1658,7 +1668,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(head.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(head.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1668,7 +1678,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(leftWrist.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(leftWrist.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1679,7 +1689,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 					{
 						if (printIntervalLog || getDevicePosesFirstTime)
 						{
-							sb.Clear().Append("UpdatePose() ROLE_LEFTHANDHELD, poseState: ").Append(leftHandheld.poseState);
+							sb.Clear().Append(LOG_TAG).Append("UpdatePose() ROLE_LEFTHANDHELD, poseState: ").Append(leftHandheld.poseState);
 							DEBUG(sb);
 						}
 						trackingInfos.trackedRoles[(Int32)TrackedDeviceRole.ROLE_LEFTHANDHELD] = true;
@@ -1689,7 +1699,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 						BodyTrackingUtils.UpdateTrackedDevicePose(TrackedDeviceRole.ROLE_LEFTHAND, null, ref leftHand);
 						if (printIntervalLog || getDevicePosesFirstTime)
 						{
-							sb.Clear().Append("UpdatePose() ROLE_LEFTHAND poseState: ").Append(leftHand.poseState);
+							sb.Clear().Append(LOG_TAG).Append("UpdatePose() ROLE_LEFTHAND poseState: ").Append(leftHand.poseState);
 							DEBUG(sb);
 						}
 						trackingInfos.trackedRoles[(Int32)TrackedDeviceRole.ROLE_LEFTHAND] = true;
@@ -1700,7 +1710,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(rightWrist.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(rightWrist.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1711,7 +1721,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 					{
 						if (printIntervalLog || getDevicePosesFirstTime)
 						{
-							sb.Clear().Append("UpdatePose() ROLE_RIGHTHANDHELD, poseState: ").Append(rightHandheld.poseState);
+							sb.Clear().Append(LOG_TAG).Append("UpdatePose() ROLE_RIGHTHANDHELD, poseState: ").Append(rightHandheld.poseState);
 							DEBUG(sb);
 						}
 						trackingInfos.trackedRoles[(Int32)TrackedDeviceRole.ROLE_RIGHTHANDHELD] = true;
@@ -1721,7 +1731,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 						BodyTrackingUtils.UpdateTrackedDevicePose(TrackedDeviceRole.ROLE_RIGHTHAND, null, ref rightHand);
 						if (printIntervalLog || getDevicePosesFirstTime)
 						{
-							sb.Clear().Append("UpdatePose() ROLE_RIGHTHAND, poseState: ").Append(rightHand.poseState);
+							sb.Clear().Append(LOG_TAG).Append("UpdatePose() ROLE_RIGHTHAND, poseState: ").Append(rightHand.poseState);
 							DEBUG(sb);
 						}
 						trackingInfos.trackedRoles[(Int32)TrackedDeviceRole.ROLE_RIGHTHAND] = true;
@@ -1732,7 +1742,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(leftKnee.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(leftKnee.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1741,7 +1751,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(leftAnkle.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(leftAnkle.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1750,7 +1760,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(leftFoot.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(leftFoot.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1760,7 +1770,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(rightKnee.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(rightKnee.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1769,7 +1779,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(rightAnkle.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(rightAnkle.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1778,7 +1788,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(rightFoot.poseState);
+						sb.Clear().Append(LOG_TAG).Append("UpdatePose() ").Append(role.Name()).Append(", poseState: ").Append(rightFoot.poseState);
 						DEBUG(sb);
 					}
 					trackingInfos.trackedRoles[i] = true;
@@ -1829,13 +1839,13 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		internal BodyTrackingResult InitTrackingInfos(BodyTrackingMode mode)
 		{
 			trackingInfos.ResetInitRoles();
-			sb.Clear().Append("InitTrackingInfos() ").Append(mode.Name()); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() ").Append(mode.Name()); DEBUG(sb);
 
 			bool isTracked = false;
 			string error = "";
 			if (InputDeviceControl.IsTracked(InputDeviceControl.ControlDevice.Head))
 			{
-				sb.Clear().Append("InitTrackingInfos() add ROLE_HEAD"); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_HEAD"); DEBUG(sb);
 				trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_HEAD] = true;
 			}
 
@@ -1843,38 +1853,38 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			bool hasLeftHand = false, hasRightHand = false;
 			if (!hasLeftHand && m_LeftWristPose != null && BodyTrackingUtils.GetPoseIsTracked(m_LeftWristPose, out isTracked, out error) && isTracked)
 			{
-				sb.Clear().Append("InitTrackingInfos() add ROLE_LEFTWRIST"); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_LEFTWRIST"); DEBUG(sb);
 				trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_LEFTWRIST] = true;
 				hasLeftHand = true;
 			}
 			if (!hasRightHand && m_RightWristPose != null && BodyTrackingUtils.GetPoseIsTracked(m_RightWristPose, out isTracked, out error) && isTracked)
 			{
-				sb.Clear().Append("InitTrackingInfos() add ROLE_RIGHTWRIST"); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_RIGHTWRIST"); DEBUG(sb);
 				trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_RIGHTWRIST] = true;
 				hasRightHand = true;
 			}
 			// Checks Handheld next.
 			if (!hasLeftHand && InputDeviceControl.IsTracked(InputDeviceControl.ControlDevice.Left))
 			{
-				sb.Clear().Append("InitTrackingInfos() add ROLE_LEFTHANDHELD"); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_LEFTHANDHELD"); DEBUG(sb);
 				trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_LEFTHANDHELD] = true;
 				hasLeftHand = true;
 			}
 			if (!hasRightHand && InputDeviceControl.IsTracked(InputDeviceControl.ControlDevice.Right))
 			{
-				sb.Clear().Append("InitTrackingInfos() add ROLE_RIGHTHANDHELD"); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_RIGHTHANDHELD"); DEBUG(sb);
 				trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_RIGHTHANDHELD] = true;
 				hasRightHand = true;
 			}
 			// Checks Hand last.
 			if (!hasLeftHand)
 			{
-				sb.Clear().Append("InitTrackingInfos() FORCE add ROLE_LEFTHAND"); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() FORCE add ROLE_LEFTHAND"); DEBUG(sb);
 				trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_LEFTHAND] = true;
 			}
 			if (!hasRightHand)
 			{
-				sb.Clear().Append("InitTrackingInfos() FORCE add ROLE_RIGHTHAND"); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() FORCE add ROLE_RIGHTHAND"); DEBUG(sb);
 				trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_RIGHTHAND] = true;
 			}
 
@@ -1883,7 +1893,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			{
 				if (m_HipPose != null && BodyTrackingUtils.GetPoseIsTracked(m_HipPose, out isTracked, out error) && isTracked)
 				{
-					sb.Clear().Append("InitTrackingInfos() add ROLE_HIP"); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_HIP"); DEBUG(sb);
 					trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_HIP] = true;
 				}
 			}
@@ -1893,12 +1903,12 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			{
 				if (m_LeftKneePose != null && BodyTrackingUtils.GetPoseIsTracked(m_LeftKneePose, out isTracked, out error) && isTracked)
 				{
-					sb.Clear().Append("InitTrackingInfos() add ROLE_LEFTKNEE"); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_LEFTKNEE"); DEBUG(sb);
 					trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_LEFTKNEE] = true;
 				}
 				if (m_RightKneePose != null && BodyTrackingUtils.GetPoseIsTracked(m_RightKneePose, out isTracked, out error) && isTracked)
 				{
-					sb.Clear().Append("InitTrackingInfos() add ROLE_RIGHTKNEE"); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_RIGHTKNEE"); DEBUG(sb);
 					trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_RIGHTKNEE] = true;
 				}
 			}
@@ -1909,13 +1919,13 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			{
 				if (!hasLeftLeg && m_LeftAnklePose != null && BodyTrackingUtils.GetPoseIsTracked(m_LeftAnklePose, out isTracked, out error) && isTracked)
 				{
-					sb.Clear().Append("InitTrackingInfos() add ROLE_LEFTANKLE"); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_LEFTANKLE"); DEBUG(sb);
 					trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_LEFTANKLE] = true;
 					hasLeftLeg = true;
 				}
 				if (!hasRightLeg && m_RightAnklePose != null && BodyTrackingUtils.GetPoseIsTracked(m_RightAnklePose, out isTracked, out error) && isTracked)
 				{
-					sb.Clear().Append("InitTrackingInfos() add ROLE_RIGHTANKLE"); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_RIGHTANKLE"); DEBUG(sb);
 					trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_RIGHTANKLE] = true;
 					hasRightLeg = true;
 				}
@@ -1924,12 +1934,12 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			{
 				if (!hasLeftLeg && m_LeftFootPose != null && BodyTrackingUtils.GetPoseIsTracked(m_LeftFootPose, out isTracked, out error) && isTracked)
 				{
-					sb.Clear().Append("InitTrackingInfos() add ROLE_LEFTFOOT"); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_LEFTFOOT"); DEBUG(sb);
 					trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_LEFTFOOT] = true;
 				}
 				if (!hasRightLeg && m_RightFootPose != null && BodyTrackingUtils.GetPoseIsTracked(m_RightFootPose, out isTracked, out error) && isTracked)
 				{
-					sb.Clear().Append("InitTrackingInfos() add ROLE_RIGHTFOOT"); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() add ROLE_RIGHTFOOT"); DEBUG(sb);
 					trackingInfos.initRoles[(UInt32)TrackedDeviceRole.ROLE_RIGHTFOOT] = true;
 				}
 			}
@@ -1938,7 +1948,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			if (result == BodyTrackingResult.SUCCESS)
 			{
 				BodyPoseRole ikRoles = GetIKRoles(mode);
-				sb.Clear().Append("InitTrackingInfos() ikRoles: ").Append(ikRoles.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("InitTrackingInfos() ikRoles: ").Append(ikRoles.Name()); DEBUG(sb);
 			}
 
 			return result;
@@ -1966,7 +1976,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add head with poseState ").Append(head.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add head with poseState ").Append(head.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(head);
@@ -1976,7 +1986,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add hip with poseState ").Append(hip.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add hip with poseState ").Append(hip.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(hip);
@@ -1987,7 +1997,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add leftWrist with poseState ").Append(leftWrist.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add leftWrist with poseState ").Append(leftWrist.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(leftWrist);
@@ -1997,7 +2007,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add leftHand with poseState ").Append(leftHand.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add leftHand with poseState ").Append(leftHand.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(leftHand);
@@ -2006,7 +2016,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add leftHandheld with poseState ").Append(leftHandheld.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add leftHandheld with poseState ").Append(leftHandheld.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(leftHandheld);
@@ -2017,7 +2027,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add rightWrist with poseState ").Append(rightWrist.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add rightWrist with poseState ").Append(rightWrist.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(rightWrist);
@@ -2027,7 +2037,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add rightHand with poseState ").Append(rightHand.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add rightHand with poseState ").Append(rightHand.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(rightHand);
@@ -2036,7 +2046,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add rightHandheld with poseState ").Append(rightHandheld.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add rightHandheld with poseState ").Append(rightHandheld.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(rightHandheld);
@@ -2047,7 +2057,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add leftKnee with poseState ").Append(leftKnee.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add leftKnee with poseState ").Append(leftKnee.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(leftKnee);
@@ -2057,7 +2067,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add leftAnkle with poseState ").Append(leftAnkle.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add leftAnkle with poseState ").Append(leftAnkle.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(leftAnkle);
@@ -2066,7 +2076,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add leftFoot with poseState ").Append(leftFoot.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add leftFoot with poseState ").Append(leftFoot.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(leftFoot);
@@ -2077,7 +2087,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add rightKnee with poseState ").Append(rightKnee.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add rightKnee with poseState ").Append(rightKnee.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(rightKnee);
@@ -2087,7 +2097,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add rightAnkle with poseState ").Append(rightAnkle.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add rightAnkle with poseState ").Append(rightAnkle.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(rightAnkle);
@@ -2096,7 +2106,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				{
 					if (printIntervalLog || getDevicePosesFirstTime)
 					{
-						sb.Clear().Append("GetTrackedDevicePoses() Add rightFoot with poseState ").Append(rightFoot.poseState);
+						sb.Clear().Append(LOG_TAG).Append("GetTrackedDevicePoses() Add rightFoot with poseState ").Append(rightFoot.poseState);
 						DEBUG(sb);
 					}
 					poses.Add(rightFoot);
@@ -2123,7 +2133,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		{
 			if (printIntervalLog || getDevicePosesFirstTime)
 			{
-				sb.Clear().Append("GetIKRoles() mode: ").Append(mode.Name())
+				sb.Clear().Append(LOG_TAG).Append("GetIKRoles() mode: ").Append(mode.Name())
 					.Append(", last m_BodyPoseRole: ").Append(m_BodyPoseRole.Name());
 				DEBUG(sb);
 			}
@@ -2486,7 +2496,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				return m_sb;
 			}
 		}
-		static void DEBUG(StringBuilder msg) { Debug.Log(LOG_TAG + " " + msg); }
+		static void DEBUG(StringBuilder msg) { Debug.Log(msg); }
 		static int logFrame = -1;
 		static bool fbtIntervalLog = false;
 
@@ -2515,29 +2525,32 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			ref int skeletonId,
 			AvatarType avatarType = AvatarType.TPOSE)
 		{
-			sb.Clear();
-			sb.Append("InitBodyTracking() ").Append(ts).Append(", bodyTrackingMode: ").Append(bodyTrackingMode.Name()).Append("\n");
+			sb.Clear().Append(LOG_TAG).Append("InitBodyTracking() ").Append(ts).Append(" bodyTrackingMode: ").Append(bodyTrackingMode.Name()); DEBUG(sb);
 
-			sb.Append("deviceCount: ").Append(deviceCount).Append("\n");
+			sb.Clear().Append(LOG_TAG).Append("deviceCount: ").Append(deviceCount); DEBUG(sb);
 			for (UInt32 i = 0; i < deviceCount; i++)
 			{
-				sb.Append("trackedDeviceExt[").Append(i).Append("] ").Append(trackedDeviceExt[i].Log()).Append("\n");
-			}
-
-			sb.Append("avatarJointCount: ").Append(avatarJointCount);
-			DEBUG(sb);
-
-			for (UInt32 i = 0; i < avatarJointCount; i++)
-			{
-				sb.Clear();
-				sb.Append("avatarJoints[").Append(i).Append("] ").Append(avatarJoints[i].Log());
+				sb.Clear().Append(LOG_TAG).Append("InitBodyTracking() trackedDeviceExt[").Append(i).Append("] role: ").Append(trackedDeviceExt[i].trackedDeviceRole.Name())
+					.Append(", position (").Append(trackedDeviceExt[i].extrinsic.translation.x.ToString("N2")).Append(", ").Append(trackedDeviceExt[i].extrinsic.translation.y.ToString("N2")).Append(", ").Append(trackedDeviceExt[i].extrinsic.translation.z.ToString("N2")).Append(")")
+					.Append(", rotation (").Append(trackedDeviceExt[i].extrinsic.rotation.x.ToString("N2")).Append(", ").Append(trackedDeviceExt[i].extrinsic.rotation.y.ToString("N2")).Append(", ").Append(trackedDeviceExt[i].extrinsic.rotation.z.ToString("N2")).Append(", ").Append(trackedDeviceExt[i].extrinsic.rotation.w.ToString("N2")).Append(")");
 				DEBUG(sb);
 			}
 
-			sb.Clear();
-			sb.Append("avatarHeight: ").Append(avatarHeight).Append("\n");
-			sb.Append("skeletonId: ").Append(skeletonId).Append("\n");
-			sb.Append("avatarType: ").Append(avatarType);
+			sb.Append("InitBodyTracking() avatarJointCount: ").Append(avatarJointCount); DEBUG(sb);
+			for (UInt32 i = 0; i < avatarJointCount; i++)
+			{
+				sb.Clear().Append(LOG_TAG).Append("InitBodyTracking() avatarJoints[").Append(i).Append("] jointType: ").Append(avatarJoints[i].jointType.Name())
+					.Append(", poseState: ").Append(avatarJoints[i].poseState)
+					.Append(", position (").Append(avatarJoints[i].translation.x.ToString("N2")).Append(", ").Append(avatarJoints[i].translation.y.ToString("N2")).Append(", ").Append(avatarJoints[i].translation.z.ToString("N2")).Append(")")
+					.Append(", rotation (").Append(avatarJoints[i].rotation.x.ToString("N2")).Append(", ").Append(avatarJoints[i].rotation.y.ToString("N2")).Append(", ").Append(avatarJoints[i].rotation.z.ToString("N2")).Append(", ").Append(avatarJoints[i].rotation.w.ToString("N2")).Append(")")
+					.Append(", velocity (").Append(avatarJoints[i].velocity.x.ToString("N2")).Append(", ").Append(avatarJoints[i].velocity.y.ToString("N2")).Append(", ").Append(avatarJoints[i].velocity.z.ToString("N2")).Append(")")
+					.Append(", angularVelocity (").Append(avatarJoints[i].angularVelocity.x.ToString("N2")).Append(", ").Append(avatarJoints[i].angularVelocity.y.ToString("N2")).Append(", ").Append(avatarJoints[i].angularVelocity.z.ToString("N2")).Append(")");
+				DEBUG(sb);
+			}
+
+			sb.Clear().Append(LOG_TAG).Append("InitBodyTracking() avatarHeight: ").Append(avatarHeight)
+				.Append("skeletonId: ").Append(skeletonId)
+				.Append("avatarType: ").Append(avatarType);
 			DEBUG(sb);
 
 			return InitBodyTracking(ts, bodyTrackingMode, trackedDeviceExt, deviceCount, avatarJoints, avatarJointCount, avatarHeight, ref skeletonId);
@@ -2578,19 +2591,23 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			TrackedDevicePose[] trackedDevicePose, UInt32 deviceCount,
 			ref float scale, CalibrationType calibrationType = CalibrationType.DEFAULTCALIBRATION)
 		{
-			sb.Clear().Append("CalibrateBodyTracking() ").Append(ts)
-				.Append(", id: ").Append(skeletonId)
+			sb.Clear().Append(LOG_TAG).Append("CalibrateBodyTracking() ").Append(ts).Append(", id: ").Append(skeletonId)
 				.Append("bodyTrackingMode: ").Append(bodyTrackingMode.Name());
 			DEBUG(sb);
 
-			sb.Clear().Append("deviceCount: ").Append(deviceCount); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("deviceCount: ").Append(deviceCount); DEBUG(sb);
 			for (UInt32 i = 0; i < deviceCount; i++)
 			{
-				sb.Clear().Append("trackedDevicePose[").Append(i).Append("] ").Append(trackedDevicePose[i].Log());
+				sb.Clear().Append(LOG_TAG).Append("UpdateBodyTracking() trackedDevicePose[").Append(i).Append("] role: ").Append(trackedDevicePose[i].trackedDeviceRole.Name())
+					.Append(", position (").Append(trackedDevicePose[i].translation.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].translation.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].translation.z.ToString("N2")).Append(")")
+					.Append(", rotation (").Append(trackedDevicePose[i].rotation.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].rotation.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].rotation.z.ToString("N2")).Append(", ").Append(trackedDevicePose[i].rotation.w.ToString("N2")).Append(")")
+					.Append(", velocity (").Append(trackedDevicePose[i].velocity.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].velocity.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].velocity.z.ToString("N2")).Append(")")
+					.Append(", acceleration (").Append(trackedDevicePose[i].acceleration.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].acceleration.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].acceleration.z.ToString("N2")).Append(")")
+					.Append(", angularVelocity (").Append(trackedDevicePose[i].angularVelocity.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].angularVelocity.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].angularVelocity.z.ToString("N2")).Append(")");
 				DEBUG(sb);
 			}
 
-			sb.Clear().Append("scale: ").Append(scale).Append(", calibrationType: ").Append(calibrationType.Name());
+			sb.Clear().Append(LOG_TAG).Append("scale: ").Append(scale).Append(", calibrationType: ").Append(calibrationType.Name());
 			DEBUG(sb);
 
 			return CalibrateBodyTracking(ts, skeletonId, userHeight, bodyTrackingMode, trackedDevicePose, deviceCount, ref scale, calibrationType);
@@ -2624,33 +2641,31 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			TrackedDevicePose[] trackedDevicePose, UInt32 deviceCount,
 			[In, Out] Joint[] outJoint, UInt32 jointCount)
 		{
-			logFrame++;
-			logFrame %= 300;
-			fbtIntervalLog = (logFrame == 0);
+			sb.Clear().Append(LOG_TAG).Append("UpdateBodyTracking() ").Append(ts).Append(", id: ").Append(skeletonId).Append(", deviceCount: ").Append(deviceCount);
+			DEBUG(sb);
+			for (UInt32 i = 0; i < deviceCount; i++)
+			{
+				sb.Clear().Append(LOG_TAG).Append("UpdateBodyTracking() trackedDevicePose[").Append(i).Append("] role: ").Append(trackedDevicePose[i].trackedDeviceRole.Name())
+					.Append(", position (").Append(trackedDevicePose[i].translation.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].translation.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].translation.z.ToString("N2")).Append(")")
+					.Append(", rotation (").Append(trackedDevicePose[i].rotation.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].rotation.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].rotation.z.ToString("N2")).Append(", ").Append(trackedDevicePose[i].rotation.w.ToString("N2")).Append(")")
+					.Append(", velocity (").Append(trackedDevicePose[i].velocity.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].velocity.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].velocity.z.ToString("N2")).Append(")")
+					.Append(", acceleration (").Append(trackedDevicePose[i].acceleration.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].acceleration.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].acceleration.z.ToString("N2")).Append(")")
+					.Append(", angularVelocity (").Append(trackedDevicePose[i].angularVelocity.x.ToString("N2")).Append(", ").Append(trackedDevicePose[i].angularVelocity.y.ToString("N2")).Append(", ").Append(trackedDevicePose[i].angularVelocity.z.ToString("N2")).Append(")");
+				DEBUG(sb);
+			}
 
 			Result result = UpdateBodyTracking(ts, skeletonId, trackedDevicePose, deviceCount, outJoint, jointCount);
-			if (fbtIntervalLog && result == Result.SUCCESS)
+			if (result == Result.SUCCESS)
 			{
-				sb.Clear();
-				sb.Append("UpdateBodyTracking() ").Append(ts).Append(", id: ").Append(skeletonId).Append("\n");
-				sb.Append("deviceCount: ").Append(deviceCount).Append("\n");
+				sb.Clear().Append(LOG_TAG).Append("UpdateBodyTracking() jointCount: ").Append(jointCount);
 				DEBUG(sb);
-
-				for (UInt32 i = 0; i < deviceCount; i++)
-				{
-					sb.Clear();
-					sb.Append("trackedDevicePose[").Append(i).Append("] ").Append(trackedDevicePose[i].Log());
-					DEBUG(sb);
-				}
-
-				sb.Clear();
-				sb.Append("jointCount: ").Append(jointCount);
-				DEBUG(sb);
-
 				for (UInt32 i = 0; i < jointCount; i++)
 				{
-					sb.Clear();
-					sb.Append("outJoint[").Append(i).Append("] ").Append(outJoint[i].Log());
+					sb.Clear().Append(LOG_TAG).Append("UpdateBodyTracking() outJoint[").Append(i).Append("] jointType: ").Append(outJoint[i].jointType.Name())
+						.Append(", position (").Append(outJoint[i].translation.x.ToString("N2")).Append(", ").Append(outJoint[i].translation.y.ToString("N2")).Append(", ").Append(outJoint[i].translation.z.ToString("N2")).Append(")")
+						.Append(", rotation (").Append(outJoint[i].rotation.x.ToString("N2")).Append(", ").Append(outJoint[i].rotation.y.ToString("N2")).Append(", ").Append(outJoint[i].rotation.z.ToString("N2")).Append(", ").Append(outJoint[i].rotation.w.ToString("N2")).Append(")")
+						.Append(", velocity (").Append(outJoint[i].velocity.x.ToString("N2")).Append(", ").Append(outJoint[i].velocity.y.ToString("N2")).Append(", ").Append(outJoint[i].velocity.z.ToString("N2")).Append(")")
+						.Append(", angularVelocity (").Append(outJoint[i].angularVelocity.x.ToString("N2")).Append(", ").Append(outJoint[i].angularVelocity.y.ToString("N2")).Append(", ").Append(outJoint[i].angularVelocity.z.ToString("N2")).Append(")");
 					DEBUG(sb);
 				}
 			}
@@ -2695,8 +2710,8 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				return m_sb;
 			}
 		}
-		static void DEBUG(StringBuilder msg) { Debug.Log(LOG_TAG + " " + msg); }
-		static void ERROR(StringBuilder msg) { Debug.LogError(LOG_TAG + " " + msg); }
+		static void DEBUG(StringBuilder msg) { Debug.Log(msg); }
+		static void ERROR(StringBuilder msg) { Debug.LogError(msg); }
 
 		#region Input System
 		public enum ActionRefError : UInt32
@@ -2915,7 +2930,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 			if (role == TrackedDeviceRole.ROLE_UNDEFINED) { return "UNDEFINED"; }
 
-			sb.Clear().Append("TrackedDeviceRole = ").Append(role); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("TrackedDeviceRole = ").Append(role); DEBUG(sb);
 			return "";
 		}
 		public static string Name(this DeviceExtRole role)
@@ -2935,7 +2950,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 			if (role == DeviceExtRole.Unknown) { return "Unknown"; }
 
-			sb.Clear().Append("DeviceExtRole = ").Append(role); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("DeviceExtRole = ").Append(role); DEBUG(sb);
 			return "";
 		}
 		public static string Name(this BodyPoseRole role)
@@ -2960,7 +2975,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 
 			if (role == BodyPoseRole.Unknown) { return "Unknown"; }
 
-			sb.Clear().Append("BodyPoseRole = ").Append(role); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("BodyPoseRole = ").Append(role); DEBUG(sb);
 			return "";
 		}
 		public static string Name(this BodyTrackingMode mode)
@@ -2974,7 +2989,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			if (mode == BodyTrackingMode.UPPERBODYIK) { return "UPPERBODYIK"; }
 			if (mode == BodyTrackingMode.UPPERIKANDLEGFK) { return "UPPERIKANDLEGFK"; }
 
-			sb.Clear().Append("BodyTrackingMode = ").Append(mode); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("BodyTrackingMode = ").Append(mode); DEBUG(sb);
 			return "";
 		}
 		public static string Name(this BodyTrackingResult result)
@@ -2997,7 +3012,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			if (result == BodyTrackingResult.ERROR_TRACKER_AMOUNT_FAILED) { return "ERROR_TRACKER_AMOUNT_FAILED"; }
 			if (result == BodyTrackingResult.SUCCESS) { return "SUCCESS"; }
 
-			sb.Clear().Append("BodyTrackingResult = ").Append(result); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("BodyTrackingResult = ").Append(result); DEBUG(sb);
 			return "";
 		}
 		public static string Name(this JointType type)
@@ -3036,7 +3051,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			if (type == JointType.RIGHTFOREARM) { return "RIGHTFOREARM"; }
 			if (type == JointType.RIGHTHAND) { return "RIGHTHAND"; }
 
-			sb.Clear().Append("JointType = ").Append(type); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("JointType = ").Append(type); DEBUG(sb);
 			return "";
 		}
 		public static string Name(this CalibrationType type)
@@ -3045,7 +3060,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			if (type == CalibrationType.HEIGHTCALIBRATION) { return "HEIGHTCALIBRATION"; }
 			if (type == CalibrationType.TOFFSETCALIBRATION) { return "TOFFSETCALIBRATION"; }
 
-			sb.Clear().Append("CalibrationType = ").Append(type); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("CalibrationType = ").Append(type); DEBUG(sb);
 			return "";
 		}
 
@@ -3086,7 +3101,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		public static BodyPoseRole GetBodyPoseRole([In] TrackedDevicePose[] trackedDevicePoses, [In] UInt32 trackedDevicePoseCount)
 		{
 			UInt64 ikRoles = 0;
-			sb.Clear();
+			sb.Clear().Append(LOG_TAG);
 			for (UInt32 i = 0; i < trackedDevicePoseCount; i++)
 			{
 				sb.Append("GetBodyPoseRole() pose ").Append(i)
@@ -3138,13 +3153,13 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			else if ((ikRoles & (UInt64)BodyPoseRole.Arm_Hand) == (UInt64)BodyPoseRole.Arm_Hand)
 				m_IKRoles = BodyPoseRole.Arm_Hand;
 
-			sb.Clear().Append("GetBodyPoseRole() role: ").Append(m_IKRoles.Name()); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("GetBodyPoseRole() role: ").Append(m_IKRoles.Name()); DEBUG(sb);
 			return m_IKRoles;
 		}
 		/// <summary> Checks if the body pose role and body tracking mode are matched./// </summary>
 		public static bool MatchBodyTrackingMode(BodyTrackingMode mode, BodyPoseRole poseRole)
 		{
-			sb.Clear().Append("MatchBodyTrackingMode() mode: ").Append(mode.Name()).Append(", poseRole: ").Append(poseRole.Name()); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("MatchBodyTrackingMode() mode: ").Append(mode.Name()).Append(", poseRole: ").Append(poseRole.Name()); DEBUG(sb);
 
 			if (poseRole == BodyPoseRole.UpperBody_Handheld_Knee_Ankle || poseRole == BodyPoseRole.UpperBody_Hand_Knee_Ankle)
 			{
@@ -3175,10 +3190,10 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		/// <summary> Retrievs the device extrinsic role according to the calibration pose role and tracked device extrinsics in use. </summary>
 		public static DeviceExtRole GetDeviceExtRole(BodyPoseRole calibRole, [In] TrackedDeviceExtrinsic[] bodyTrackedDevices, [In] UInt32 bodyTrackedDeviceCount)
 		{
-			sb.Clear().Append("GetDeviceExtRole() calibRole: ").Append(calibRole.Name()); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("GetDeviceExtRole() calibRole: ").Append(calibRole.Name()); DEBUG(sb);
 
 			UInt64 ikRoles = 0;
-			sb.Clear();
+			sb.Clear().Append(LOG_TAG);
 			for (UInt32 i = 0; i < bodyTrackedDeviceCount; i++)
 			{
 				sb.Append("GetDeviceExtRole() device ").Append(i)
@@ -3245,13 +3260,13 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 					m_IKRoles = DeviceExtRole.Arm_Handheld_Hand;
 			}
 
-			sb.Clear().Append("GetDeviceExtRole() role: ").Append(m_IKRoles.Name()); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("GetDeviceExtRole() role: ").Append(m_IKRoles.Name()); DEBUG(sb);
 			return m_IKRoles;
 		}
 		/// <summary> Checks if the device extrinsic role and body tracking mode are matched./// </summary>
 		public static bool MatchBodyTrackingMode(BodyTrackingMode mode, DeviceExtRole extRole)
 		{
-			sb.Clear().Append("MatchBodyTrackingMode() mode: ").Append(mode.Name()).Append(", extRole: ").Append(extRole.Name()); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("MatchBodyTrackingMode() mode: ").Append(mode.Name()).Append(", extRole: ").Append(extRole.Name()); DEBUG(sb);
 
 			if (mode == BodyTrackingMode.ARMIK)
 			{
@@ -3338,7 +3353,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 					{
 						if (!GetPoseRotation(action, out pose.rotation, out error))
 						{
-							sb.Clear().Append(func).Append("Invalid ").Append(role.Name()).Append(" rotation, error: ").Append(error); ERROR(sb);
+							sb.Clear().Append(LOG_TAG).Append(func).Append("Invalid ").Append(role.Name()).Append(" rotation, error: ").Append(error); ERROR(sb);
 							return BodyTrackingResult.ERROR_INPUTPOSE_NOT_VALID;
 						}
 						pose.poseState |= PoseState.ROTATION;
@@ -3347,7 +3362,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 					{
 						if (!GetPosePosition(action, out pose.translation, out error))
 						{
-							sb.Clear().Append(func).Append("Invalid ").Append(role.Name()).Append(" position, error: ").Append(error); ERROR(sb);
+							sb.Clear().Append(LOG_TAG).Append(func).Append("Invalid ").Append(role.Name()).Append(" position, error: ").Append(error); ERROR(sb);
 							return BodyTrackingResult.ERROR_INPUTPOSE_NOT_VALID;
 						}
 						pose.poseState |= PoseState.TRANSLATION;

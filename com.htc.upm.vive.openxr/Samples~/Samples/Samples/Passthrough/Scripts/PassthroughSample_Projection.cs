@@ -37,18 +37,22 @@ namespace VIVE.OpenXR.CompositionLayer.Samples.Passthrough
 			if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.B)) //Set Passthrough as Overlay
 			{
 				SetPassthroughToOverlay();
+				if (activePassthroughID != 0)  SetPassthroughMesh();
 			}
 			if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.A)) //Set Passthrough as Underlay
 			{
 				SetPassthroughToUnderlay();
+				if (activePassthroughID != 0) SetPassthroughMesh();
 			}
 			if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.X)) //Switch to world lock
 			{
 				SetWorldLock();
+				if (activePassthroughID != 0) SetPassthroughMesh();
 			}
 			if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.Y)) //Switch to head lock
 			{
 				SetHeadLock();
+				if (activePassthroughID != 0) SetPassthroughMesh();
 			}
 
 			if (passthroughMesh != null && passthroughMeshTransform != null)
@@ -56,10 +60,6 @@ namespace VIVE.OpenXR.CompositionLayer.Samples.Passthrough
                 if (activePassthroughID == 0)
                 {
                     StartPassthrough();
-                }
-                else
-                {
-                    SetPassthroughMesh();
                 }
             }
         }
@@ -114,7 +114,8 @@ namespace VIVE.OpenXR.CompositionLayer.Samples.Passthrough
             if (activePassthroughID != 0)
             {
                 scaleModifier = newScaleModifier;
-            }
+				SetPassthroughMesh();
+			}
         }
 
         void StartPassthrough()

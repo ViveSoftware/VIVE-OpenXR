@@ -100,6 +100,9 @@ namespace VIVE.OpenXR.CompositionLayer
 		public bool applyColorScaleBias = false;
 
 		[SerializeField]
+		public bool solidEffect = false;
+
+		[SerializeField]
 		public Color colorScale = Color.white;
 
 		[SerializeField]
@@ -457,7 +460,7 @@ namespace VIVE.OpenXR.CompositionLayer
 				{
 					if (layerType == LayerType.Underlay)
 					{
-						if (!enabledColorScaleBiasInShader)
+						//if (!enabledColorScaleBiasInShader)
 						{
 							if (generatedUnderlayMeshRenderer != null && generatedUnderlayMeshRenderer.material != null)
 							{
@@ -482,6 +485,11 @@ namespace VIVE.OpenXR.CompositionLayer
 
 					UnityToOpenXRConversionHelper.GetOpenXRColor4f(colorScale, ref CompositionLayerParamsColorScaleBias.colorScale);
 					UnityToOpenXRConversionHelper.GetOpenXRColor4f(colorBias, ref CompositionLayerParamsColorScaleBias.colorBias);
+					if (!solidEffect && enabledColorScaleBiasInShader)
+					{
+						CompositionLayerParamsColorScaleBias.colorScale.a = 1.0f;
+						CompositionLayerParamsColorScaleBias.colorBias.a = 0.0f;
+					}
 
 					compositionLayerColorScaleBias.Submit_CompositionLayerColorBias(CompositionLayerParamsColorScaleBias, layerID);
 				}
@@ -616,6 +624,11 @@ namespace VIVE.OpenXR.CompositionLayer
 			CompositionLayerParamsQuad.type = XrStructureType.XR_TYPE_COMPOSITION_LAYER_QUAD;
 			CompositionLayerParamsQuad.layerFlags = ViveCompositionLayerHelper.XR_COMPOSITION_LAYER_CORRECT_CHROMATIC_ABERRATION_BIT | ViveCompositionLayerHelper.XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;
 
+			if (!enabledColorScaleBiasInShader)
+			{
+				CompositionLayerParamsQuad.layerFlags |= ViveCompositionLayerHelper.XR_COMPOSITION_LAYER_UNPREMULTIPLIED_ALPHA_BIT;
+			}
+
 			switch (layerVisibility)
 			{
 				default:
@@ -682,6 +695,11 @@ namespace VIVE.OpenXR.CompositionLayer
 
 			CompositionLayerParamsCylinder.type = XrStructureType.XR_TYPE_COMPOSITION_LAYER_CYLINDER_KHR;
 			CompositionLayerParamsCylinder.layerFlags = ViveCompositionLayerHelper.XR_COMPOSITION_LAYER_CORRECT_CHROMATIC_ABERRATION_BIT | ViveCompositionLayerHelper.XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;
+
+			if (!enabledColorScaleBiasInShader)
+			{
+				CompositionLayerParamsCylinder.layerFlags |= ViveCompositionLayerHelper.XR_COMPOSITION_LAYER_UNPREMULTIPLIED_ALPHA_BIT;
+			}
 
 			if (isHeadLock)
 			{
@@ -1419,7 +1437,10 @@ namespace VIVE.OpenXR.CompositionLayer
 
 					generatedUnderlayMeshRenderer = generatedUnderlayMesh.AddComponent<MeshRenderer>();
 					generatedUnderlayMeshFilter = generatedUnderlayMesh.AddComponent<MeshFilter>();
-					generatedUnderlayMeshRenderer.sharedMaterial = new Material(Shader.Find("VIVE/OpenXR/CompositionLayer/UnderlayAlphaZero"));
+					if (solidEffect)
+						generatedUnderlayMeshRenderer.sharedMaterial = new Material(Shader.Find("VIVE/OpenXR/CompositionLayer/UnderlayAlphaZeroSolid"));
+					else
+						generatedUnderlayMeshRenderer.sharedMaterial = new Material(Shader.Find("VIVE/OpenXR/CompositionLayer/UnderlayAlphaZero"));
 					generatedUnderlayMeshRenderer.material.mainTexture = texture;
 
 					//Generate Mesh
@@ -1441,7 +1462,10 @@ namespace VIVE.OpenXR.CompositionLayer
 
 					generatedUnderlayMeshRenderer = generatedUnderlayMesh.AddComponent<MeshRenderer>();
 					generatedUnderlayMeshFilter = generatedUnderlayMesh.AddComponent<MeshFilter>();
-					generatedUnderlayMeshRenderer.material = new Material(Shader.Find("VIVE/OpenXR/CompositionLayer/UnderlayAlphaZero"));
+					if (solidEffect)
+						generatedUnderlayMeshRenderer.material = new Material(Shader.Find("VIVE/OpenXR/CompositionLayer/UnderlayAlphaZeroSolid"));
+					else
+						generatedUnderlayMeshRenderer.material = new Material(Shader.Find("VIVE/OpenXR/CompositionLayer/UnderlayAlphaZero"));
 					generatedUnderlayMeshRenderer.material.mainTexture = texture;
 
 					//Generate Mesh

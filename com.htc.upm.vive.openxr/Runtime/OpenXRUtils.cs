@@ -312,6 +312,15 @@ namespace VIVE.OpenXR
         XR_TYPE_GRAPHICS_BINDING_VULKAN2_KHR = XR_TYPE_GRAPHICS_BINDING_VULKAN_KHR,
         XR_TYPE_SWAPCHAIN_IMAGE_VULKAN2_KHR = XR_TYPE_SWAPCHAIN_IMAGE_VULKAN_KHR,
         XR_TYPE_GRAPHICS_REQUIREMENTS_VULKAN2_KHR = XR_TYPE_GRAPHICS_REQUIREMENTS_VULKAN_KHR,
+		XR_TYPE_PLANE_DETECTOR_CREATE_INFO_EXT = 1000429001,
+		XR_TYPE_PLANE_DETECTOR_BEGIN_INFO_EXT = 1000429002,
+		XR_TYPE_PLANE_DETECTOR_GET_INFO_EXT = 1000429003,
+		XR_TYPE_PLANE_DETECTOR_LOCATIONS_EXT = 1000429004,
+		XR_TYPE_PLANE_DETECTOR_LOCATION_EXT = 1000429005,
+		XR_TYPE_PLANE_DETECTOR_POLYGON_BUFFER_EXT = 1000429006,
+        XR_TYPE_SYSTEM_PLANE_DETECTION_PROPERTIES_EXT = 1000429007,
+        XR_TYPE_SYSTEM_ANCHOR_PROPERTIES_HTC = 1000319000,
+        XR_TYPE_SPATIAL_ANCHOR_CREATE_INFO_HTC = 1000319001,
         XR_STRUCTURE_TYPE_MAX_ENUM = 0x7FFFFFFF
     }
     /// <summary>
@@ -474,7 +483,13 @@ namespace VIVE.OpenXR
             y = in_y;
             z = in_z;
         }
-    }
+        public static XrVector3f Zero => new XrVector3f(0, 0, 0);
+        public static XrVector3f One => new XrVector3f(1, 1, 1);
+		public static XrVector3f Up => new XrVector3f(0, 1, 0);
+        public static XrVector3f Forward => new XrVector3f(0, 0, 1);
+        public static XrVector3f Right => new XrVector3f(1, 0, 0);
+
+	}
     /// <summary>
     /// Rotation is represented by a unit quaternion defined by the XrQuaternionf structure.
     /// </summary>
@@ -507,6 +522,7 @@ namespace VIVE.OpenXR
             z = in_z;
             w = in_w;
         }
+        public static XrQuaternionf Identity => new XrQuaternionf(0, 0, 0, 1);
     }
     /// <summary>
     /// Unless otherwise specified, colors are encoded as linear (not with sRGB nor other gamma compression) values with individual components being in the range of 0.0 through 1.0, and without the RGB components being premultiplied by the alpha component.
@@ -640,6 +656,12 @@ namespace VIVE.OpenXR
         /// An <see cref="XrVector3f">XrVector3f</see> representing position within a space.
         /// </summary>
         public XrVector3f position;
+        public XrPosef(XrQuaternionf in_orientation, XrVector3f in_position)
+        {
+			orientation = in_orientation;
+			position = in_position;
+		}
+        public static XrPosef Identity => new XrPosef(XrQuaternionf.Identity, XrVector3f.Zero);
     }
 
     /// <summary>
@@ -1221,6 +1243,15 @@ namespace VIVE.OpenXR
         XR_SPACE_LOCATION_POSITION_TRACKED_BIT = 0x00000008,
     }
 
+    public struct XrSpaceLocation
+    {
+        public XrStructureType type;
+        public System.IntPtr next;
+        public XrSpaceLocationFlags locationFlags;
+        public XrPosef pose;
+    }
+
+    [Flags]
     public enum XrInputSourceLocalizedNameFlags : UInt64
 	{
         /// <summary>
@@ -1931,7 +1962,51 @@ namespace VIVE.OpenXR
         public IntPtr next;
         public XrBool32 isActive;
     };
-
+    /// <summary>
+    /// A structure indicates the frameWaitInfo.
+    /// </summary>
+    public struct XrFrameWaitInfo
+    {
+        /// <summary>
+        /// The <see cref="XrStructureType">XrStructureType</see> of this structure.
+        /// </summary>
+        public XrStructureType type;
+        /// <summary>
+        /// next is NULL or a pointer to the next structure in a structure chain. No such structures are defined in core OpenXR.
+        /// </summary>
+        public IntPtr next;
+        public XrFrameWaitInfo(IntPtr next_, XrStructureType type_)
+        {
+            next = next_;
+            type = type_;
+        }
+    }
+    /// <summary>
+    /// A structure indicates the frameState.
+    /// </summary>
+    public struct XrFrameState
+    {
+        /// <summary>
+        /// The <see cref="XrStructureType">XrStructureType</see> of this structure.
+        /// </summary>
+        public XrStructureType type;
+        /// <summary>
+        /// next is NULL or a pointer to the next structure in a structure chain. No such structures are defined in core OpenXR.
+        /// </summary>
+        public IntPtr next;
+        /// <summary>
+        /// predictedDisplayTime is the anticipated display XrTime for the next application-generated frame.
+        /// </summary>
+        public Int64 predictedDisplayTime;
+        /// <summary>
+        /// predictedDisplayPeriod is the XrDuration of the display period for the next application-generated frame, for use in predicting display times beyond the next one.
+        /// </summary>
+        public Int64 predictedDisplayPeriod;
+        /// <summary>
+        /// shouldRender is XR_TRUE if the application should render its layers as normal and submit them to xrEndFrame. When this value is XR_FALSE, the application should avoid heavy GPU work where possible, for example by skipping layer rendering and then omitting those layers when calling xrEndFrame.
+        /// </summary>
+        public bool shouldRender;
+    }
     public static class OpenXRHelper
     {
         /// <summary>
@@ -2224,6 +2299,59 @@ namespace VIVE.OpenXR
             ref UInt32 bufferCountOutput,
             [In, Out] char[] buffer);
 
+        public static XrResult GetInputSourceName(
+            xrGetInputSourceLocalizedNameDelegate xrGetInputSourceLocalizedName,
+            XrSession session,
+            ref XrInputSourceLocalizedNameGetInfo nameInfo,
+            out string sourceName)
+        {
+            string func = "GetInputSourceName() ";
+
+            sourceName = "";
+            if (xrGetInputSourceLocalizedName == null) { return XrResult.XR_ERROR_VALIDATION_FAILURE; }
+
+            sb.Clear().Append(LOG_TAG).Append(func).Append("path: ").Append(nameInfo.sourcePath).Append(", flag: ").Append((UInt64)nameInfo.whichComponents); DEBUG(sb);
+
+            UInt32 nameSizeIn = 0;
+            UInt32 nameSizeOut = 0;
+            char[] buffer = new char[0];
+
+            XrResult result = xrGetInputSourceLocalizedName(session, ref nameInfo, nameSizeIn, ref nameSizeOut, buffer);
+            sb.Clear().Append(LOG_TAG).Append(func)
+                .Append("1.xrGetInputSourceLocalizedName(").Append(nameInfo.sourcePath).Append(") result: ").Append(result)
+                .Append(", flag: ").Append((UInt64)nameInfo.whichComponents)
+                .Append(", bufferCapacityInput: ").Append(nameSizeIn)
+                .Append(", bufferCountOutput: ").Append(nameSizeOut);
+            DEBUG(sb);
+            if (result == XrResult.XR_SUCCESS)
+            {
+                if (nameSizeOut < 1)
+                {
+                    sb.Clear().Append(LOG_TAG).Append(func)
+                        .Append("xrGetInputSourceLocalizedName(").Append(nameInfo.sourcePath).Append(")")
+                        .Append(", flag: ").Append((UInt64)nameInfo.whichComponents)
+                        .Append("bufferCountOutput size is invalid!");
+                    ERROR(sb);
+                    return XrResult.XR_ERROR_VALIDATION_FAILURE;
+                }
+
+                nameSizeIn = nameSizeOut;
+                buffer = new char[nameSizeIn];
+
+                result = xrGetInputSourceLocalizedName(session, ref nameInfo, nameSizeIn, ref nameSizeOut, buffer);
+                sb.Clear().Append(LOG_TAG).Append(func)
+                    .Append("2.xrGetInputSourceLocalizedName(").Append(nameInfo.sourcePath).Append(") result: ").Append(result)
+                    .Append(", flag: ").Append((UInt64)nameInfo.whichComponents)
+                    .Append(", bufferCapacityInput: ").Append(nameSizeIn)
+                    .Append(", bufferCountOutput: ").Append(nameSizeOut);
+                DEBUG(sb);
+                if (result == XrResult.XR_SUCCESS) { sourceName = new string(buffer).TrimEnd('\0'); }
+            }
+
+            return result;
+        }
+
+
         public delegate XrResult xrEnumerateInstanceExtensionPropertiesDelegate(
             [In] char[] layerName,
             UInt32 propertyCapacityInput,
@@ -2313,9 +2441,46 @@ namespace VIVE.OpenXR
             XrSession session,
             ref XrActionStateGetInfo getInfo,
             ref XrActionStatePose state);
+        /// <summary>
+        /// The function delegate declaration of <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrWaitFrame">xrWaitFrame</see>.
+        /// </summary>
+        /// <param name="session">A handle to an XrSession previously created with <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrCreateSession">xrCreateSession</see>.</param>
+        /// <param name="frameWaitInfo">frameWaitInfo exists for extensibility purposes, it is NULL or a pointer to a valid XrFrameWaitInfo.</param>
+        /// <param name="frameState">frameState is a pointer to a valid XrFrameState, an output parameter.</param>
+        /// <returns></returns>
+        public delegate int xrWaitFrameDelegate(ulong session, ref XrFrameWaitInfo frameWaitInfo, ref XrFrameState frameState);
+
+        /// <summary>
+        /// Help call xrGetInstanceProcAddr and convert the result to delegate.\
+        /// For example, "OpenXRHelper.GetXrFunctionDelegate(GetAddr, xrInstance, "xrGetSystemProperties", out XrGetSystemProperties);"
+        /// </summary>
+        /// <typeparam name="Type">The function's delegate.</typeparam>
+        /// <param name="XrGetInstanceProcAddr">Your xrGetInstanceProcAddr delegate instance.</param>
+        /// <param name="xrInstance">Your xrInstance</param>
+        /// <param name="name">The function name</param>
+        /// <param name="func">The output delegate instance.</param>
+        /// <returns>If return false, the outout delegate instance will be default.  Should not use it.</returns>
+        public static bool GetXrFunctionDelegate<Type>(xrGetInstanceProcAddrDelegate XrGetInstanceProcAddr, XrInstance xrInstance, string name, out Type func)
+        {
+            if (XrGetInstanceProcAddr(xrInstance, name, out var funcPtr) == XrResult.XR_SUCCESS)
+            {
+                if (funcPtr != IntPtr.Zero)
+                {
+                    Debug.Log("Get function pointer of " + name);
+                    func = Marshal.GetDelegateForFunctionPointer<Type>(funcPtr);
+                    return true;
+                }
+            }
+            else
+            {
+                Debug.LogError("GetXrFunctionDelegate: fail to get address of function: " + name);
+            }
+            func = default;
+            return false;
+        }
     }
 
-    public static class ClientInterface
+	public static class ClientInterface
     {
         /// <summary>
         /// Checks if the user is presence (near HMD p-sensor < 1cm).
