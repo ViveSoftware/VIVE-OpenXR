@@ -2913,7 +2913,7 @@
                 {
                     "name": "",
                     "id": "0f50c9ba-a618-4fdc-b522-d1c01bbd0c31",
-                    "path": "<ViveXRTracker>{Tracker 0}/devicePose",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 0}/devicePose",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -2924,18 +2924,7 @@
                 {
                     "name": "",
                     "id": "67becf2b-1f5a-402c-a75a-cc59352742cc",
-                    "path": "<ViveXRTracker>{Tracker 0}/isTracked",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerIsTracked",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "2b232246-e1b8-4997-b966-ac5332d43827",
-                    "path": "<ViveXRTracker>{Waist}/isTracked",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 0}/isTracked",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -2946,18 +2935,7 @@
                 {
                     "name": "",
                     "id": "e83761d0-5c4d-402f-81e3-ef82a95370bc",
-                    "path": "<ViveXRTracker>{Tracker 0}/trackingState",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerTrackingState",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "198fe503-d901-4373-92c7-3c5e125d2a96",
-                    "path": "<ViveXRTracker>{Waist}/trackingState",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 0}/trackingState",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -2968,18 +2946,7 @@
                 {
                     "name": "",
                     "id": "05e3670d-0c49-4d78-84c5-9dafefaa7c73",
-                    "path": "<ViveXRTracker>{Tracker 0}/devicePosition",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "7e527edb-8dc9-498d-8e94-0779ff25b1ca",
-                    "path": "<ViveXRTracker>{Waist}/devicePosition",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 0}/devicePosition",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -2990,18 +2957,7 @@
                 {
                     "name": "",
                     "id": "3368f3fd-9e24-4ff0-81e6-50827a733cd0",
-                    "path": "<ViveXRTracker>{Tracker 0}/deviceRotation",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerRotation",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "372d3e78-99ad-4bda-8dd1-dea317048ad6",
-                    "path": "<ViveXRTracker>{Waist}/deviceRotation",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 0}/deviceRotation",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3065,7 +3021,7 @@
                 {
                     "name": "",
                     "id": "39ea908b-c94a-4c28-8dd4-8e7cc27eecef",
-                    "path": "<ViveXRTracker>{Tracker 1}/devicePose",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 1}/devicePose",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3076,18 +3032,7 @@
                 {
                     "name": "",
                     "id": "55e50e02-1e66-41f3-af19-88bba887ffe1",
-                    "path": "<ViveXRTracker>{Tracker 1}/isTracked",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerIsTracked",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "108c54bf-df99-410a-9f68-db64bb407f4f",
-                    "path": "<ViveXRTracker>{Left Wrist}/isTracked",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 1}/isTracked",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3098,18 +3043,7 @@
                 {
                     "name": "",
                     "id": "a6c559f6-3a9d-4c94-bd87-edc3b496fd4a",
-                    "path": "<ViveXRTracker>{Tracker 1}/trackingState",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerTrackingState",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "26996720-eaa0-49ae-aae3-7b8ef9461bcb",
-                    "path": "<ViveXRTracker>{Left Wrist}/trackingState",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 1}/trackingState",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3120,18 +3054,7 @@
                 {
                     "name": "",
                     "id": "f78b6b65-0000-4a1f-af7c-77b8994c4889",
-                    "path": "<ViveXRTracker>{Tracker 1}/devicePosition",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "80fe7f0a-aa93-4c99-85a3-3722a7ae3b83",
-                    "path": "<ViveXRTracker>{Left Wrist}/devicePosition",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 1}/devicePosition",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3142,18 +3065,7 @@
                 {
                     "name": "",
                     "id": "d8831e2d-298d-45d9-b83b-95326d8b81ae",
-                    "path": "<ViveXRTracker>{Tracker 1}/deviceRotation",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerRotation",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d1d218e4-f1c2-4de0-861d-c3d8e9967f10",
-                    "path": "<ViveXRTracker>{Left Wrist}/deviceRotation",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 1}/deviceRotation",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3217,7 +3129,7 @@
                 {
                     "name": "",
                     "id": "58c0769d-c0fb-4ca0-9083-b72092b4330b",
-                    "path": "<ViveXRTracker>{Tracker 2}/devicePose",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 2}/devicePose",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3228,18 +3140,7 @@
                 {
                     "name": "",
                     "id": "b7c3b872-6aab-4a17-a47d-00f8a6342ea2",
-                    "path": "<ViveXRTracker>{Tracker 2}/isTracked",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerIsTracked",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e08d5ff0-3d73-48cf-aab6-c5f042e28544",
-                    "path": "<ViveXRTracker>{Right Wrist}/isTracked",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 2}/isTracked",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3250,18 +3151,7 @@
                 {
                     "name": "",
                     "id": "2cf01c6a-01ad-4c36-95be-7a094250b958",
-                    "path": "<ViveXRTracker>{Tracker 2}/trackingState",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerTrackingState",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bad0b111-c575-433f-bdb2-726b72dcd0a6",
-                    "path": "<ViveXRTracker>{Right Wrist}/trackingState",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 2}/trackingState",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3272,18 +3162,7 @@
                 {
                     "name": "",
                     "id": "6a7ab0ce-76b8-4788-86e7-72d5979c2f46",
-                    "path": "<ViveXRTracker>{Tracker 2}/devicePosition",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "199bde55-e74f-4125-9f05-27b64b02fac8",
-                    "path": "<ViveXRTracker>{Right Wrist}/devicePosition",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 2}/devicePosition",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3294,18 +3173,7 @@
                 {
                     "name": "",
                     "id": "0294379a-3671-48d9-aed8-0a85bd83ff0a",
-                    "path": "<ViveXRTracker>{Tracker 2}/deviceRotation",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerRotation",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ed4d0bab-fb6f-4bbf-9f82-c9db5432eaf5",
-                    "path": "<ViveXRTracker>{Right Wrist}/deviceRotation",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 2}/deviceRotation",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3369,7 +3237,7 @@
                 {
                     "name": "",
                     "id": "00370ac3-a248-496c-952c-6b9f579bc489",
-                    "path": "<ViveXRTracker>{Tracker 3}/devicePose",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 3}/devicePose",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3380,18 +3248,7 @@
                 {
                     "name": "",
                     "id": "94c99d30-8f5d-433d-aaf6-a91a9842843e",
-                    "path": "<ViveXRTracker>{Tracker 3}/isTracked",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerIsTracked",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f6b86ba5-ce0c-48fd-80ae-a303922a41fe",
-                    "path": "<ViveXRTracker>{Left Ankle}/isTracked",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 3}/isTracked",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3402,18 +3259,7 @@
                 {
                     "name": "",
                     "id": "6b6423e3-7fb8-4818-b860-8a582f9d9bc7",
-                    "path": "<ViveXRTracker>{Tracker 3}/trackingState",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerTrackingState",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "eaf2677b-df67-4683-91a2-1d17697633f0",
-                    "path": "<ViveXRTracker>{Left Ankle}/trackingState",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 3}/trackingState",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3424,18 +3270,7 @@
                 {
                     "name": "",
                     "id": "96719b23-34cf-44f3-9e99-9168e34ae34b",
-                    "path": "<ViveXRTracker>{Tracker 3}/devicePosition",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "aa50f776-a836-4cf2-bcb4-bf296aeab86b",
-                    "path": "<ViveXRTracker>{Left Ankle}/devicePosition",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 3}/devicePosition",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3446,18 +3281,7 @@
                 {
                     "name": "",
                     "id": "74dcb8d9-1fec-4d6a-be76-0e229a4d88a9",
-                    "path": "<ViveXRTracker>{Tracker 3}/deviceRotation",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerRotation",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0c7a94f3-a057-4df3-bf01-f42255f9dcd1",
-                    "path": "<ViveXRTracker>{Left Ankle}/deviceRotation",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 3}/deviceRotation",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3521,7 +3345,7 @@
                 {
                     "name": "",
                     "id": "15a15762-4360-4196-bf18-a8cfb14d890d",
-                    "path": "<ViveXRTracker>{Tracker 4}/devicePose",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 4}/devicePose",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3532,18 +3356,7 @@
                 {
                     "name": "",
                     "id": "1724a28e-3cd4-4f59-80f6-aee9363bea78",
-                    "path": "<ViveXRTracker>{Tracker 4}/isTracked",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerIsTracked",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b29e8363-237f-4fc9-a9e0-99a35aadbd22",
-                    "path": "<ViveXRTracker>{Right Ankle}/isTracked",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 4}/isTracked",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3554,18 +3367,7 @@
                 {
                     "name": "",
                     "id": "f95ec1dc-96c2-4b48-8764-ec20c0b22dde",
-                    "path": "<ViveXRTracker>{Tracker 4}/trackingState",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerTrackingState",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "2c33229b-8c55-4580-8f4d-322ae8bbb158",
-                    "path": "<ViveXRTracker>{Right Ankle}/trackingState",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 4}/trackingState",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3576,18 +3378,7 @@
                 {
                     "name": "",
                     "id": "9f2e30c1-8e40-4d6c-b842-a70f5434249c",
-                    "path": "<ViveXRTracker>{Tracker 4}/devicePosition",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "133fc9cf-fecc-4c33-90b7-076a0238c88f",
-                    "path": "<ViveXRTracker>{Right Ankle}/devicePosition",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 4}/devicePosition",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -3598,18 +3389,7 @@
                 {
                     "name": "",
                     "id": "69510ec4-ffd2-42bf-955c-32859c2ff083",
-                    "path": "<ViveXRTracker>{Tracker 4}/deviceRotation",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackerRotation",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "035621c7-7291-4ac3-a96c-f3e6026b7cdd",
-                    "path": "<ViveXRTracker>{Right Ankle}/deviceRotation",
+                    "path": "<ViveXRTracker>{Ultimate Tracker 4}/deviceRotation",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

@@ -15,7 +15,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 	public class HumanoidTracking : MonoBehaviour
 	{
 		#region Log
-		const string LOG_TAG = "VIVE.OpenXR.Toolkits.BodyTracking.HumanoidTracking";
+		const string LOG_TAG = "VIVE.OpenXR.Toolkits.BodyTracking.HumanoidTracking ";
 		StringBuilder m_sb = null;
 		StringBuilder sb {
 			get {
@@ -23,11 +23,11 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				return m_sb;
 			}
 		}
-		void DEBUG(StringBuilder msg) { Debug.Log(LOG_TAG + " " + msg); }
+		void DEBUG(StringBuilder msg) { Debug.Log(msg); }
 		int logFrame = -1;
 		bool printIntervalLog = false;
-		void WARNING(StringBuilder msg) { Debug.LogWarning(LOG_TAG + " " + msg); }
-		void ERROR(StringBuilder msg) { Debug.LogError(LOG_TAG + msg); }
+		void WARNING(StringBuilder msg) { Debug.LogWarning(msg); }
+		void ERROR(StringBuilder msg) { Debug.LogError(msg); }
 		#endregion
 
 		public enum TrackingMode : Int32
@@ -148,109 +148,109 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			m_Humanoid = GetComponent<UniHumanoid.Humanoid>();
 			if (m_Humanoid == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid."); ERROR(sb);
 				return false;
 			}
 
 			// 0.hip
 			if (m_Humanoid.Hips == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid Hips."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid Hips."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid Hips -> Body root."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid Hips -> Body root."); DEBUG(sb);
 				body.root = m_Humanoid.Hips;
 			}
 
 			// 1.leftThigh
 			if (m_Humanoid.LeftUpperLeg == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid LeftUpperLeg."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid LeftUpperLeg."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid LeftUpperLeg -> Body leftThigh."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid LeftUpperLeg -> Body leftThigh."); DEBUG(sb);
 				body.leftThigh = m_Humanoid.LeftUpperLeg;
 			}
 			// 2.leftLeg
 			if (m_Humanoid.LeftLowerLeg == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid LeftLowerLeg."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid LeftLowerLeg."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid LeftLowerLeg -> Body leftLeg."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid LeftLowerLeg -> Body leftLeg."); DEBUG(sb);
 				body.leftLeg = m_Humanoid.LeftLowerLeg;
 			}
 			// 3.leftAnkle
 			if (m_Humanoid.LeftFoot == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid LeftFoot."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid LeftFoot."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid LeftFoot -> Body leftAnkle."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid LeftFoot -> Body leftAnkle."); DEBUG(sb);
 				body.leftAnkle = m_Humanoid.LeftFoot;
 			}
 			// 4.leftFoot
 			if (m_Humanoid.LeftToes == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid LeftToes."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid LeftToes."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid LeftToes -> Body leftFoot."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid LeftToes -> Body leftFoot."); DEBUG(sb);
 				body.leftFoot = m_Humanoid.LeftToes;
 			}
 
 			// 5.rightThigh
 			if (m_Humanoid.RightUpperLeg == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid RightUpperLeg."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid RightUpperLeg."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid RightUpperLeg -> Body rightThigh."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid RightUpperLeg -> Body rightThigh."); DEBUG(sb);
 				body.rightThigh = m_Humanoid.RightUpperLeg;
 			}
 			// 6.rightLeg
 			if (m_Humanoid.RightLowerLeg == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid RightLowerLeg."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid RightLowerLeg."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid RightLowerLeg -> Body rightLeg."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid RightLowerLeg -> Body rightLeg."); DEBUG(sb);
 				body.rightLeg = m_Humanoid.RightLowerLeg;
 			}
 			// 7.rightAnkle
 			if (m_Humanoid.RightFoot == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid RightFoot."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid RightFoot."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid RightFoot -> Body rightAnkle."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid RightFoot -> Body rightAnkle."); DEBUG(sb);
 				body.rightAnkle = m_Humanoid.RightFoot;
 			}
 			// 8.rightFoot
 			if (m_Humanoid.RightToes == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid RightToes."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid RightToes."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid RightToes -> Body rightFoot."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid RightToes -> Body rightFoot."); DEBUG(sb);
 				body.rightFoot = m_Humanoid.RightToes;
 			}
 
@@ -259,135 +259,135 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			// 9.chest
 			if (m_Humanoid.UpperChest == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid UpperChest."); WARNING(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid UpperChest."); WARNING(sb);
 				if (m_Humanoid.Chest == null)
 				{
-					sb.Clear().Append("AssignHumanoidToBody() no Humanoid Chest."); ERROR(sb);
+					sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid Chest."); ERROR(sb);
 					return false;
 				}
 				else
 				{
-					sb.Clear().Append("AssignHumanoidToBody() Humanoid Chest -> Body chest."); DEBUG(sb);
+					sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid Chest -> Body chest."); DEBUG(sb);
 					body.chest = m_Humanoid.Chest;
 				}
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid UpperChest -> Body chest."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid UpperChest -> Body chest."); DEBUG(sb);
 				body.chest = m_Humanoid.UpperChest;
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid Chest -> Body spineHigh."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid Chest -> Body spineHigh."); DEBUG(sb);
 				body.spineHigh = m_Humanoid.Chest;
 			}
 			// 10.neck
 			if (m_Humanoid.Neck == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid Neck."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid Neck."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid Neck -> Body neck."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid Neck -> Body neck."); DEBUG(sb);
 				body.neck = m_Humanoid.Neck;
 			}
 			// 11.head
 			if (m_Humanoid.Head == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid Head."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid Head."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid Head -> Body head."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid Head -> Body head."); DEBUG(sb);
 				body.head = m_Humanoid.Head;
 			}
 
 			// 12.leftClavicle
 			if (m_Humanoid.LeftShoulder == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid LeftShoulder."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid LeftShoulder."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid LeftShoulder -> Body leftClavicle."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid LeftShoulder -> Body leftClavicle."); DEBUG(sb);
 				body.leftClavicle = m_Humanoid.LeftShoulder;
 			}
 			// 13.leftUpperarm
 			if (m_Humanoid.LeftUpperArm == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid LeftUpperArm."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid LeftUpperArm."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid LeftUpperArm -> Body leftUpperarm."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid LeftUpperArm -> Body leftUpperarm."); DEBUG(sb);
 				body.leftUpperarm = m_Humanoid.LeftUpperArm;
 			}
 			// 14.leftForearm
 			if (m_Humanoid.LeftLowerArm == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid LeftLowerArm."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid LeftLowerArm."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid LeftLowerArm -> Body leftForearm."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid LeftLowerArm -> Body leftForearm."); DEBUG(sb);
 				body.leftForearm = m_Humanoid.LeftLowerArm;
 			}
 			// 15.leftHand
 			if (m_Humanoid.LeftHand == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid LeftHand."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid LeftHand."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid LeftHand -> Body leftHand."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid LeftHand -> Body leftHand."); DEBUG(sb);
 				body.leftHand = m_Humanoid.LeftHand;
 			}
 
 			// 16.rightClavicle
 			if (m_Humanoid.RightShoulder == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid RightShoulder."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid RightShoulder."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid RightShoulder -> Body rightClavicle."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid RightShoulder -> Body rightClavicle."); DEBUG(sb);
 				body.rightClavicle = m_Humanoid.RightShoulder;
 			}
 			// 17.rightUpperarm
 			if (m_Humanoid.RightUpperArm == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid RightUpperArm."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid RightUpperArm."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid RightUpperArm -> Body rightUpperarm."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid RightUpperArm -> Body rightUpperarm."); DEBUG(sb);
 				body.rightUpperarm = m_Humanoid.RightUpperArm;
 			}
 			// 18.rightForearm
 			if (m_Humanoid.RightLowerArm == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid RightLowerArm."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid RightLowerArm."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid RightLowerArm -> Body rightForearm."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid RightLowerArm -> Body rightForearm."); DEBUG(sb);
 				body.rightForearm = m_Humanoid.RightLowerArm;
 			}
 			// 19.rightHand
 			if (m_Humanoid.RightHand == null)
 			{
-				sb.Clear().Append("AssignHumanoidToBody() no Humanoid RightHand."); ERROR(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() no Humanoid RightHand."); ERROR(sb);
 				return false;
 			}
 			else
 			{
-				sb.Clear().Append("AssignHumanoidToBody() Humanoid RightHand -> Body rightHand."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Humanoid RightHand -> Body rightHand."); DEBUG(sb);
 				body.rightHand = m_Humanoid.RightHand;
 			}
 
@@ -395,7 +395,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			{
 				body.height = m_AvatarHeight;
 
-				sb.Clear().Append("AssignHumanoidToBody() height: ").Append(body.height);
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() height: ").Append(body.height);
 				DEBUG(sb);
 			}
 			else
@@ -403,7 +403,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				float floor = Mathf.Min(m_Humanoid.LeftToes.position.y, m_Humanoid.RightToes.position.y);
 				body.height = m_Humanoid.Head.position.y - floor;
 
-				sb.Clear().Append("AssignHumanoidToBody() Calculates height:")
+				sb.Clear().Append(LOG_TAG).Append("AssignHumanoidToBody() Calculates height:")
 					.Append(" LeftToes (").Append(m_Humanoid.LeftToes.position.y).Append(")")
 					.Append(", RightToes(").Append(m_Humanoid.RightToes.position.y).Append(")")
 					.Append(", Head(").Append(m_Humanoid.Head.position.y).Append(")")
@@ -421,7 +421,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		{
 			if (m_CustomizeExtrinsics)
 			{
-				sb.Clear().Append("Awake() Customize device extrinsics."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("Awake() Customize device extrinsics."); DEBUG(sb);
 				m_CustomExts.Update(TrackedDeviceRole.ROLE_HEAD, m_Head);
 
 				m_CustomExts.Update(TrackedDeviceRole.ROLE_LEFTWRIST, m_LeftWrist);
@@ -442,7 +442,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 				m_CustomExts.Update(TrackedDeviceRole.ROLE_LEFTFOOT, m_LeftToes);
 				m_CustomExts.Update(TrackedDeviceRole.ROLE_RIGHTFOOT, m_RightToes);
 			}
-			sb.Clear().Append("Awake() Records the initial body position and scale."); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("Awake() Records the initial body position and scale."); DEBUG(sb);
 			m_InitialTransform = new TransformData(transform);
 		}
 		private void Update()
@@ -459,22 +459,22 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		bool updateTrackingData = false;
 		public void BeginTracking()
 		{
-			sb.Clear().Append("BeginTracking() tracking mode: ").Append(m_Tracking); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("BeginTracking() tracking mode: ").Append(m_Tracking); DEBUG(sb);
 
 			if (m_Body == null)
 			{
-				sb.Clear().Append("StartFixUpdateBodyTracking() Configures Humanoid avatar."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking() Configures Humanoid avatar."); DEBUG(sb);
 				m_Body = new Body();
 				if (!AssignHumanoidToBody(ref m_Body))
 				{
-					sb.Clear().Append("StartFixUpdateBodyTracking() AssignHumanoidToBody failed."); ERROR(sb);
+					sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking() AssignHumanoidToBody failed."); ERROR(sb);
 					m_Body = null;
 					return;
 				}
 			}
 			if (m_InitialBody == null)
 			{
-				sb.Clear().Append("BeginTracking() Records the initial standard pose."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("BeginTracking() Records the initial standard pose."); DEBUG(sb);
 				m_InitialBody = new Body();
 				m_InitialBody.UpdateData(m_Body);
 			}
@@ -485,7 +485,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		public void StopTracking()
 		{
 			updateTrackingData = false;
-			sb.Clear().Append("StopTracking() Recovers the initial standard pose, body position and scale."); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("StopTracking() Recovers the initial standard pose, body position and scale."); DEBUG(sb);
 			if (m_Body != null && m_InitialBody != null) { m_InitialBody.UpdateBody(ref m_Body); }
 			RecoverBodyScale();
 			RecoverBodyOffset();
@@ -518,36 +518,36 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 		{
 			if (BodyManager.Instance == null) { yield return null; }
 
-			sb.Clear().Append("StartFixUpdateBodyTracking()"); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking()"); DEBUG(sb);
 			yield return new WaitForSeconds(3f);
 
 			BodyTrackingResult result;
 			if (m_ContentCalibration)
 			{
 				result = BodyManager.Instance.SetStandardPose((BodyTrackingMode)m_Tracking);
-				sb.Clear().Append("StartFixUpdateBodyTracking() SetStandardPose result ").Append(result.Name()); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking() SetStandardPose result ").Append(result.Name()); DEBUG(sb);
 				if (result != BodyTrackingResult.SUCCESS) { yield break; }
 			}
 
 			if (!m_CustomizeExtrinsics)
 			{
-				sb.Clear().Append("StartFixUpdateBodyTracking() CreateBodyTracking with custom avatar + standard extrinsics."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking() CreateBodyTracking with custom avatar + standard extrinsics."); DEBUG(sb);
 				result = BodyManager.Instance.CreateBodyTracking(ref m_AvatarID, m_Body, (BodyTrackingMode)m_Tracking);
 			}
 			else
 			{
-				sb.Clear().Append("StartFixUpdateBodyTracking() CreateBodyTracking with custom avatar + custom extrinsics."); DEBUG(sb);
+				sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking() CreateBodyTracking with custom avatar + custom extrinsics."); DEBUG(sb);
 				result = BodyManager.Instance.CreateBodyTracking(ref m_AvatarID, m_Body, m_CustomExts, (BodyTrackingMode)m_Tracking);
 			}
-			sb.Clear().Append("StartFixUpdateBodyTracking() CreateBodyTracking result ").Append(result.Name()).Append(", id: ").Append(m_AvatarID); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking() CreateBodyTracking result ").Append(result.Name()).Append(", id: ").Append(m_AvatarID); DEBUG(sb);
 			if (result != BodyTrackingResult.SUCCESS) { yield break; }
 
 			result = BodyManager.Instance.GetBodyTrackingInfo(m_AvatarID, out float avatarHeight, out float avatarScale);
-			sb.Clear().Append("StartFixUpdateBodyTracking() GetBodyTrackingInfo result ").Append(result.Name()); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking() GetBodyTrackingInfo result ").Append(result.Name()); DEBUG(sb);
 			if (result != BodyTrackingResult.SUCCESS) { yield break; }
 
 			// Due to the pose from GetBodyTrackingPoseOnce is "scaled pose", we need to change the avatar mesh size first.
-			sb.Clear().Append("StartFixUpdateBodyTracking() Apply avatar scale with ").Append(avatarScale); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking() Apply avatar scale with ").Append(avatarScale); DEBUG(sb);
 			ApplyBodyScale(avatarScale * m_AvatarScale);
 
 			while (updateTrackingData)
@@ -563,7 +563,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			}
 
 			result = BodyManager.Instance.DestroyBodyTracking(m_AvatarID);
-			sb.Clear().Append("StartFixUpdateBodyTracking() DestroyBodyTracking result ").Append(result.Name()).Append(", id: ").Append(m_AvatarID); DEBUG(sb);
+			sb.Clear().Append(LOG_TAG).Append("StartFixUpdateBodyTracking() DestroyBodyTracking result ").Append(result.Name()).Append(", id: ").Append(m_AvatarID); DEBUG(sb);
 			yield return null;
 		}
 
@@ -577,7 +577,7 @@ namespace VIVE.OpenXR.Toolkits.BodyTracking
 			if (m_Body == null || avatarBody == null) { return; }
 			if (printIntervalLog)
 			{
-				sb.Clear().Append("UpdateBodyPosesInOrder() new avatar height ").Append(avatarBody.height)
+				sb.Clear().Append(LOG_TAG).Append("UpdateBodyPosesInOrder() new avatar height ").Append(avatarBody.height)
 					.Append(", original avatar height ").Append(m_InitialBody.height)
 					.Append(", scale: ").Append(avatarBody.scale);
 				DEBUG(sb);

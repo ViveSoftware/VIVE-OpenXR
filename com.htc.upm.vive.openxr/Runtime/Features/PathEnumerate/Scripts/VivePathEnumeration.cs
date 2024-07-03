@@ -194,61 +194,49 @@ namespace VIVE.OpenXR
 
         public bool GetUserPaths(string interactionProfileString, out XrPath[] userPaths)
         {
+            userPaths = null;
             XrPathsForInteractionProfileEnumerateInfoHTC enumerateInfo;
-            if (!m_XrInstanceCreated) { userPaths = null; return false; }
+            if (!m_XrInstanceCreated) { return false; }
 
             string func = "GetUserPaths() ";
 
             if (xrEnumeratePathsForInteractionProfileHTC == null)
             {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("No function pointer of xrEnumeratePathsForInteractionProfileHTC"); WARNING(sb);
-                userPaths = null;
+                sb.Clear().Append(LOG_TAG).Append(func).Append("No function pointer of xrEnumeratePathsForInteractionProfileHTC"); WARNING(sb);
                 return false;
             }
+
             // 1. Get user path count of sepecified profile.
             UInt32 trackerCount = 0;
-            enumerateInfo.type = (XrStructureType)1000319000;//Todo : update openxr spec to prevent hot code.
+            enumerateInfo.type = XrStructureType.XR_TYPE_UNKNOWN;
             enumerateInfo.next = IntPtr.Zero;
-            enumerateInfo.interactionProfile = StringToPath(interactionProfileString); 
+            enumerateInfo.interactionProfile = StringToPath(interactionProfileString);
             enumerateInfo.userPath = OpenXRHelper.XR_NULL_PATH;
 
             XrResult result = xrEnumeratePathsForInteractionProfileHTC(m_XrInstance, ref enumerateInfo, 0, ref trackerCount, null);
+            sb.Clear().Append(LOG_TAG).Append(func).Append("xrEnumeratePathsForInteractionProfileHTC result: ").Append(result)
+                .Append(", profile: ").Append(interactionProfileString)
+                .Append(", trackerCount: ").Append(trackerCount);
+            DEBUG(sb);
+            if (result != XrResult.XR_SUCCESS || trackerCount <= 0) { return false; }
+
+            // 2. Get user paths of sepecified profile.
+            List<XrPath> trackerList = CreateList<XrPath>(trackerCount, OpenXRHelper.XR_NULL_PATH);
+            XrPath[] trackers = trackerList.ToArray();
+            result = xrEnumeratePathsForInteractionProfileHTC(
+                m_XrInstance,
+                ref enumerateInfo,
+                pathCapacityInput: (UInt32)(trackers.Length & 0x7FFFFFFF),
+                pathCountOutput: ref trackerCount,
+                paths: trackers);
             if (result != XrResult.XR_SUCCESS)
             {
-                sb.Clear().Append(LOG_TAG).Append(func)
-                    .Append("Retrieves trackerCount failed."); ERROR(sb);
-                userPaths = null;
+                sb.Clear().Append(LOG_TAG).Append(func).Append("Retrieves trackers failed."); ERROR(sb);
                 return false;
             }
-            //sb.Clear().Append(LOG_TAG).Append(func)
-            //    .Append("Get profile ").Append(interactionProfileString).Append(" user path count: ").Append(trackerCount); DEBUG(sb);
-            if (trackerCount > 0)
-            {
-                // 2. Get user paths of sepecified profile.
-                List<XrPath> trackerList = CreateList<XrPath>(trackerCount, OpenXRHelper.XR_NULL_PATH);
-                XrPath[] trackers = trackerList.ToArray();
-                result = xrEnumeratePathsForInteractionProfileHTC(
-                    m_XrInstance,
-                    ref enumerateInfo,
-                    pathCapacityInput: (UInt32)(trackers.Length & 0x7FFFFFFF),
-                    pathCountOutput: ref trackerCount,
-                    paths: trackers);
-                if (result != XrResult.XR_SUCCESS)
-                {
-                    sb.Clear().Append(LOG_TAG).Append(func)
-                        .Append("Retrieves trackers failed."); ERROR(sb);
-                    userPaths = null;
-                    return false;
-                }
-                userPaths = trackers;
-                return true;
-            }
-            else
-            {
-                userPaths = null;
-                return false;
-            }
+
+            userPaths = trackers;
+            return true;
         }
 
         public bool GetInputPathsWithUserPath(string interactionProfileString, XrPath userPath, out XrPath[] inputPaths)

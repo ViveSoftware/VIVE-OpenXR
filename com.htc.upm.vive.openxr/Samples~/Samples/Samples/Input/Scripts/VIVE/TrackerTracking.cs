@@ -48,6 +48,26 @@ namespace VIVE.OpenXR.Samples.OpenXRInput
         private InputActionReference m_Rotation = null;
         public InputActionReference Rotation { get { return m_Rotation; } set { m_Rotation = value; } }
 
+        [SerializeField]
+        private InputActionReference m_Menu = null;
+        public InputActionReference Menu { get { return m_Menu; } set { m_Menu = value; } }
+
+        [SerializeField]
+        private InputActionReference m_GripPress = null;
+        public InputActionReference GripPress { get { return m_GripPress; } set { m_GripPress = value; } }
+
+        [SerializeField]
+        private InputActionReference m_TriggerPress = null;
+        public InputActionReference TriggerPress { get { return m_TriggerPress; } set { m_TriggerPress = value; } }
+
+        [SerializeField]
+        private InputActionReference m_TrackpadPress = null;
+        public InputActionReference TrackpadPress { get { return m_TrackpadPress; } set { m_TrackpadPress = value; } }
+
+        [SerializeField]
+        private InputActionReference m_TrackpadTouch = null;
+        public InputActionReference TrackpadTouch { get { return m_TrackpadTouch; } set { m_TrackpadTouch = value; } }
+
         private Text m_Text = null;
         private void Start()
         {
@@ -108,6 +128,70 @@ namespace VIVE.OpenXR.Samples.OpenXRInput
                 }
             }
             m_Text.text += ")";
+            m_Text.text += "\nmenu: ";
+            {
+                if (Utils.GetButton(m_Menu, out bool value, out string msg))
+                {
+                    m_Text.text += value;
+                }
+                else
+                {
+                    m_Text.text += msg;
+                }
+            }
+            m_Text.text += "\ngrip: ";
+            {
+                if (Utils.GetButton(m_GripPress, out bool value, out string msg))
+                {
+                    m_Text.text += value;
+                }
+                else
+                {
+                    m_Text.text += msg;
+                }
+            }
+            m_Text.text += "\ntrigger press: ";
+            {
+                if (Utils.GetButton(m_TriggerPress, out bool value, out string msg))
+                {
+                    m_Text.text += value;
+
+                    if (Utils.PerformHaptic(m_TriggerPress, out msg))
+                    {
+                        m_Text.text += ", Vibrate";
+                    }
+                    else
+                    {
+                        m_Text.text += ", Failed: " + msg;
+                    }
+                }
+                else
+                {
+                    m_Text.text += msg;
+                }
+            }
+            m_Text.text += "\ntrackpad press: ";
+            {
+                if (Utils.GetButton(m_TrackpadPress, out bool value, out string msg))
+                {
+                    m_Text.text += value;
+                }
+                else
+                {
+                    m_Text.text += msg;
+                }
+            }
+            m_Text.text += "\ntrackpad touch: ";
+            {
+                if (Utils.GetButton(m_TrackpadTouch, out bool value, out string msg))
+                {
+                    m_Text.text += value;
+                }
+                else
+                {
+                    m_Text.text += msg;
+                }
+            }
         }
     }
 }

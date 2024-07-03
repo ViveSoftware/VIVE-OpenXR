@@ -42,6 +42,9 @@ namespace VIVE.OpenXR.CompositionLayer
 		private const string kOpenXRColorScaleBiasExtensionString = "XR_KHR_composition_layer_color_scale_bias";
 
 		private bool m_ColorScaleBiasExtensionEnabled = true;
+		/// <summary>
+		/// The extension of "XR_KHR_composition_layer_color_scale_bias" is enabled or not.
+		/// </summary>
 		public bool ColorScaleBiasExtensionEnabled
 		{
 			get { return m_ColorScaleBiasExtensionEnabled; }
@@ -68,6 +71,9 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		[DllImportAttribute(ExtLib, EntryPoint = "submit_CompositionLayerColorBias")]
 		public static extern void VIVEOpenXR_Submit_CompositionLayerColorBias(XrCompositionLayerColorScaleBiasKHR colorBias, int layerID);
+		/// <summary>
+		/// Submit Compostion Layer Color Bias Settings to specific layer ID.
+		/// </summary>
 		public void Submit_CompositionLayerColorBias(XrCompositionLayerColorScaleBiasKHR colorBias, int layerID)
 		{
 			if (!ColorScaleBiasExtensionEnabled)

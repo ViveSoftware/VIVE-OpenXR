@@ -319,6 +319,10 @@ namespace VIVE.OpenXR
 		XR_TYPE_PLANE_DETECTOR_LOCATION_EXT = 1000429005,
 		XR_TYPE_PLANE_DETECTOR_POLYGON_BUFFER_EXT = 1000429006,
         XR_TYPE_SYSTEM_PLANE_DETECTION_PROPERTIES_EXT = 1000429007,
+        XR_TYPE_PASSTHROUGH_CREATE_INFO_HTC = 1000317001,
+        XR_TYPE_PASSTHROUGH_COLOR_HTC = 1000317002,
+        XR_TYPE_PASSTHROUGH_MESH_TRANSFORM_INFO_HTC = 1000317003,
+        XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_HTC = 1000317004,
         XR_TYPE_SYSTEM_ANCHOR_PROPERTIES_HTC = 1000319000,
         XR_TYPE_SPATIAL_ANCHOR_CREATE_INFO_HTC = 1000319001,
         XR_STRUCTURE_TYPE_MAX_ENUM = 0x7FFFFFFF
@@ -2007,6 +2011,48 @@ namespace VIVE.OpenXR
         /// </summary>
         public bool shouldRender;
     }
+
+    /// <summary>
+    /// A structure indicates the XrFrameEndInfo .
+    /// </summary>
+    public struct XrFrameEndInfo
+    {
+        /// <summary>
+        /// The <see cref="XrStructureType">XrStructureType</see> of this structure.
+        /// </summary>
+        public XrStructureType type;
+        /// <summary>
+        /// next is NULL or a pointer to the next structure in a structure chain. No such structures are defined in core OpenXR.
+        /// </summary>
+        public IntPtr next;
+        /// <summary>
+        /// displayTime is the XrTime at which this frame should be displayed.
+        /// </summary>
+        public XrTime displayTime;
+        /// <summary>
+        /// environmentBlendMode is the XrEnvironmentBlendMode value representing the desired environment blend mode for this frame.
+        /// </summary>
+        public XrEnvironmentBlendMode environmentBlendMode;
+        /// <summary>
+        /// layerCount is the number of composition layers in this frame. The maximum supported layer count is identified by XrSystemGraphicsProperties::maxLayerCount.
+        /// </summary>
+        public uint layerCount;
+        /// <summary>
+        /// layers is a pointer to an array of XrCompositionLayerBaseHeader pointers.
+        /// </summary>
+        public IntPtr layers;
+
+        public XrFrameEndInfo(XrStructureType type_,IntPtr next_, XrTime displayTime_, XrEnvironmentBlendMode environmentBlendMode_
+            ,uint layerCount_, IntPtr layers_)
+        {
+            next = next_;
+            type = type_;
+            displayTime = displayTime_;
+            environmentBlendMode = environmentBlendMode_;
+            layerCount = layerCount_;
+            layers = layers_;
+        }
+    }
     public static class OpenXRHelper
     {
         /// <summary>
@@ -2449,7 +2495,7 @@ namespace VIVE.OpenXR
         /// <param name="frameState">frameState is a pointer to a valid XrFrameState, an output parameter.</param>
         /// <returns></returns>
         public delegate int xrWaitFrameDelegate(ulong session, ref XrFrameWaitInfo frameWaitInfo, ref XrFrameState frameState);
-
+        public delegate XrResult xrEndFrameDelegate(XrSession session, ref XrFrameEndInfo frameEndInfo);
         /// <summary>
         /// Help call xrGetInstanceProcAddr and convert the result to delegate.\
         /// For example, "OpenXRHelper.GetXrFunctionDelegate(GetAddr, xrInstance, "xrGetSystemProperties", out XrGetSystemProperties);"

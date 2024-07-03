@@ -334,8 +334,7 @@ namespace VIVE.OpenXR.Hand
         /// </summary>
         /// <param name="properties">Points to an instance of the XrSystemProperties structure, that will be filled with returned information.</param>
         /// <returns>XR_SUCCESS for success.</returns>
-        [Obsolete("This function will become private in next release")]
-        public XrResult GetSystemProperties(ref XrSystemProperties properties)
+        private XrResult GetSystemProperties(ref XrSystemProperties properties)
         {
             if (!m_XrSessionCreated)
             {
@@ -360,8 +359,7 @@ namespace VIVE.OpenXR.Hand
         /// <param name="spaceCountOutput">A pointer to the count of spaces written, or a pointer to the required capacity in the case that spaceCapacityInput is insufficient.</param>
         /// <param name="spaces">A pointer to an application-allocated array that will be filled with the enumerant of each supported reference space. It can be NULL if spaceCapacityInput is 0.</param>
         /// <returns>XR_SUCCESS for success.</returns>
-        [Obsolete("This function will become private in next release")]
-        public XrResult EnumerateReferenceSpaces(UInt32 spaceCapacityInput, out UInt32 spaceCountOutput, out XrReferenceSpaceType spaces)
+        private XrResult EnumerateReferenceSpaces(UInt32 spaceCapacityInput, out UInt32 spaceCountOutput, out XrReferenceSpaceType spaces)
         {
             if (!m_XrSessionCreated)
             {
@@ -389,8 +387,7 @@ namespace VIVE.OpenXR.Hand
         /// <param name="createInfo">The XrReferenceSpaceCreateInfo used to specify the space.</param>
         /// <param name="space">The returned XrSpace handle.</param>
         /// <returns>XR_SUCCESS for success.</returns>
-        [Obsolete("This function will become private in next release")]
-        public XrResult CreateReferenceSpace(ref XrReferenceSpaceCreateInfo createInfo, out XrSpace space)
+        private XrResult CreateReferenceSpace(ref XrReferenceSpaceCreateInfo createInfo, out XrSpace space)
         {
             if (!m_XrSessionCreated)
             {
@@ -415,8 +412,7 @@ namespace VIVE.OpenXR.Hand
         /// </summary>
         /// <param name="space">Must be a valid XrSpace handle.</param>
         /// <returns>XR_SUCCESS for success.</returns>
-        [Obsolete("This function will become private in next release")]
-        public XrResult DestroySpace(XrSpace space)
+        private XrResult DestroySpace(XrSpace space)
         {
             if (!m_XrSessionCreated)
             {
@@ -761,6 +757,11 @@ namespace VIVE.OpenXR.Hand
         private XrHandJointLocationEXT[] jointLocationsR = new XrHandJointLocationEXT[(int)XrHandJointEXT.XR_HAND_JOINT_MAX_ENUM_EXT];
         private XrHandJointLocationsEXT locations = new XrHandJointLocationsEXT(XrStructureType.XR_TYPE_HAND_JOINT_LOCATIONS_EXT, IntPtr.Zero, false, 0, IntPtr.Zero);
 
+        /// <summary>
+        /// Retrieves the <see cref="XrSpace"> XrSpace </see> used in Hand Tracking.
+        /// </summary>
+        /// <param name="space">Tracking space in <see cref="XrSpace"> XrSpace </see>.</param>
+        /// <returns>True for valid data.</returns>
         public bool GetHandTrackingSpace(out XrSpace space)
         {
             space = 0;

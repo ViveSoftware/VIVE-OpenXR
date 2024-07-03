@@ -67,6 +67,18 @@ namespace VIVE.OpenXR.CompositionLayer.Editor
 		static GUIContent Label_AngleOfArc = new GUIContent("Arc Angle", "Central angle of arc of Cylinder Layer");
 		SerializedProperty Property_AngleOfArc;
 
+		static string PropertyName_isExternalSurface = "isExternalSurface";
+		static GUIContent Label_isExternalSurface = new GUIContent("External Surface", "Specify using external surface or not.");
+		SerializedProperty Property_isExternalSurface;
+
+		static string PropertyName_ExternalSurfaceWidth = "externalSurfaceWidth";
+		static GUIContent Label_ExternalSurfaceWidth = new GUIContent("Width");
+		SerializedProperty Property_ExternalSurfaceWidth;
+
+		static string PropertyName_ExternalSurfaceHeight = "externalSurfaceHeight";
+		static GUIContent Label_ExternalSurfaceHeight = new GUIContent("Height");
+		SerializedProperty Property_ExternalSurfaceHeight;
+
 		static string PropertyName_IsDynamicLayer = "isDynamicLayer";
 		static GUIContent Label_IsDynamicLayer = new GUIContent("Dynamic Layer", "Specify whether Layer needs to be updated each frame or not.");
 		SerializedProperty Property_IsDynamicLayer;
@@ -101,9 +113,10 @@ namespace VIVE.OpenXR.CompositionLayer.Editor
 		SerializedProperty Property_TrackingOrigin;
 
 		private bool showLayerParams = true, showColorScaleBiasParams = true;
-#pragma warning disable
+
 		private bool showExternalSurfaceParams = false;
-#pragma warning restore
+
+
 		public override void OnInspectorGUI()
 		{
 			if (Property_LayerType == null) Property_LayerType = serializedObject.FindProperty(PropertyName_LayerType);
@@ -117,6 +130,9 @@ namespace VIVE.OpenXR.CompositionLayer.Editor
 			if (Property_CylinderArcLength == null) Property_CylinderArcLength = serializedObject.FindProperty(PropertyName_CylinderArcLength);
 			if (Property_CylinderRadius == null) Property_CylinderRadius = serializedObject.FindProperty(PropertyName_CylinderRadius);
 			if (Property_AngleOfArc == null) Property_AngleOfArc = serializedObject.FindProperty(PropertyName_AngleOfArc);
+			if (Property_isExternalSurface == null) Property_isExternalSurface = serializedObject.FindProperty(PropertyName_isExternalSurface);
+			if (Property_ExternalSurfaceWidth == null) Property_ExternalSurfaceWidth = serializedObject.FindProperty(PropertyName_ExternalSurfaceWidth);
+			if (Property_ExternalSurfaceHeight == null) Property_ExternalSurfaceHeight = serializedObject.FindProperty(PropertyName_ExternalSurfaceHeight);
 			if (Property_IsDynamicLayer == null) Property_IsDynamicLayer = serializedObject.FindProperty(PropertyName_IsDynamicLayer);
 			if (Property_ApplyColorScaleBias == null) Property_ApplyColorScaleBias = serializedObject.FindProperty(PropertyName_ApplyColorScaleBias);
 			if (Property_SolidEffect == null) Property_SolidEffect = serializedObject.FindProperty(PropertyName_SolidEffect);
@@ -435,6 +451,25 @@ namespace VIVE.OpenXR.CompositionLayer.Editor
 
 			EditorGUILayout.PropertyField(Property_IsDynamicLayer, Label_IsDynamicLayer);
 			serializedObject.ApplyModifiedProperties();
+
+			//EditorGUILayout.PropertyField(Property_isExternalSurface, Label_isExternalSurface);
+			//serializedObject.ApplyModifiedProperties();
+
+			//if (targetCompositionLayer.isExternalSurface)
+			if (false)
+			{
+				EditorGUI.indentLevel++;
+				showExternalSurfaceParams = EditorGUILayout.Foldout(showExternalSurfaceParams, "External Surface Parameters");
+				if (showExternalSurfaceParams)
+				{
+					EditorGUILayout.PropertyField(Property_ExternalSurfaceWidth, Label_ExternalSurfaceWidth);
+					EditorGUILayout.PropertyField(Property_ExternalSurfaceHeight, Label_ExternalSurfaceHeight);
+					EditorGUILayout.PropertyField(Property_IsProtectedSurface, Label_IsProtectedSurface);
+
+					serializedObject.ApplyModifiedProperties();
+				}
+				EditorGUI.indentLevel--;
+			}
 
 			EditorGUILayout.PropertyField(Property_ApplyColorScaleBias, Label_ApplyColorScaleBias);
 			serializedObject.ApplyModifiedProperties();

@@ -7,7 +7,6 @@ namespace VIVE.OpenXR.Samples.RealisticHandInteraction
 		public enum CollisionMode
 		{
 			REALHAND,
-			UNITY,
 			VIRTUALHAND
 		}
 

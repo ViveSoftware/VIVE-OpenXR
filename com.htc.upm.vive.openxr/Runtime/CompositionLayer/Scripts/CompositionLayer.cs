@@ -97,6 +97,17 @@ namespace VIVE.OpenXR.CompositionLayer
 		public bool isDynamicLayer = false;
 
 		[SerializeField]
+		public bool isExternalSurface = false;
+
+		[Tooltip("Width of external surface in pixels.")]
+		[SerializeField]
+		public uint externalSurfaceWidth = 1280;
+
+		[Tooltip("Height of external surface in pixels.")]
+		[SerializeField]
+		public uint externalSurfaceHeight = 720;
+
+		[SerializeField]
 		public bool applyColorScaleBias = false;
 
 		[SerializeField]
@@ -187,6 +198,58 @@ namespace VIVE.OpenXR.CompositionLayer
 				return true;
 			}
 
+			if (isExternalSurface)
+			{
+				CompositionLayerRenderThreadSyncObject SetupExternalAndroidSurfaceSyncObjects = new CompositionLayerRenderThreadSyncObject(
+					(taskQueue) =>
+					{
+						lock (taskQueue)
+						{
+							CompositionLayerRenderThreadTask task = (CompositionLayerRenderThreadTask)taskQueue.Dequeue();
+
+							//Enumerate Swapchain formats
+							compositionLayerFeature = OpenXRSettings.Instance.GetFeature<ViveCompositionLayer>();
+
+							uint imageCount;
+
+							GraphicsAPI graphicsAPI = GraphicsAPI.GLES3;
+
+							switch (SystemInfo.graphicsDeviceType)
+							{
+								case UnityEngine.Rendering.GraphicsDeviceType.OpenGLES3:
+									graphicsAPI = GraphicsAPI.GLES3;
+									break;
+								case UnityEngine.Rendering.GraphicsDeviceType.Vulkan:
+									graphicsAPI = GraphicsAPI.Vulkan;
+									break;
+								default:
+									ERROR("Unsupported Graphics API, aborting init process.");
+									return;
+							}
+
+							layerID = compositionLayerFeature.CompositionLayer_Init(externalSurfaceWidth, externalSurfaceHeight, graphicsAPI, isDynamicLayer, isProtectedSurface, out imageCount, true);
+
+							if (layerID != 0)
+							{
+								DEBUG("Init completed, ID: " + layerID);
+								layerTextures = new LayerTextures(imageCount);
+								InitStatus = true;
+							}
+
+							taskQueue.Release(task);
+						}
+					});
+
+				CompositionLayerRenderThreadTask.IssueObtainSwapchainEvent(SetupExternalAndroidSurfaceSyncObjects);
+
+				texture = new Texture2D((int)externalSurfaceWidth, (int)externalSurfaceHeight, TextureFormat.RGBA32, false, isLinear);
+
+
+				DEBUG("CompositionLayerInit Ext Surf");
+
+				return true;
+			}
+
 			if (texture == null)
 			{
 				ERROR("CompositionLayerInit: Source Texture not found, abort init.");
@@ -261,6 +324,22 @@ namespace VIVE.OpenXR.CompositionLayer
 		private bool SetLayerTexture()
 		{
 			if (!isInitializationComplete || !isSynchronized) return false;
+
+			if (isExternalSurface)
+			{
+				//Set Texture Layout
+				offset.x = 0;
+				offset.y = (int)externalSurfaceHeight;
+				extent.width = (int)externalSurfaceWidth;
+				extent.height = (int)-externalSurfaceHeight;
+				rect.offset = offset;
+				rect.extent = extent;
+
+				layerTextures.textureLayout = rect;
+
+				return true; //No need to process texture queues
+			}
+			
 
 			if (texture != null) //check for texture size change
 			{
@@ -803,6 +882,14 @@ namespace VIVE.OpenXR.CompositionLayer
 				DEBUG("Placeholder already generated, activating.");
 				compositionLayerPlaceholderPrefabGO.SetActive(true);
 			}
+		}
+
+		public IntPtr GetExternalSurfaceObj()
+		{
+			IntPtr value = compositionLayerFeature.Compositionlayer_GetExternalSurfaceObj2(layerID);
+			//DEBUG("GetExternalSurfaceObj layerID " + layerID + " SurfaceObj " + value);
+				
+			return value;
 		}
 
 		public bool RenderAsLayer()

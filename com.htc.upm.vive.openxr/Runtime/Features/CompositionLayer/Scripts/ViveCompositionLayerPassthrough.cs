@@ -24,7 +24,7 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 		DocumentationLink = "..\\Documentation",
 		OpenxrExtensionStrings = kOpenxrExtensionStrings,
 		Version = "1.0.0",
-		BuildTargetGroups = new[] { BuildTargetGroup.Android },
+		BuildTargetGroups = new[] { BuildTargetGroup.Android ,BuildTargetGroup.Standalone},
 		FeatureId = featureId
 	)]
 #endif
@@ -36,6 +36,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 		static void ERROR(string msg) { Debug.LogError(LOG_TAG + " " + msg); }
 
 		private List<int> passthroughIDList = new List<int>();
+		/// <summary>
+		/// The List of passthrough ID.
+		/// </summary>
 		public List<int> PassthroughIDList { get{ return new List<int>(passthroughIDList); } }
 
 		private List<XRInputSubsystem> inputSubsystems = new List<XRInputSubsystem>();
@@ -45,9 +48,15 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 		/// </summary>
 		public const string featureId = "vive.openxr.feature.compositionlayer.passthrough";
 
+		/// <summary>
+		/// The extension string.
+		/// </summary>
 		public const string kOpenxrExtensionStrings = "XR_HTC_passthrough";
 
 		private bool m_HTCPassthroughExtensionEnabled = true;
+		/// <summary>
+		/// The HTC Passthrough extension is enabled or not.
+		/// </summary>
 		public bool HTCPassthroughExtensionEnabled
 		{
 			get { return m_HTCPassthroughExtensionEnabled; }
@@ -55,10 +64,118 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		#region OpenXR Life Cycle
 		private bool m_XrInstanceCreated = false;
+		/// <summary>
+		/// The XR instance is created or not.
+		/// </summary>
 		public bool XrInstanceCreated
 		{
 			get { return m_XrInstanceCreated; }
 		}
+#if UNITY_STANDALONE
+		private static IntPtr xrGetInstanceProcAddr_prev;
+		private static IntPtr XrEndFrame_prev;
+		private static IntPtr XrWaitFrame_prev;
+		private static List<IntPtr> layerListOrigin = new List<IntPtr>();
+		private static List<IntPtr> layerListModified = new List<IntPtr>();
+		private static IntPtr layersModified = Marshal.AllocHGlobal((int)(Marshal.SizeOf(typeof(IntPtr)) * 30)); //Preallocate a layer buffer with sufficient size and reuse it for each frame.
+		protected override IntPtr HookGetInstanceProcAddr(IntPtr func)
+		{
+			UnityEngine.Debug.Log("EXT: registering our own xrGetInstanceProcAddr");
+			xrGetInstanceProcAddr_prev = func;
+			return Marshal.GetFunctionPointerForDelegate(Intercept_xrGetInstanceProcAddr);
+		}
+		[MonoPInvokeCallback(typeof(OpenXRHelper.xrGetInstanceProcAddrDelegate))]
+		private static XrResult InterceptXrEndFrame_xrGetInstanceProcAddr(XrInstance instance, string name, out IntPtr function)
+		{
+			if (xrGetInstanceProcAddr_prev == null || xrGetInstanceProcAddr_prev == IntPtr.Zero)
+			{
+				UnityEngine.Debug.LogError("xrGetInstanceProcAddr_prev is null");
+				function = IntPtr.Zero;
+				return XrResult.XR_ERROR_VALIDATION_FAILURE;
+			}
+
+			// Get delegate of old xrGetInstanceProcAddr.
+			var xrGetProc = Marshal.GetDelegateForFunctionPointer<OpenXRHelper.xrGetInstanceProcAddrDelegate>(xrGetInstanceProcAddr_prev);
+			XrResult result = xrGetProc(instance, name, out function);
+			if (name == "xrEndFrame")
+			{
+				XrEndFrame_prev = function;
+				m_intercept_xrEndFrame = intercepted_xrEndFrame;
+				function = Marshal.GetFunctionPointerForDelegate(m_intercept_xrEndFrame); ;
+				UnityEngine.Debug.Log("Getting xrEndFrame func");
+			}
+			if (name == "xrWaitFrame")
+			{
+				XrWaitFrame_prev = function;
+				m_intercept_xrWaitFrame = intercepted_xrWaitFrame;
+				function = Marshal.GetFunctionPointerForDelegate(m_intercept_xrWaitFrame); ;
+				UnityEngine.Debug.Log("Getting xrWaitFrame func");
+			}
+			return result;
+		}
+
+		[MonoPInvokeCallback(typeof(OpenXRHelper.xrEndFrameDelegate))]
+		private static XrResult intercepted_xrEndFrame(XrSession session, ref XrFrameEndInfo frameEndInfo)
+		{
+			XrResult res;
+			// Get delegate of prev xrEndFrame.
+			var xrEndFrame = Marshal.GetDelegateForFunctionPointer<OpenXRHelper.xrEndFrameDelegate>(XrEndFrame_prev);
+
+			layerListOrigin.Clear();
+			uint layerCount = frameEndInfo.layerCount;
+			IntPtr layers = frameEndInfo.layers;
+			for (int i = 0; i < layerCount; i++)
+			{
+				IntPtr ptr = Marshal.ReadIntPtr(layers, i * Marshal.SizeOf(typeof(IntPtr)));
+				XrCompositionLayerBaseHeader header = (XrCompositionLayerBaseHeader)Marshal.PtrToStructure(ptr, typeof(XrCompositionLayerBaseHeader));
+				layerListOrigin.Add(ptr);
+			}
+			List<IntPtr> layerListNew;
+			if (layerListModified.Count != 0)
+			{
+				layerListNew = new List<IntPtr>(layerListModified);
+			}
+			else
+			{
+				layerListNew = new List<IntPtr>(layerListOrigin);
+			}
+			for (int i = 0; i < layerListNew.Count; i++)
+			{
+				Marshal.WriteIntPtr(layersModified, i * Marshal.SizeOf(typeof(IntPtr)), layerListNew[i]);
+			}
+			frameEndInfo.layers = layersModified;
+			frameEndInfo.layerCount = (uint)layerListNew.Count;
+
+			res = xrEndFrame(session, ref frameEndInfo);
+			return res;
+		}
+		private static XrFrameWaitInfo m_frameWaitInfo;
+		private static XrFrameState m_frameState;
+		[MonoPInvokeCallback(typeof(OpenXRHelper.xrWaitFrameDelegate))]
+		private static int intercepted_xrWaitFrame(ulong session, ref XrFrameWaitInfo frameWaitInfo, ref XrFrameState frameState)
+		{
+			var xrWaitFrame = Marshal.GetDelegateForFunctionPointer<OpenXRHelper.xrWaitFrameDelegate>(XrWaitFrame_prev);
+			int res = xrWaitFrame(session, ref frameWaitInfo, ref frameState);
+			m_frameWaitInfo = frameWaitInfo;
+			m_frameState = frameState;
+			return res;
+		}
+		public void GetOriginEndFrameLayerList(out List<IntPtr> layers)
+		{
+			layers = new List<IntPtr>(layerListOrigin);
+		}
+
+		public void SubmitLayers(List<IntPtr> layers)
+		{
+			layerListModified = new List<IntPtr>(layers);
+			//UnityEngine.Debug.Log("####Update submit end " + layerListModified.Count);
+		}
+		public XrFrameState GetFrameState()
+		{
+			return m_frameState;
+		}
+#endif
+
 		private XrInstance m_XrInstance = 0;
 		protected override bool OnInstanceCreate(ulong xrInstance)
 		{
@@ -94,6 +211,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 		}
 
 		private bool m_XrSessionCreated = false;
+		/// <summary>
+		/// The XR session is created or not.
+		/// </summary>
 		public bool XrSessionCreated
 		{
 			get { return m_XrSessionCreated; }
@@ -107,6 +227,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 		}
 
 		private bool m_XrSessionEnding = false;
+		/// <summary>
+		/// The XR session is ending or not.
+		/// </summary>
 		public bool XrSessionEnding
 		{
 			get { return m_XrSessionEnding; }
@@ -239,13 +362,16 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 			DEBUG("OnSessionEnd() " + m_XrSession);
 		}
 
+		/// <summary>
+		/// The delegate of Passthrough Session Destroy.
+		/// </summary>
 		public delegate void OnPassthroughSessionDestroyDelegate(int passthroughID);
 		private Dictionary<int, OnPassthroughSessionDestroyDelegate> OnPassthroughSessionDestroyHandlerDictionary = new Dictionary<int, OnPassthroughSessionDestroyDelegate>();
 		protected override void OnSessionDestroy(ulong xrSession)
 		{
 			m_XrSessionCreated = false;
 			DEBUG("OnSessionDestroy() " + xrSession);
-
+#if UNITY_ANDROID
 			//Notify that all passthrough layers should be destroyed
 			List<int> currentPassthroughIDs = PassthroughIDList;
 			foreach (int passthroughID in currentPassthroughIDs)
@@ -254,7 +380,15 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 				OnPassthroughSessionDestroyHandler?.Invoke(passthroughID);
 			}
-
+#endif
+#if UNITY_STANDALONE
+			//Notify that all passthrough layers should be destroyed
+			List<XrPassthroughHTC> currentPassthroughs = PassthroughList;
+			foreach (XrPassthroughHTC passthrough in currentPassthroughs)
+			{
+				DestroyPassthroughHTC(passthrough);
+			}
+#endif
 			if (m_HeadLockSpace != 0)
 			{
 				DestroySpace(m_HeadLockSpace);
@@ -272,6 +406,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 			}
 		}
 
+		/// <summary>
+		/// The current XR session state.
+		/// </summary>
 		public XrSessionState XrSessionCurrentState
 		{
 			get { return m_XrSessionNewState; }
@@ -301,14 +438,23 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 			}
 			
 		}
-		#endregion
+#endregion
 
-		#region OpenXR function delegates
+#region OpenXR function delegates
 		/// xrGetInstanceProcAddr
 		OpenXRHelper.xrGetInstanceProcAddrDelegate XrGetInstanceProcAddr;
-
+#if UNITY_STANDALONE
+		OpenXRHelper.xrGetInstanceProcAddrDelegate Intercept_xrGetInstanceProcAddr =
+			new OpenXRHelper.xrGetInstanceProcAddrDelegate(InterceptXrEndFrame_xrGetInstanceProcAddr);
+#endif
+		private static OpenXRHelper.xrEndFrameDelegate m_intercept_xrEndFrame;
+		private static OpenXRHelper.xrWaitFrameDelegate m_intercept_xrWaitFrame;
 		/// xrGetSystemProperties
 		OpenXRHelper.xrGetSystemPropertiesDelegate xrGetSystemProperties;
+		/// <summary>
+		/// Helper function to get this feature' properties.
+		/// See <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrGetSystemProperties">xrGetSystemProperties</see>
+		/// </summary>
 		public XrResult GetSystemProperties(ref XrSystemProperties properties)
 		{
 			if (m_XrInstanceCreated)
@@ -335,6 +481,10 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		/// xrCreateReferenceSpace
 		OpenXRHelper.xrCreateReferenceSpaceDelegate xrCreateReferenceSpace;
+		/// <summary>
+		/// Creates a reference space
+		/// See <see href="https://registry.khronos.org/OpenXR/specs/1.0/man/html/xrCreateReferenceSpace.html">xrCreateReferenceSpace</see>
+		/// </summary>
 		public XrResult CreateReferenceSpace(ref XrReferenceSpaceCreateInfo createInfo, out XrSpace space)
 		{
 			if (!m_XrSessionCreated)
@@ -356,7 +506,55 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 			}
 			return XrResult.XR_ERROR_REFERENCE_SPACE_UNSUPPORTED;
 		}
+#if UNITY_STANDALONE
+		private List<XrPassthroughHTC> passthroughList = new List<XrPassthroughHTC>();
+		public List<XrPassthroughHTC> PassthroughList { get { return new List<XrPassthroughHTC>(passthroughList); } }
+		ViveCompositionLayerHelper.xrCreatePassthroughHTCDelegate xrCreatePassthroughHTC;
+		public XrResult CreatePassthroughHTC(XrPassthroughCreateInfoHTC createInfo, out XrPassthroughHTC passthrough)
+		{
+			if (!m_XrSessionCreated)
+			{
+				ERROR("CreatePassthroughHTC() XR_ERROR_SESSION_LOST.");
+				passthrough = 0;
+				return XrResult.XR_ERROR_SESSION_LOST;
+			}
+			if (!m_XrInstanceCreated)
+			{
+				ERROR("CreatePassthroughHTC() XR_ERROR_INSTANCE_LOST.");
+				passthrough = 0;
+				return XrResult.XR_ERROR_INSTANCE_LOST;
+			}
 
+			XrResult res = xrCreatePassthroughHTC(m_XrSession, createInfo, out passthrough);
+			if (res == XrResult.XR_SUCCESS)
+				passthroughList.Add(passthrough);
+			else
+				ERROR("CreatePassthroughHTC() "+res);
+			return res;
+		}
+
+		ViveCompositionLayerHelper.xrDestroyPassthroughHTCDelegate xrDestroyPassthroughHTC;
+		public XrResult DestroyPassthroughHTC(XrPassthroughHTC passthrough)
+		{
+			DEBUG("Entry");
+			XrResult res = xrDestroyPassthroughHTC(passthrough);
+			if (res == XrResult.XR_SUCCESS)
+			{
+				passthroughList.Remove(passthrough);
+			}
+			return res;
+		}
+		/// <summary>
+		/// According to XRInputSubsystem's tracking origin mode, return the corresponding XrSpace.
+		/// </summary>
+		/// <returns></returns>
+		public XrSpace GetTrackingSpace()
+		{
+			var s = GetCurrentAppSpace();
+			Debug.Log("VivePassthrough GetTrackingSpace() s=" + s);
+			return s;
+		}
+#endif
 		private bool GetXrFunctionDelegates(XrInstance xrInstance)
         {
             /// xrGetInstanceProcAddr
@@ -438,7 +636,41 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 				ERROR("xrDestroySpace");
 				return false;
 			}
-
+#if UNITY_STANDALONE
+			/// xrCreatePassthroughHTC
+			if (XrGetInstanceProcAddr(xrInstance, "xrCreatePassthroughHTC", out funcPtr) == XrResult.XR_SUCCESS)
+			{
+				if (funcPtr != IntPtr.Zero)
+				{
+					DEBUG("Get function pointer of xrCreatePassthroughHTC.");
+					xrCreatePassthroughHTC = Marshal.GetDelegateForFunctionPointer(
+						funcPtr,
+						typeof(ViveCompositionLayerHelper.xrCreatePassthroughHTCDelegate)) as ViveCompositionLayerHelper.xrCreatePassthroughHTCDelegate;
+				}
+			}
+			else
+			{
+				ERROR("xrCreatePassthroughHTC");
+				return false;
+			}
+			/// xrCreatePassthroughHTC
+			if (XrGetInstanceProcAddr(xrInstance, "xrDestroyPassthroughHTC", out funcPtr) == XrResult.XR_SUCCESS)
+			{
+				if (funcPtr != IntPtr.Zero)
+				{
+					DEBUG("Get function pointer of xrDestroyPassthroughHTC.");
+					xrDestroyPassthroughHTC = Marshal.GetDelegateForFunctionPointer(
+						funcPtr,
+						typeof(ViveCompositionLayerHelper.xrDestroyPassthroughHTCDelegate)) as ViveCompositionLayerHelper.xrDestroyPassthroughHTCDelegate;
+				}
+			}
+			else
+			{
+				ERROR("xrDestroyPassthroughHTC");
+				return false;
+			}
+#endif
+#if UNITY_ANDROID
 			if (HTCPassthrough_GetFuncAddrs(xrInstance, xrGetInstanceProcAddr) == XrResult.XR_SUCCESS)
 			{
 				DEBUG("Get function pointers in native.");
@@ -448,15 +680,18 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 				ERROR("HTCPassthrough_GetFuncAddrs");
 				return false;
 			}
-
+#endif
 			return true;
         }
-		#endregion
+#endregion
 
-		#region Wrapper Functions
+#region Wrapper Functions
 		private const string ExtLib = "viveopenxr";
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_CreatePassthrough")]
 		private static extern int VIVEOpenXR_HTCPassthrough_CreatePassthrough(XrSession session, LayerType layerType, PassthroughLayerForm layerForm, uint compositionDepth = 0);
+		/// <summary>
+		/// Create Passthrough.
+		/// </summary>
 		public int HTCPassthrough_CreatePassthrough(LayerType layerType, PassthroughLayerForm layerForm, OnPassthroughSessionDestroyDelegate onDestroyPassthroughHandler, uint compositionDepth = 0)
 		{
 			if (!m_XrSessionCreated || m_XrSession == 0)
@@ -484,6 +719,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_SetAlpha")]
 		private static extern bool VIVEOpenXR_HTCPassthrough_SetAlpha(int passthroughID, float alpha);
+		/// <summary>
+		/// Set Passthough Alpha.
+		/// </summary>
 		public bool HTCPassthrough_SetAlpha(int passthroughID, float alpha)
 		{
 			if (!HTCPassthroughExtensionEnabled)
@@ -497,6 +735,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_SetLayerType")]
 		private static extern bool VIVEOpenXR_HTCPassthrough_SetLayerType(int passthroughID, LayerType layerType, uint compositionDepth = 0);
+		/// <summary>
+		/// Set Passthough Layer Type.
+		/// </summary>
 		public bool HTCPassthrough_SetLayerType(int passthroughID, LayerType layerType, uint compositionDepth = 0)
 		{
 			if (!HTCPassthroughExtensionEnabled)
@@ -510,6 +751,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_SetMesh")]
 		private static extern bool VIVEOpenXR_HTCPassthrough_SetMesh(int passthroughID, uint vertexCount, [In, Out] XrVector3f[] vertexBuffer, uint indexCount, [In, Out] uint[] indexBuffer);
+		/// <summary>
+		/// Set Passthough Mesh.
+		/// </summary>
 		public bool HTCPassthrough_SetMesh(int passthroughID, uint vertexCount, [In, Out] XrVector3f[] vertexBuffer, uint indexCount, [In, Out] uint[] indexBuffer)
 		{
 			if (!HTCPassthroughExtensionEnabled)
@@ -523,6 +767,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_SetMeshTransform")]
 		private static extern bool VIVEOpenXR_HTCPassthrough_SetMeshTransform(int passthroughID, XrSpace meshSpace, XrPosef meshPose, XrVector3f meshScale);
+		/// <summary>
+		/// Set Passthough Mesh Transform.
+		/// </summary>
 		public bool HTCPassthrough_SetMeshTransform(int passthroughID, XrSpace meshSpace, XrPosef meshPose, XrVector3f meshScale)
 		{
 			if (!HTCPassthroughExtensionEnabled)
@@ -536,6 +783,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_SetMeshTransformSpace")]
 		private static extern bool VIVEOpenXR_HTCPassthrough_SetMeshTransformSpace(int passthroughID, XrSpace meshSpace);
+		/// <summary>
+		/// Set Passthough Mesh Transform Space.
+		/// </summary>
 		public bool HTCPassthrough_SetMeshTransformSpace(int passthroughID, XrSpace meshSpace)
 		{
 			if (!HTCPassthroughExtensionEnabled)
@@ -549,6 +799,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_SetMeshTransformPosition")]
 		private static extern bool VIVEOpenXR_HTCPassthrough_SetMeshTransformPosition(int passthroughID, XrVector3f meshPosition);
+		/// <summary>
+		/// Set Passthough Mesh Transform Position.
+		/// </summary>
 		public bool HTCPassthrough_SetMeshTransformPosition(int passthroughID, XrVector3f meshPosition)
 		{
 			if (!HTCPassthroughExtensionEnabled)
@@ -562,6 +815,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_SetMeshTransformOrientation")]
 		private static extern bool VIVEOpenXR_HTCPassthrough_SetMeshTransformOrientation(int passthroughID, XrQuaternionf meshOrientation);
+		/// <summary>
+		/// Set Passthough Mesh Transform orientation.
+		/// </summary>
 		public bool HTCPassthrough_SetMeshTransformOrientation(int passthroughID, XrQuaternionf meshOrientation)
 		{
 			if (!HTCPassthroughExtensionEnabled)
@@ -575,6 +831,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_SetMeshTransformScale")]
 		private static extern bool VIVEOpenXR_HTCPassthrough_SetMeshTransformScale(int passthroughID, XrVector3f meshScale);
+		/// <summary>
+		/// Set Passthough Mesh Transform scale.
+		/// </summary>
 		public bool HTCPassthrough_SetMeshTransformScale(int passthroughID, XrVector3f meshScale)
 		{
 			if (!HTCPassthroughExtensionEnabled)
@@ -588,6 +847,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_DestroyPassthrough")]
 		private static extern bool VIVEOpenXR_HTCPassthrough_DestroyPassthrough(int passthroughID);
+		/// <summary>
+		/// Destroy Passthough.
+		/// </summary>
 		public bool HTCPassthrough_DestroyPassthrough(int passthroughID)
 		{
 			if (!HTCPassthroughExtensionEnabled)
@@ -606,9 +868,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 			return destroyed;
 		}
-		#endregion
+#endregion
 
-		#region Hook native functions
+#region Hook native functions
 
 		[DllImportAttribute(ExtLib, EntryPoint = "htcpassthrough_GetFuncAddrs")]
 		private static extern XrResult VIVEOpenXR_HTCPassthrough_GetFuncAddrs(XrInstance xrInstance, IntPtr xrGetInstanceProcAddrFuncPtr);
@@ -623,10 +885,12 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 			return VIVEOpenXR_HTCPassthrough_GetFuncAddrs(xrInstance, xrGetInstanceProcAddrFuncPtr);
 		}
 
-		#endregion
+#endregion
 
-		#region Helper Funcs
-
+#region Helper Funcs
+		/// <summary>
+		/// Helper function to get XrSpace from space type.
+		/// </summary>
 		public XrSpace GetXrSpaceFromSpaceType(ProjectedPassthroughSpaceType spaceType)
 		{
 			XrSpace meshSpace = 0;
@@ -669,6 +933,6 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 			return meshSpace;
 		}
 
-		#endregion
+#endregion
 	}
 }

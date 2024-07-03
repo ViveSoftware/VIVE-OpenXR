@@ -31,9 +31,6 @@ namespace VIVE.OpenXR.Samples.RealisticHandInteraction
 				case ModeEvent.CollisionMode.REALHAND:
 					UnityEngine.SceneManagement.SceneManager.LoadScene("HandGrab_RealHand");
 					break;
-				case ModeEvent.CollisionMode.UNITY:
-					UnityEngine.SceneManagement.SceneManager.LoadScene("HandGrab_Unity");
-					break;
 				case ModeEvent.CollisionMode.VIRTUALHAND:
 					UnityEngine.SceneManagement.SceneManager.LoadScene("HandGrab_VirtualHand");
 					break;

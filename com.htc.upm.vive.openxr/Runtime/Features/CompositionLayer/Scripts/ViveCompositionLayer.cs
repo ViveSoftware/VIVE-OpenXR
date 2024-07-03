@@ -1,4 +1,4 @@
-﻿// Copyright HTC Corporation All Rights Reserved.
+// Copyright HTC Corporation All Rights Reserved.
 
 using System.Collections.Generic;
 using UnityEditor;
@@ -48,6 +48,9 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		#region OpenXR Life Cycle
 		private bool m_XrInstanceCreated = false;
+		/// <summary>
+		/// The XR instance is created or not.
+		/// </summary>
 		public bool XrInstanceCreated
 		{
 			get { return m_XrInstanceCreated; }
@@ -55,13 +58,13 @@ namespace VIVE.OpenXR.CompositionLayer
 		private XrInstance m_XrInstance = 0;
 		protected override bool OnInstanceCreate(ulong xrInstance)
 		{
-			//foreach (string kOpenxrExtensionString in kOpenxrExtensionStrings.Split(' '))
-			//{
-			//	if (!OpenXRRuntime.IsExtensionEnabled(kOpenxrExtensionString))
-			//	{
-			//		WARNING("OnInstanceCreate() " + kOpenxrExtensionString + " is NOT enabled.");
-			//	}
-			//}
+			foreach (string kOpenxrExtensionString in kOpenxrExtensionStrings.Split(' '))
+			{
+				if (!OpenXRRuntime.IsExtensionEnabled(kOpenxrExtensionString))
+				{
+					WARNING("OnInstanceCreate() " + kOpenxrExtensionString + " is NOT enabled.");
+				}
+			}
 
 			m_XrInstanceCreated = true;
 			m_XrInstance = xrInstance;
@@ -84,6 +87,9 @@ namespace VIVE.OpenXR.CompositionLayer
 		}
 
 		private bool m_XrSessionCreated = false;
+		/// <summary>
+		/// The XR session is created or not.
+		/// </summary>
 		public bool XrSessionCreated
 		{
 			get { return m_XrSessionCreated; }
@@ -97,20 +103,32 @@ namespace VIVE.OpenXR.CompositionLayer
 		}
 
 		private bool m_XrSessionEnding = false;
+		/// <summary>
+		/// The XR session is ending or not.
+		/// </summary>
 		public bool XrSessionEnding
 		{
 			get { return m_XrSessionEnding; }
 		}
 
 		private XrSpace m_WorldLockSpaceOriginOnHead = 0, m_WorldLockSpaceOriginOnFloor = 0, m_HeadLockSpace = 0;
+		/// <summary>
+		/// The XrSpace of world lock space origin on head.
+		/// </summary>
 		public XrSpace WorldLockSpaceOriginOnHead
 		{
 			get { return m_WorldLockSpaceOriginOnHead; }
 		}
+		/// <summary>
+		/// The XrSpace of world lock space origin on floor.
+		/// </summary>
 		public XrSpace WorldLockSpaceOriginOnFloor
 		{
 			get { return m_WorldLockSpaceOriginOnFloor; }
 		}
+		/// <summary>
+		/// The XrSpace of head lock space.
+		/// </summary>
 		public XrSpace HeadLockSpace
 		{
 			get { return m_HeadLockSpace; }
@@ -252,6 +270,9 @@ namespace VIVE.OpenXR.CompositionLayer
 			}
 		}
 
+		/// <summary>
+		/// The current XR Session state.
+		/// </summary>
 		public XrSessionState XrSessionCurrentState
 		{
 			get { return m_XrSessionNewState; }
@@ -289,6 +310,10 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		/// xrGetSystemProperties
 		OpenXRHelper.xrGetSystemPropertiesDelegate xrGetSystemProperties;
+		/// <summary>
+		/// Helper function to get this feature' properties.
+		/// See <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrGetSystemProperties">xrGetSystemProperties</see>
+		/// </summary>
 		public XrResult GetSystemProperties(ref XrSystemProperties properties)
 		{
 			if (m_XrInstanceCreated)
@@ -301,6 +326,10 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		/// xrEnumerateReferenceSpaces
 		OpenXRHelper.xrEnumerateReferenceSpacesDelegate xrEnumerateReferenceSpaces;
+		/// <summary>
+		/// Enumerate available reference spaces
+		/// See <see href="https://registry.khronos.org/OpenXR/specs/1.0/man/html/xrEnumerateReferenceSpaces.html">xrEnumerateReferenceSpaces</see>
+		/// </summary>
 		public XrResult EnumerateReferenceSpaces(UInt32 spaceCapacityInput, out UInt32 spaceCountOutput, out XrReferenceSpaceType spaces)
 		{
 			if (!m_XrSessionCreated)
@@ -315,6 +344,10 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		/// xrCreateReferenceSpace
 		OpenXRHelper.xrCreateReferenceSpaceDelegate xrCreateReferenceSpace;
+		/// <summary>
+		/// Creates a reference space
+		/// See <see href="https://registry.khronos.org/OpenXR/specs/1.0/man/html/xrCreateReferenceSpace.html">xrCreateReferenceSpace</see>
+		/// </summary>
 		public XrResult CreateReferenceSpace(ref XrReferenceSpaceCreateInfo createInfo, out XrSpace space)
 		{
 			if (!m_XrSessionCreated)
@@ -328,6 +361,10 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		/// xrDestroySpace
 		OpenXRHelper.xrDestroySpaceDelegate xrDestroySpace;
+		/// <summary>
+		/// Destroys an XrSpace
+		/// See <see href="https://registry.khronos.org/OpenXR/specs/1.0/man/html/xrDestroySpace.html">xrDestroySpace</see>
+		/// </summary>
 		public XrResult DestroySpace(XrSpace space)
 		{
 			if (space != 0)
@@ -435,9 +472,26 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		#region Wrapper Functions
 		private const string ExtLib = "viveopenxr";
+		[DllImportAttribute(ExtLib, EntryPoint = "compositionlayer_GetExternalSurfaceObj")]
+		public static extern IntPtr VIVEOpenXR_Compositionlayer_GetExternalSurfaceObj();
+		public IntPtr Compositionlayer_GetExternalSurfaceObj()
+		{
+			return VIVEOpenXR_Compositionlayer_GetExternalSurfaceObj();
+		}
+
+		[DllImportAttribute(ExtLib, EntryPoint = "compositionlayer_GetExternalSurfaceObj2")]
+		public static extern IntPtr VIVEOpenXR_Compositionlayer_GetExternalSurfaceObj2(int layerID);
+		public IntPtr Compositionlayer_GetExternalSurfaceObj2(int layerID)
+		{
+			return VIVEOpenXR_Compositionlayer_GetExternalSurfaceObj2(layerID);
+		}
+
 		[DllImportAttribute(ExtLib, EntryPoint = "compositionlayer_Init")]
-		public static extern int VIVEOpenXR_CompositionLayer_Init(XrSession session, uint textureWidth, uint textureHeight, GraphicsAPI graphicsAPI, bool isDynamic, bool isProtected, out uint imageCount);
-		public int CompositionLayer_Init(uint textureWidth, uint textureHeight, GraphicsAPI graphicsAPI, bool isDynamic, bool isProtected, out uint imageCount)
+		public static extern int VIVEOpenXR_CompositionLayer_Init(XrSession session, uint textureWidth, uint textureHeight, GraphicsAPI graphicsAPI, bool isDynamic, bool isProtected, out uint imageCount, bool isExternal);
+		/// <summary>
+		/// Init composion layer.
+		/// </summary>
+		public int CompositionLayer_Init(uint textureWidth, uint textureHeight, GraphicsAPI graphicsAPI, bool isDynamic, bool isProtected, out uint imageCount, bool isExternal = false)
 		{
 			if (!m_XrSessionCreated)
 			{
@@ -446,11 +500,14 @@ namespace VIVE.OpenXR.CompositionLayer
 				return 0;
 			}
 
-			return VIVEOpenXR_CompositionLayer_Init(m_XrSession, textureWidth, textureHeight, graphicsAPI, isDynamic, isProtected, out imageCount);
+			return VIVEOpenXR_CompositionLayer_Init(m_XrSession, textureWidth, textureHeight, graphicsAPI, isDynamic, isProtected, out imageCount, isExternal);
 		}
 
 		[DllImportAttribute(ExtLib, EntryPoint = "compositionlayer_GetTexture")]
 		public static extern IntPtr VIVEOpenXR_CompositionLayer_GetTexture(int layerID, out uint imageIndex);
+		/// <summary>
+		/// Get composition layer texture.
+		/// </summary>
 		public IntPtr CompositionLayer_GetTexture(int layerID, out uint imageIndex)
 		{
 			return VIVEOpenXR_CompositionLayer_GetTexture(layerID, out imageIndex);
@@ -458,6 +515,9 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		[DllImportAttribute(ExtLib, EntryPoint = "compositionlayer_ReleaseTexture")]
 		public static extern bool VIVEOpenXR_CompositionLayer_ReleaseTexture(int layerID);
+		/// <summary>
+		/// release composition layer texture.
+		/// </summary>
 		public bool CompositionLayer_ReleaseTexture(int layerID)
 		{
 			return VIVEOpenXR_CompositionLayer_ReleaseTexture(layerID);
@@ -465,6 +525,9 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		[DllImportAttribute(ExtLib, EntryPoint = "compositionlayer_Destroy")]
 		public static extern bool VIVEOpenXR_CompositionLayer_Destroy(int layerID);
+		/// <summary>
+		/// destroy composition layer.
+		/// </summary>
 		public bool CompositionLayer_Destroy(int layerID)
 		{
 			return VIVEOpenXR_CompositionLayer_Destroy(layerID);
@@ -472,6 +535,9 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		[DllImportAttribute(ExtLib, EntryPoint = "submit_CompositionLayerQuad")]
 		public static extern void VIVEOpenXR_Submit_CompositionLayerQuad(XrCompositionLayerQuad quad, LayerType layerType, uint compositionDepth, int layerID);
+		/// <summary>
+		/// submit compostion layer of type quad.
+		/// </summary>
 		public void Submit_CompositionLayerQuad(XrCompositionLayerQuad quad, LayerType layerType, uint compositionDepth, int layerID)
 		{
 			VIVEOpenXR_Submit_CompositionLayerQuad(quad, layerType, compositionDepth, layerID);
@@ -491,6 +557,9 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		[DllImportAttribute(ExtLib, EntryPoint = "compositionlayer_GetFuncAddrs")]
 		public static extern XrResult VIVEOpenXR_CompositionLayer_GetFuncAddrs(XrInstance xrInstance, IntPtr xrGetInstanceProcAddrFuncPtr);
+		/// <summary>
+		/// get function address of composition layer.
+		/// </summary>
 		public XrResult CompositionLayer_GetFuncAddrs(XrInstance xrInstance, IntPtr xrGetInstanceProcAddrFuncPtr)
 		{
 			return VIVEOpenXR_CompositionLayer_GetFuncAddrs(xrInstance, xrGetInstanceProcAddrFuncPtr);

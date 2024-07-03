@@ -19,7 +19,7 @@ namespace VIVE.OpenXR
 		Desc = "Support the HTC foveation extension.",
 		Company = "HTC",
 		DocumentationLink = "..\\Documentation",
-		OpenxrExtensionStrings = "XR_HTC_foveation",
+		OpenxrExtensionStrings = kOpenxrExtensionString,
 		Version = "1.0.0",
 		BuildTargetGroups = new[] { BuildTargetGroup.Android },
         FeatureId = featureId
@@ -27,6 +27,11 @@ namespace VIVE.OpenXR
 #endif
     public class ViveFoveation : OpenXRFeature
     {
+		const string LOG_TAG = "VIVE.OpenXR.ViveFoveation";
+		void DEBUG(string msg) { Debug.Log(LOG_TAG + " " + msg); }
+		void WARNING(string msg) { Debug.LogWarning(LOG_TAG + " " + msg); }
+		void ERROR(string msg) { Debug.LogError(LOG_TAG + " " + msg); }
+
 		/// <summary>
 		/// Flag bits for XrFoveationDynamicFlagsHTC
 		/// </summary>
@@ -38,6 +43,31 @@ namespace VIVE.OpenXR
 		/// The feature id string. This is used to give the feature a well known id for reference.
 		/// </summary>
 		public const string featureId = "vive.openxr.feature.foveation";
+
+		/// <summary>
+		/// OpenXR specification <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#XR_HTC_foveation">12.90. XR_HTC_foveation</see>.
+		/// </summary>
+		public const string kOpenxrExtensionString = "XR_HTC_foveation";
+
+		#region OpenXR Life Cycle
+		/// <summary>
+		/// Called when <see href="https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#xrCreateInstance">xrCreateInstance</see> is done.
+		/// </summary>
+		/// <param name="xrInstance">The created instance.</param>
+		/// <returns>True for valid <see cref="XrInstance">XrInstance</see></returns>
+		protected override bool OnInstanceCreate(ulong xrInstance)
+		{
+			if (!OpenXRRuntime.IsExtensionEnabled(kOpenxrExtensionString))
+			{
+				WARNING("OnInstanceCreate() " + kOpenxrExtensionString + " is NOT enabled.");
+				return false;
+			}
+
+			DEBUG("OnInstanceCreate() " + xrInstance);
+
+			return true;
+		}
+		#endregion
 
 		protected override IntPtr HookGetInstanceProcAddr(IntPtr func)
 		{

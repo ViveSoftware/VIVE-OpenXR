@@ -127,7 +127,7 @@ namespace VIVE.OpenXR.Samples.Anchor
 
             if (AnchorManager.GetTrackingSpacePose(anchor, out Pose pose))
             {
-                // Convert tracking space pose to rig space pose
+                // Convert tracking space pose to world space pose
                 obj.position = rig.TransformPoint(pose.position);
                 obj.rotation = rig.rotation * pose.rotation;
 

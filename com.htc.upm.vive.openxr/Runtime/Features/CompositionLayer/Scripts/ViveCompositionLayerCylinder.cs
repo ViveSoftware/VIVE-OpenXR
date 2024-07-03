@@ -42,6 +42,9 @@ namespace VIVE.OpenXR.CompositionLayer
 		private const string kOpenXRCylinderExtensionString = "XR_KHR_composition_layer_cylinder";
 
 		private bool m_CylinderExtensionEnabled = true;
+		/// <summary>
+		/// The extension "XR_KHR_composition_layer_cylinder" is enabled or not.
+		/// </summary>
 		public bool CylinderExtensionEnabled
 		{
 			get { return m_CylinderExtensionEnabled; }
@@ -68,6 +71,9 @@ namespace VIVE.OpenXR.CompositionLayer
 
 		[DllImportAttribute(ExtLib, EntryPoint = "submit_CompositionLayerCylinder")]
 		public static extern void VIVEOpenXR_Submit_CompositionLayerCylinder(XrCompositionLayerCylinderKHR cylinder, LayerType layerType, uint compositionDepth, int layerID);
+		/// <summary>
+		/// submit compostion layer of type cylinder.
+		/// </summary>
 		public void Submit_CompositionLayerCylinder(XrCompositionLayerCylinderKHR cylinder, LayerType layerType, uint compositionDepth, int layerID)
 		{
 			if (!CylinderExtensionEnabled)

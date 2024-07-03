@@ -31,7 +31,7 @@ namespace VIVE.OpenXR.Toolkits.PlaneDetection
 	public class Plane
 	{
 		public Vector3 scale;  // Only width(X) and height(Y) are valid, Z is always 1.
-        public Vector3 center;  // Should always be Vector3.Zero.
+		public Vector3 center;  // Should always be Vector3.Zero.
 		public Vector3[] verticesRaw;  // The original vertices from <see cref="XrPlaneDetectorPolygonBufferEXT"/>
 		public Vector3[] verticesGenerated;  // generated vertices for creating Mesh.
 		public Vector2[] uvsGenerated;
@@ -94,7 +94,12 @@ namespace VIVE.OpenXR.Toolkits.PlaneDetection
 		IntPtr planeDetector = IntPtr.Zero;
 		VivePlaneDetection feature = null;
 
-		public PlaneDetector(IntPtr pd, VivePlaneDetection f)
+		/// <summary>
+		/// Should not create PlaneDetector directly.  Use <see cref="PlaneDetectionManager.CreatePlaneDetector" /> instead.
+		/// </summary>
+		/// <param name="pd">The native handle of plane detector</param>
+		/// <param name="f">the feature</param>
+		internal PlaneDetector(IntPtr pd, VivePlaneDetection f)
 		{
 			feature = f;
 			planeDetector = pd;
@@ -184,10 +189,10 @@ namespace VIVE.OpenXR.Toolkits.PlaneDetection
 
 			locations = new List<PlaneDetectorLocation>();
 
-            // The plane's neutral pose is horizontal, and not like the plane pose in unity which is vertical.
-            // Therefore, we wil perform a rotation to convert from the OpenXR's forward to unity's forward.
-            // In Unity, the rotation applied order is in ZXY order.
-            Quaternion forward = Quaternion.Euler(-90, 180, 0);
+			// The plane's neutral pose is horizontal, and not like the plane pose in unity which is vertical.
+			// Therefore, we wil perform a rotation to convert from the OpenXR's forward to unity's forward.
+			// In Unity, the rotation applied order is in ZXY order.
+			Quaternion forward = Quaternion.Euler(-90, 180, 0);
 			for (int i = 0; i < locationsRaw.planeLocationCountOutput; i++)
 			{
 				XrPlaneDetectorLocationEXT location = locationsArray[i];
@@ -273,9 +278,9 @@ namespace VIVE.OpenXR.Toolkits.PlaneDetection
 	public static class PlaneDetectionManager
 	{
 		static VivePlaneDetection feature = null;
-        static bool isSupported = false;
+		static bool isSupported = false;
 
-        static void CheckFeature()
+		static void CheckFeature()
 		{
 			if (feature != null) return;
 			feature = OpenXRSettings.Instance.GetFeature<VivePlaneDetection>();
@@ -289,16 +294,16 @@ namespace VIVE.OpenXR.Toolkits.PlaneDetection
 		/// <returns></returns>
 		public static VivePlaneDetection GetFeature()
 		{
-            try
-            {
-                CheckFeature();
-            }
-            catch (NotSupportedException)
-            {
-                Debug.LogWarning("PlaneDetection feature is not enabled");
-                return null;
-            }
-            return feature;
+			try
+			{
+				CheckFeature();
+			}
+			catch (NotSupportedException)
+			{
+				Debug.LogWarning("PlaneDetection feature is not enabled");
+				return null;
+			}
+			return feature;
 		}
 
 		/// <summary>
@@ -308,7 +313,7 @@ namespace VIVE.OpenXR.Toolkits.PlaneDetection
 		public static bool IsSupported()
 		{
 			if (GetFeature() == null) return false;
-            if (isSupported) return true;
+			if (isSupported) return true;
 			if (feature == null) return false;
 
 			bool ret = false;
@@ -317,9 +322,9 @@ namespace VIVE.OpenXR.Toolkits.PlaneDetection
 			{
 				Debug.Log("PlaneDetection: IsSupported() properties.supportedFeatures: " + properties.supportedFeatures);
 				ret = (properties.supportedFeatures & CAPABILITY_PLANE_DETECTION_BIT_EXT) > 0;
-                isSupported = ret;
-            }
-            else
+				isSupported = ret;
+			}
+			else
 			{
 				Debug.Log("PlaneDetection: IsSupported() GetSystemProperties failed.");
 			}
@@ -342,12 +347,15 @@ namespace VIVE.OpenXR.Toolkits.PlaneDetection
 
 		/// <summary>
 		/// Plane detector is a session of detect plane.  You don't need to create multiple plane detector in VIVE's implemention.  You need destroy it.
+		/// Should call <see cref="IsSupported"/> first to check if the feature is supported.
 		/// </summary>
 		/// <returns>PlaneDetector's handle</returns>
 		public static PlaneDetector CreatePlaneDetector()
 		{
 			CheckFeature();
 			if (feature == null)
+				return null;
+			if (IsSupported() == false)
 				return null;
 
 			var createInfo = MakeXrPlaneDetectorCreateInfoEXT();

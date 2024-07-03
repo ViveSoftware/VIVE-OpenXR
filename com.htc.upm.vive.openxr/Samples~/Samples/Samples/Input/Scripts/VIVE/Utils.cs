@@ -94,11 +94,11 @@ namespace VIVE.OpenXR.Samples.OpenXRInput
 		}
 		public static string Name(this ActionRefError error)
 		{
-			if (error == ActionRefError.REFERENCE_NULL) { return "Null reference."; }
-			if (error == ActionRefError.ACTION_NULL) { return "Null reference action."; }
-			if (error == ActionRefError.DISABLED) { return "Reference action disabled."; }
-			if (error == ActionRefError.ACTIVECONTROL_NULL) { return "No active control of the reference action."; }
-			if (error == ActionRefError.NO_CONTROLS_COUNT) { return "No action control count."; }
+			if (error == ActionRefError.REFERENCE_NULL) { return "Null reference"; }
+			if (error == ActionRefError.ACTION_NULL) { return "Null reference action"; }
+			if (error == ActionRefError.DISABLED) { return "Reference action disabled"; }
+			if (error == ActionRefError.ACTIVECONTROL_NULL) { return "No active control of the reference action"; }
+			if (error == ActionRefError.NO_CONTROLS_COUNT) { return "No action control count"; }
 
 			return "";
 		}
@@ -325,6 +325,24 @@ namespace VIVE.OpenXR.Samples.OpenXRInput
 #endif
 					return true;
 				}
+			}
+
+			return false;
+		}
+		public static bool PerformHaptic(InputActionReference actionReference, out string msg)
+		{
+			var result = VALIDATE(actionReference);
+
+			msg = result.Name();
+
+			if (result == ActionRefError.NONE)
+			{
+				float amplitude = 1.0f;
+				float duration = 0.1f;
+				var command = UnityEngine.InputSystem.XR.Haptics.SendHapticImpulseCommand.Create(0, amplitude, duration);
+				actionReference.action.activeControl.device.ExecuteCommand(ref command);
+
+				return true;
 			}
 
 			return false;
