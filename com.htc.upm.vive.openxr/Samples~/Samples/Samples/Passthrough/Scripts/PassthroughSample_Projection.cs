@@ -55,11 +55,22 @@ namespace VIVE.OpenXR.CompositionLayer.Samples.Passthrough
 				if (activePassthroughID != 0) SetPassthroughMesh();
 			}
 
-			if (passthroughMesh != null && passthroughMeshTransform != null)
+            if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.GripR))
             {
-                if (activePassthroughID == 0)
+                if (passthroughMesh != null && passthroughMeshTransform != null)
                 {
-                    StartPassthrough();
+                    if (activePassthroughID == 0)
+                    {
+                        StartPassthrough();
+                    }
+                }
+            }
+            if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.GripL))
+            {
+                if (activePassthroughID != 0)
+                {
+                    CompositionLayerPassthroughAPI.DestroyPassthrough(activePassthroughID);
+                    activePassthroughID = 0;
                 }
             }
         }

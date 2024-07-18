@@ -16,10 +16,7 @@ namespace VIVE.OpenXR.CompositionLayer.Samples.Passthrough
 
         private void Update()
         {
-            if (activePassthroughID == 0)
-            {
-                StartPassthrough();
-            }
+
 
             if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.B)) //Set Passthrough as Overlay
             {
@@ -28,6 +25,21 @@ namespace VIVE.OpenXR.CompositionLayer.Samples.Passthrough
             if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.A)) //Set Passthrough as Underlay
             {
                 SetPassthroughToUnderlay();
+            }
+            if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.GripR))
+            {
+                if (activePassthroughID == 0)
+                {
+                    StartPassthrough();
+                }
+            }
+            if (VRSInputManager.instance.GetButtonDown(VRSButtonReference.GripL))
+            {
+                if(activePassthroughID != 0)
+                {
+                    CompositionLayerPassthroughAPI.DestroyPassthrough(activePassthroughID);
+                    activePassthroughID = 0;
+                }
             }
         }
 

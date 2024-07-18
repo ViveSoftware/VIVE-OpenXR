@@ -527,7 +527,10 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 
 			XrResult res = xrCreatePassthroughHTC(m_XrSession, createInfo, out passthrough);
 			if (res == XrResult.XR_SUCCESS)
+            {
 				passthroughList.Add(passthrough);
+				passthroughIDList.Add(((int)(ulong)passthrough));
+			}
 			else
 				ERROR("CreatePassthroughHTC() "+res);
 			return res;
@@ -541,6 +544,7 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 			if (res == XrResult.XR_SUCCESS)
 			{
 				passthroughList.Remove(passthrough);
+				passthroughIDList.Remove(((int)(ulong)passthrough));
 			}
 			return res;
 		}

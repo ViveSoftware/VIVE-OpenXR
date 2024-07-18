@@ -359,10 +359,10 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 #if UNITY_STANDALONE
 		private static void SubmitLayer()
         {
+			XR_HTC_passthrough.Interop.GetOriginEndFrameLayerList(out List<IntPtr> layerList);//GetOriginEndFrameLayers
 			foreach(var passthrough in passthrough2IsUnderLay.Keys)
             {
 				//Get and submit layer list
-				XR_HTC_passthrough.Interop.GetOriginEndFrameLayerList(out List<IntPtr> layerList);//GetOriginEndFrameLayers
 				if (layerList.Count != 0)
 				{
 					Marshal.StructureToPtr(passthrough2Layer[passthrough], passthrough2LayerPtr[passthrough], false);
@@ -370,9 +370,9 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 						layerList.Insert(0, passthrough2LayerPtr[passthrough]);
 					else
 						layerList.Insert(1, passthrough2LayerPtr[passthrough]);
-					XR_HTC_passthrough.Interop.SubmitLayers(layerList);
 				}
 			}
+			XR_HTC_passthrough.Interop.SubmitLayers(layerList);
 		}
 #endif
 
@@ -393,21 +393,23 @@ namespace VIVE.OpenXR.CompositionLayer.Passthrough
 				ERROR("HTC_Passthrough feature instance not found.");
 				return false;
 			}
-
-			if (!passthroughFeature.PassthroughIDList.Contains(passthroughID))
-			{
-				ERROR("Passthrough to be destroyed not found");
-				return false;
-			}
+            if (!passthroughFeature.PassthroughIDList.Contains(passthroughID))
+            {
+                ERROR("Passthrough to be destroyed not found");
+                return false;
+            }
 #if UNITY_STANDALONE
-			XrPassthroughHTC passthrough = (XrPassthroughHTC)(ulong)passthroughID;
-			passthrough2Layer.Remove(passthroughID);
-			Marshal.FreeHGlobal(passthrough2LayerPtr[passthroughID]);
-			passthrough2LayerPtr.Remove(passthroughID);
+            XrPassthroughHTC passthrough = passthrough2Layer[passthroughID].passthrough;
+			XR_HTC_passthrough.xrDestroyPassthroughHTC(passthrough);
 			passthrough2IsUnderLay.Remove(passthroughID);
-			Marshal.FreeHGlobal(passthrough2meshTransformInfoPtr[passthroughID]);
+			SubmitLayer();
+			passthrough2Layer.Remove(passthroughID);
+			if(passthrough2LayerPtr.ContainsKey(passthroughID)) Marshal.FreeHGlobal(passthrough2LayerPtr[passthroughID]);
+			passthrough2LayerPtr.Remove(passthroughID);
+			if(passthrough2meshTransformInfoPtr.ContainsKey(passthroughID)) Marshal.FreeHGlobal(passthrough2meshTransformInfoPtr[passthroughID]);
 			passthrough2meshTransformInfoPtr.Remove(passthroughID);
 			passthrough2meshTransform.Remove(passthroughID);
+			
 			return true;
 #endif
 #if UNITY_ANDROID
