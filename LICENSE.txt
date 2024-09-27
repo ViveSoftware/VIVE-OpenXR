@@ -1,0 +1,4 @@
+Copyright © HTC Corporation, LLC and its affiliates. All rights reserved.
+
+Your use of this SDK, sample, or tool is subject to HTC VIVE SDK License Agreement, available at https://developer.vive.com/resources/downloads/licenses-and-agreements/
+
