@@ -22,7 +22,7 @@ namespace VIVE.OpenXR
 			Anchor.ViveAnchor.featureId,
 		},
 		UiName = "VIVE XR Support",
-		Description = "Necessary to deploy an VIVE XR compatible app.",
+		Description = "Necessary to deploy a VIVE XR compatible app.",
 		FeatureSetId = "com.htc.vive.openxr.featureset.vivexr",
 		DefaultFeatureIds = new string[] { VIVEFocus3Feature.featureId, VIVEFocus3Profile.featureId, },
 		SupportedBuildTargets = new BuildTargetGroup[] { BuildTargetGroup.Android }
