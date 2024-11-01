@@ -17,7 +17,7 @@ namespace VIVE.OpenXR
 {
 #if UNITY_EDITOR
     [OpenXRFeature(UiName = "VIVE XR Support",
-		Desc = "Necessary to deploy an VIVE XR compatible app.",
+		Desc = "Necessary to deploy a VIVE XR compatible app.",
 		Company = "HTC",
 		DocumentationLink = "https://developer.vive.com/resources/openxr/openxr-mobile/tutorials/how-install-vive-wave-openxr-plugin/",
 		OpenxrExtensionStrings = kOpenxrExtensionStrings,
